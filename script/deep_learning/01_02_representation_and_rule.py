@@ -28,10 +28,12 @@ if __name__ == '__main__':
     figure, axis = draw.init()
     draw.title(axis, '1.2 表示与规则')
     draw.subtitle(axis, '3. 视频如何表示')
+    draw.text(axis, '视频的帧率：30', index=0)
     draw.save('02_02_video_3.png')
 
     figure, axis = draw.init()
     draw.title(axis, '1.2 表示与规则')
     draw.subtitle(axis, '4. 声音如何表示')
+    draw.text(axis, '声音要素：声道、频率、采样率、幅度', index=0)
     draw.image_h_center(axis, 'res/deep_learning/wave_draw.png', bottom=LARGE_OFFSET)
     draw.save('02_02_wave_draw_4.png')
