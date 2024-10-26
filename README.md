@@ -1,3 +1,18 @@
 # Machine Learning Series (机器学习系列)
 
-## 文档：[机器学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
+## [机器学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
+
+### 01 认识机器学习：绘制直线
+#### 1.1 线性函数
+##### 1.1.1 函数定义
+##### 1.1.2 函数图像
+##### 1.1.3 平行与垂直
+#### 1.2 问题定义
+##### 1.2.1 NumPy 介绍
+##### 1.2.2 生成随机数
+##### 1.2.3 寻找线性方程
+#### 1.3 二次函数
+#### 1.4 传统方程求解
+##### 1.4.1 问题分析
+#### 1.5 机器学习求解
+##### 1.5.1 问题分析
