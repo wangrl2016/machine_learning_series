@@ -8,6 +8,7 @@ if __name__ == '__main__':
     x = numpy.linspace(0, 4, 100)
     pyplot.scatter(x, 3 * x + 4 + random_numbers, s=5)
     pyplot.plot(x, 3 * x + 4, c='red')
+    pyplot.text(3, 12, 'f(x) = 3 * x + 4')
     pyplot.grid(True)
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
     pyplot.show()
