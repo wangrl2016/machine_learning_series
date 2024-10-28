@@ -1,5 +1,10 @@
 # Machine Learning Series (机器学习系列)
 
+Python 语言 12 天速成  
+机器学习 12 天速成
+
+---
+
 ## [机器学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
 第 1 天 认识机器学习：绘制直线  
@@ -29,3 +34,22 @@
 ##### 1.4.1 问题分析
 #### 1.5 机器学习求解
 ##### 1.5.1 问题分析
+
+---
+
+## [Python 语言 12 天速成](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
+
+第 1 天 Python 介绍  
+第 2 天 常量与变量  
+第 3 天 控制流  
+第 4 天 函数详解  
+第 5 天 实战：Android 控制  
+第 6 天 数据结构与算法  
+第 7 天 面向对象  
+第 8 天 标准库  
+第 9 天 实战：绘制跳动的爱心  
+第 10 天 实战：WAVE 音频解析  
+第 11 天 机器学习常用库  
+第 12 天 实战：FFmpeg 封装
+
+---

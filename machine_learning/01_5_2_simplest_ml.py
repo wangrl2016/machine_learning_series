@@ -15,7 +15,6 @@ if __name__ == '__main__':
     for e in range(EPOCH):
         for index, x_input in enumerate(x_input_array):
             y_pred = param * x_input + 4
-            print(y_pred, y_true_array[index])
             if y_pred < y_true_array[index]:
                 param += LEARN_RATE
             else:
@@ -44,5 +43,5 @@ if __name__ == '__main__':
         text = ax.text(3, 10, f'param: {history[frame]:.2f}')
         return line, text
     
-    animation = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True)
+    animation = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True, repeat=False)
     pyplot.show()
