@@ -2,6 +2,19 @@
 
 ## [机器学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
+第 1 天 认识机器学习：绘制直线  
+第 2 天 深度学习原理  
+第 3 天 二分类问题：Keras 求解  
+第 4 天 详解反向传播算法  
+第 5 天 MNIST 全连接神经网络  
+第 6 天 张量与张量运算  
+第 7 天 使用 PyTorch 训练  
+第 8 天 CIFAR-10 卷积神经网络  
+第 9 天 AlexNet 模型  
+第 10 天 ResNet 网络  
+第 11 天 注意力机制  
+第 12 天 GPT 大模型  
+
 ### 01 认识机器学习：绘制直线
 #### 1.1 线性函数
 ##### 1.1.1 函数定义
