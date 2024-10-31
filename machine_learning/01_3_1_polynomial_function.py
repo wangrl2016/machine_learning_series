@@ -14,3 +14,20 @@ if __name__ == '__main__':
     pyplot.grid(True)
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.92, bottom=0.08)
     pyplot.show()
+
+    x = numpy.linspace(-1.2, 1.2)
+    for param in [2, 3, 4, 6]:
+        y = numpy.power(x, param)
+        pyplot.plot(x, y)
+    pyplot.grid(True)
+    pyplot.axis('equal')
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.92, bottom=0.08)
+    pyplot.show()
+
+    x = numpy.linspace(-4, 4)
+    y = -x * x *x + 7 * x * x + 3 * x + 1
+    pyplot.plot(x, y)
+    pyplot.text(0, 100, 'y = -x^3 + 7 * x^2 + 3 * x + 1')
+    pyplot.grid(True)
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.92, bottom=0.08)
+    pyplot.show()
