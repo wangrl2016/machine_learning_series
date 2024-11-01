@@ -1,8 +1,0 @@
-keras=3.1.6
-matplotlib==3.9.0
-networkx==3.2.1
-numpy==2.0.0
-pandas==1.5.0
-requests==2.27.1
-tensorflow==2.16.1
-tensorflow-datasets
