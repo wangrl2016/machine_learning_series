@@ -45,16 +45,16 @@ Python 语言 12 天速成
 ## [Python 语言 12 天速成](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
 
 第 1 天 Python 介绍  
-第 2 天 常量与变量  
-第 3 天 控制流  
-第 4 天 函数详解  
-第 5 天 实战：Android 控制  
-第 6 天 数据结构与算法  
-第 7 天 面向对象  
-第 8 天 标准库  
-第 9 天 实战：绘制跳动的爱心  
-第 10 天 实战：WAVE 音频解析  
-第 11 天 机器学习常用库  
-第 12 天 实战：FFmpeg 封装
+第 2 天 计算机基础
+第 3 天 常量与变量  
+第 4 天 控制流  
+第 5 天 函数详解  
+第 6 天 实战：Android 控制  
+第 7 天 数据结构与算法  
+第 8 天 面向对象  
+第 9 天 标准库  
+第 10 天 实战：绘制跳动的爱心  
+第 11 天 实战：WAVE 音频解析  
+第 12 天 机器学习常用库  
 
 ---
