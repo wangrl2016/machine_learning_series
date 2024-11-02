@@ -1,3 +1,34 @@
+import mnist_parse
+import os
+from matplotlib import pyplot
+import random
 
 if __name__ == '__main__':
-    pass
+    base_url = '/Users/admin/Downloads/'
+    filename_list = ['train-images-idx3-ubyte',
+                      'train-labels-idx1-ubyte',
+                      't10k-images-idx3-ubyte',
+                      't10k-labels-idx1-ubyte']
+    (x_train, y_train), (x_test, y_test) = mnist_parse.mnist_load(
+        *[os.path.join(base_url, filename) for filename in filename_list])
+
+    images_show = []
+    labels_show = []
+    row = 5
+    col = 3
+    for i in range(0, row * 2):
+        r = random.randint(0, len(x_train))
+        images_show.append(x_train[r])
+        labels_show.append(str(r) + ' ' + str(y_train[r]))
+    for i in range(0, row):
+        r = random.randint(0, len(x_test))
+        images_show.append(x_test[r])
+        labels_show.append(str(r) + ' ' + str(y_test[r]))
+    index = 1
+    for image, label in zip(images_show, labels_show):
+        pyplot.subplot(col, row, index)
+        pyplot.imshow(image, cmap='gray')
+        pyplot.title(label)
+        index += 1
+    pyplot.subplots_adjust(left=0.06, right=0.94, top=0.96, bottom=0.04)
+    pyplot.show()
