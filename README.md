@@ -45,7 +45,7 @@ Python 语言 12 天速成
 ## [Python 语言 12 天速成](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
 
 第 1 天 Python 介绍  
-第 2 天 计算机基础
+第 2 天 计算机基础  
 第 3 天 常量与变量  
 第 4 天 控制流  
 第 5 天 函数详解  
