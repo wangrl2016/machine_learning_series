@@ -6,6 +6,7 @@ if __name__ == '__main__':
     y = x * numpy.sin(x)
 
     pyplot.plot(x, y, label='x * sin(x)')
+    pyplot.legend()
     pyplot.grid(True)
     pyplot.subplots_adjust(left=0.1, right=0.9, top=0.96, bottom=0.06)
     pyplot.show()
