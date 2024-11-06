@@ -38,5 +38,5 @@ if __name__ == '__main__':
         return line, text
 
     animation = FuncAnimation(fig, animate, frames=len(history), interval=40, blit=True, repeat=False)
-    animation.save("temp/simplest_ml.gif", writer="pillow")
+    animation.save("temp/simplest_ml_anim.gif", writer="pillow")
     pyplot.show()
