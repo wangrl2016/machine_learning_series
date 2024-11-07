@@ -17,4 +17,5 @@ if __name__ == '__main__':
     bias = 4
     neuron = Neuron(weights, bias)
     x = numpy.array([2, 3])
+    # 0.9990889488055994
     print(neuron.feedforward(x))
