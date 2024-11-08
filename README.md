@@ -29,7 +29,11 @@
 
 了解机器学习与传统编程的区别，理解深度学习原理，熟悉人工神经网络的训练过程，包括数据预处理、权重、损失函数、优化器、反向传播等概念。
 
+![深度学习原理](res/machine_learning/principle_deep_learning.png)
+
 ### 03 二分类问题：Keras 求解
+
+二分类问题是指在机器学习或统计学中，将数据划分为两个类别的分类任务。常见的二分类问题包括垃圾邮件分类（垃圾邮件与正常邮件）、疾病诊断（有病与无病）、图像分类（有目标与无目标）等。
 
 ```
     rng = numpy.random.default_rng(seed=0)
@@ -45,6 +49,24 @@
                   optimizer=optimizers.Adam(learning_rate=0.01), metrics=['accuracy'])
     model.fit(input, output, epochs=5, batch_size=1)
 ```
+
+### 04 详解反向传播算法
+
+### 05 MNIST 全连接神经网络
+
+### 06 张量和自动微分
+
+### 07 使用 PyTorch 训练
+
+### 08 卷积神经网络
+
+### 09 AlexNet 模型
+
+### 10 ResNet 残差网络
+
+### 11 注意力机制 (Transformer)
+
+### 12 GPT 大模型 (LLM)
 
 ---
 
