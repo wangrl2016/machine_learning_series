@@ -50,6 +50,8 @@
     model.fit(input, output, epochs=5, batch_size=1)
 ```
 
+![二分类问题](res/machine_learning/binary_classify_anim.gif)
+
 ### 04 详解反向传播算法
 
 ### 05 MNIST 全连接神经网络

@@ -56,5 +56,5 @@ if __name__ == '__main__':
 
     animation = FuncAnimation(fig, animate, frames=len(params_callback.weights_history),
                               interval=40, blit=True, repeat=False)
-    animation.save("temp/binary_classify_animation.gif", writer="pillow")
+    animation.save("temp/binary_classify_anim.gif", writer="pillow")
     pyplot.show()
