@@ -27,9 +27,24 @@
 
 ### 02 深度学习原理
 
-了解机器学习与传统编程的区别，理解深度学习原理，熟悉人工神经网络的训练过程，包括权重、损失函数、优化器、反向传播等概念。认识不同种类的输入数据，为后续数据处理建立坚实的基础。
+了解机器学习与传统编程的区别，理解深度学习原理，熟悉人工神经网络的训练过程，包括数据预处理、权重、损失函数、优化器、反向传播等概念。
 
 ### 03 二分类问题：Keras 求解
+
+```
+    rng = numpy.random.default_rng(seed=0)
+    input = rng.standard_normal((200, 2))
+    output = numpy.array([1 if x + y > 0 else 0 for x, y in input])
+    model = keras.Sequential()
+    model.add(keras.layers.Input(shape=(2,)))
+    model.add(keras.layers.Dense(units=1, activation='sigmoid',
+                                 kernel_initializer=initializers.Constant(0.0),
+                                 bias_initializer=initializers.Constant(1.0)))
+    model.summary()
+    model.compile(loss='binary_crossentropy',
+                  optimizer=optimizers.Adam(learning_rate=0.01), metrics=['accuracy'])
+    model.fit(input, output, epochs=5, batch_size=1)
+```
 
 ---
 
