@@ -4,13 +4,12 @@ from matplotlib import pyplot
 import random
 
 if __name__ == '__main__':
-    base_url = '/Users/admin/Downloads/'
-    filename_list = ['train-images-idx3-ubyte',
-                      'train-labels-idx1-ubyte',
-                      't10k-images-idx3-ubyte',
-                      't10k-labels-idx1-ubyte']
-    (x_train, y_train), (x_test, y_test) = mnist_parse.mnist_load(
-        *[os.path.join(base_url, filename) for filename in filename_list])
+    # base_url = '/Users/admin/Downloads/'
+    # filename_list = ['train-images-idx3-ubyte',
+    #                   'train-labels-idx1-ubyte',
+    #                   't10k-images-idx3-ubyte',
+    #                   't10k-labels-idx1-ubyte']
+    (x_train, y_train), (x_test, y_test) = mnist_parse.dataset()
 
     images_show = []
     labels_show = []

@@ -1,5 +1,6 @@
 import array
 import numpy
+import os
 import struct
 
 def mnist_read(images_path, labels_path):
@@ -31,3 +32,11 @@ def mnist_load(train_image_path, train_label_path,
                test_image_path, test_label_path):
     return mnist_read(train_image_path, train_label_path), \
         mnist_read(test_image_path, test_label_path)
+
+def dataset():
+    base_url = '/Users/admin/Downloads/'
+    filename_list = ['train-images-idx3-ubyte',
+                      'train-labels-idx1-ubyte',
+                      't10k-images-idx3-ubyte',
+                      't10k-labels-idx1-ubyte']
+    return mnist_load(*[os.path.join(base_url, filename) for filename in filename_list])
