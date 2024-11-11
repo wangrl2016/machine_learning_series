@@ -33,7 +33,7 @@ def mnist_load(train_image_path, train_label_path,
     return mnist_read(train_image_path, train_label_path), \
         mnist_read(test_image_path, test_label_path)
 
-def dataset():
+def parse():
     base_url = '/Users/admin/Downloads/'
     filename_list = ['train-images-idx3-ubyte',
                       'train-labels-idx1-ubyte',

@@ -1,10 +1,10 @@
 # https://github.com/jax-ml/jax/blob/main/examples/mnist_classifier_fromscratch.py
 
 import jax.numpy as jnp
+import mnist_dataset
 import numpy
 import jax
 import time
-import mnist_parse
 
 EPOCHS = 10
 BATCH_SIZE = 128
@@ -13,7 +13,7 @@ STEP = 0.01
 
 if __name__ == '__main__':
     rng = jax.random.key(0)
-    (train_images, train_labels), (test_images, test_labels) = mnist_parse.dataset()
+    (train_images, train_labels), (test_images, test_labels) = mnist_dataset.parse()
     train_images = train_images.reshape(train_images.shape[0], -1)
     test_images = test_images.reshape(test_images.shape[0], -1)
     train_labels = numpy.eye(10)[train_labels]
