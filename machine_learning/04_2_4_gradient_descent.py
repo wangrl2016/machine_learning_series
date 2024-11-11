@@ -1,6 +1,5 @@
 import numpy
 from matplotlib import pyplot, animation, ticker
-from mpl_toolkits.mplot3d import Axes3D
 
 # Define the Rosenbrock function.
 def rosenbrock(x, y, a=5, b=10):
@@ -58,5 +57,6 @@ if __name__ == '__main__':
     anim = animation.FuncAnimation(fig, animate,
                                    frames=min(STEP, len(x_vals)),
                                    blit=True, interval=40, repeat=False)
+    # TODO: There is a problem with the saved line and point colors
     anim.save('temp/gradient_descent.gif', writer='pillow')
     pyplot.show()
