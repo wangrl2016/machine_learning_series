@@ -1,7 +1,8 @@
 # Machine Learning Series (机器学习系列)
 
-* Python 语言 12 天速成 [ [在线文档](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]   
-* 机器学习 12 天速成  [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]   
+* 机器学习 12 天速成  [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  
+
+* Python 语言 12 天速成 [ [在线文档](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]
 
 ---
 
@@ -67,6 +68,20 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
 复习线性代数中的向量和矩阵。介绍主流机器学习库 (`TensorFlow/PyTorch/JAX`) 的核心内容：张量和自动微分。实现一个对标量值进行自动求导的神经网络引擎。
 
 ### 07 训练神经网络
+
+学习常见的微型数据集。使用 `TensorFlow/PyTorch/JAX` 进行训练，理解它们的异同之处，熟练使用主流机器学习库。介绍如何对训练过程进行优化。
+
+### 08 AlexNet 卷积模型
+
+介绍卷积神经网络，认识卷积和池化操作。翻译著名论文 _ImageNet Classification with Deep Convolutional Neural Networks_ ，并提供论文实现代码。
+
+### 09 ResNet 残差网络
+
+### 10 注意力机制 (Transformer)
+
+### 11 生成式 (Generative)
+
+### 12 大语言模型 (LLM)
 
 
 ---
