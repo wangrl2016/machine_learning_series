@@ -61,6 +61,23 @@
 
 MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9) 的灰度图像。全连接神经网络通常包含输入层、多个隐藏层和输出层，使用反向传播算法训练，从而使网络能够识别数字。
 
+```
+    (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+    x_train, x_test = x_train / 255.0, x_test / 255.0
+    model = keras.models.Sequential([
+        keras.layers.Input(shape=(28, 28)),
+        keras.layers.Flatten(),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(10, activation='softmax')
+    ])
+    model.summary()
+    model.compile(optimizer='adam',
+                  loss=keras.losses.SparseCategoricalCrossentropy(),
+                  metrics=['accuracy'])
+    model.fit(x_train, y_train)
+    model.evaluate(x_test, y_test)
+```
+
 ![手写数据集样本](res/machine_learning//mnist_dataset_sample.png)
 
 ### 06 张量和自动微分
@@ -77,14 +94,20 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
 
 ### 09 U-Net 和 ResNet 网络
 
+论文 _U-Net: Convolutional Networks for Biomedical Image Segmentation_ 提出大量使用数据增强的样本来训练网络的策略，相比于传统的卷积网络，需要更少的数据集，但是效果却更好。  
+论文 _Deep Residual Learning for Image Recognition_ 提出一个残差学习框架 (Residual Network) ，可以很容易训练比以前更深的网络，具有更高的准确性。
+
 ### 10 注意力机制 (Transformer)
 
 介绍循环神经网络，认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释。
 
 ### 11 生成式 (Generative)
 
+生成式方法的目标是在已知的样本数据上学习其特征分布，然后生成具有相似特征的全新数据，包括：稳定扩撒、神经风格迁移、DeepDream、卷积生成对抗网络、Pix2Pix 、CycleGAN 。
+
 ### 12 大语言模型 (LLM)
 
+nanoGPT 是最简单、最快的中型 GPT 训练/微调存储库，优先考虑实用性而非教育性。介绍 Llama 开源模型，包括如何访问模型、托管、操作方法和集成指南。
 
 ---
 
