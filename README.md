@@ -16,7 +16,7 @@
 第 6 天 张量与自动微分  
 第 7 天 训练神经网络  
 第 8 天 AlexNet 卷积模型  
-第 9 天 ResNet 残差网络  
+第 9 天 U-Net 和 ResNet 网络  
 第 10 天 注意力机制 (Transformer)  
 第 11 天 生成式 (Generative)  
 第 12 天 大语言模型 (LLM)  
