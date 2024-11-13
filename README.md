@@ -73,11 +73,13 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
 
 ### 08 AlexNet 卷积模型
 
-介绍卷积神经网络，认识卷积和池化操作。翻译著名论文 _ImageNet Classification with Deep Convolutional Neural Networks_ ，并提供论文实现代码。
+介绍卷积神经网络，认识卷积和池化操作。翻译著名论文 _ImageNet Classification with Deep Convolutional Neural Networks_ ，并提供代码实现。
 
-### 09 ResNet 残差网络
+### 09 U-Net 和 ResNet 网络
 
 ### 10 注意力机制 (Transformer)
+
+介绍循环神经网络，认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释。
 
 ### 11 生成式 (Generative)
 
