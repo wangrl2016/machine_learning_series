@@ -36,7 +36,7 @@ if __name__ == '__main__':
     for index, layer in enumerate(model.layers):
         if isinstance(layer, keras.layers.Conv2D):
             layer_outputs.append(layer.output)
-            layer_names.append(f'Layer {index+1}: {layer.name}')
+            layer_names.append(f'Layer {index+1} - {layer.name}')
 
     activation_model = keras.Model(inputs=model.input, outputs=layer_outputs)
     activations = activation_model.predict(img_tensor)
@@ -45,5 +45,7 @@ if __name__ == '__main__':
         print(activation.shape)
         pyplot.matshow(activation[0, :, :, 0])
         pyplot.title(layer_name)
+        pyplot.axis('off')
         pyplot.savefig(os.path.join('temp', layer_name + '.png'))
         # pyplot.show()
+        pyplot.close()

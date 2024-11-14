@@ -84,6 +84,36 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
 
 复习线性代数中的向量和矩阵。介绍主流机器学习库 (`TensorFlow/PyTorch/JAX`) 的核心内容：张量和自动微分。实现一个对标量值进行自动求导的神经网络引擎。
 
+```
+    w = tensorflow.Variable(tensorflow.fill((3, 2), 0.1), name='w')
+    b = tensorflow.Variable(tensorflow.zeros(2, dtype=tensorflow.float32), name='b')
+    x = [[1.0, 2.0, 3.0]]
+    with tensorflow.GradientTape(persistent=True) as tape:
+        y = tensorflow.math.tanh(tensorflow.matmul(x, w) + b)
+        loss = tensorflow.reduce_mean(y * y)
+    [dl_dw, dl_db] = tape.gradient(loss, [w, b])
+```
+```
+    w = torch.nn.Parameter(torch.full((3, 2), 0.1))
+    b = torch.nn.Parameter(torch.zeros(2))
+    x = torch.tensor([[1.0, 2.0, 3.0]])
+    with torch.autograd.set_grad_enabled(True):
+        y = torch.tanh(torch.matmul(x, w) + b)
+        loss = torch.mean(y * y)
+    loss.backward()
+    dl_dw, dl_db = w.grad, b.grad
+```
+```
+    w = jax.numpy.full((3, 2), 0.1)
+    b = jax.numpy.zeros(2)
+    x = jax.numpy.array([[1.0, 2.0, 3.0]])
+    def forward(x, w, b):
+        y = jax.numpy.tanh(jax.numpy.dot(x, w) + b)
+        return jax.numpy.mean(y * y)
+    grads = jax.grad(forward, argnums=(1, 2))(x, w, b)
+    dl_dw, dl_db = grads
+```
+
 ### 07 训练神经网络
 
 学习常见的微型数据集。使用 `TensorFlow/PyTorch/JAX` 进行训练，理解它们的异同之处，熟练使用主流机器学习库。介绍如何对训练过程进行优化。
