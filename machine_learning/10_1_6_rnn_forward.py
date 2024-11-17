@@ -5,8 +5,6 @@ def softmax(xs):
     # Applies the softmax function to the input array.
     return numpy.exp(xs) / sum(numpy.exp(xs))
 
-
-
 class RNN:
     # A vanilla recurrent neural network.
     def __init__(self, input_size, output_size, hidden_size=64):
