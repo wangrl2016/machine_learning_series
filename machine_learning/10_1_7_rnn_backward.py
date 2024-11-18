@@ -9,9 +9,10 @@ def softmax(xs):
 class RNN:
     # A vanilla recurrent neural network.
     def __init__(self, input_size, output_size, hidden_size=64):
-        self.Whh = numpy.random.randn(hidden_size, hidden_size) / 1000
-        self.Wxh = numpy.random.randn(hidden_size, input_size) / 1000
-        self.Why = numpy.random.randn(output_size, hidden_size) / 1000
+        rng = numpy.random.default_rng(seed=0)
+        self.Whh = rng.standard_normal((hidden_size, hidden_size)) / 1000
+        self.Wxh = rng.standard_normal((hidden_size, input_size)) / 1000
+        self.Why = rng.standard_normal((output_size, hidden_size)) / 1000
         self.bh = numpy.zeros((hidden_size, 1))
         self.by = numpy.zeros((output_size, 1))
     
