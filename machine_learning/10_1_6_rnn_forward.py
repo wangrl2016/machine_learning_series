@@ -16,7 +16,11 @@ class RNN:
         self.by = numpy.zeros((output_size, 1))
     
     def forward(self, inputs):
-        # init
+        '''
+        Perform a forward pass of the RNN using the given inputs.
+        Inputs is an array of one-hot vectors with shape (input_size, 1).
+        Returns the final output and hidden state.
+        '''
         h = numpy.zeros((self.Whh.shape[0], 1))
         # Perform each step of the RNN.
         for _, x in enumerate(inputs):

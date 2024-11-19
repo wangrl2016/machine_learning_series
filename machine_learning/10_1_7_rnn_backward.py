@@ -17,7 +17,6 @@ class RNN:
         self.by = numpy.zeros((output_size, 1))
     
     def forward(self, inputs):
-        # init
         h = numpy.zeros((self.Whh.shape[0], 1))
 
         self.last_inputs = inputs
