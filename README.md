@@ -1,8 +1,27 @@
 # Machine Learning Series (机器学习系列)
 
-* 深度学习 12 天速成  [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  
+📖 **深度学习 12 天速成**   [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ 官方网站 ]  
 
-* Python 语言 12 天速成 [ [在线文档](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]
+这是一本面向初学者的深度学习综合指南。编写过程中借鉴了大量的经典教材、论文、文章，包括使用 AI 生成许多代码片段。教程主要分为四个阶段： 
+
+**第 1 - 4 章：数学与深度学习基础**  
+
+复习数学知识（函数、微积分、线性代数）。使用 `Keras` 高级 API 快速实现分类问题，理解什么是深度学习，包括数据、前向传播、反向传播、神经元、神经网络、优化器、损失函数、激活函数、梯度下降等基础概念。  
+
+**第 5 - 6 章：机器学习框架入门**  
+
+系统学习主流机器学习框架 `TensorFlow`、`PyTorch` 和 `JAX` ，加载简单数据集并完成训练，理解这些框架的相似性与差异，为后续实践打下扎实基础。  
+
+**第 7 - 9 章：经典网络与理论提升**  
+
+通过翻译经典论文的方式，介绍三大深度学习网络：卷积神经网络、循环神经网络、注意力机制。深度学习的发展是循序渐进的，论文可以清晰地看到人们是如何思考并解决实际问题的。  
+
+**第 10 - 12 章：实际应用与前沿探索**  
+
+聚焦深度学习在文本、图片和语音生成中的实际应用。探索大模型的简单实现，并详细解析 `Llama` 模型的运行与关键原理。  
+
+文本以清晰简洁的风格编写，使其成为任何有兴趣学习深度学习的人的理想资源。
+
 
 ---
 
@@ -10,16 +29,16 @@
 
 第 1 天 认识机器学习：绘制直线  
 第 2 天 深度学习原理  
-第 3 天 二分类问题：Keras 求解  
+第 3 天 分类问题：Keras 求解  
 第 4 天 详解反向传播算法  
-第 5 天 MNIST 全连接神经网络  
-第 6 天 张量与自动微分  
-第 7 天 训练神经网络  
-第 8 天 AlexNet 卷积模型  
-第 9 天 U-Net 和 ResNet 网络  
-第 10 天 注意力机制 (Transformer)  
-第 11 天 生成式 (Generative)  
-第 12 天 大语言模型 (LLM)  
+第 5 天 张量与自动微分  
+第 6 天 训练神经网络  
+第 7 天 卷积神经网络  
+第 8 天 循环神经网络  
+第 9 天 注意力机制 (Transformer)  
+第 10 天 生成式 (Generative)  
+第 11 天 大语言模型 (LLM)  
+第 12 天 实际应用与前沿探索
 
 ### 01 认识机器学习：绘制直线
 本章将回顾常用函数的基本概念。使用传统解法和机器学习解法，求一条通过 100 个随机分布点的最佳拟合直线，即找到一条直线 `y = m * x + b` 使得所有的点到直线的垂直距离之和（或平方和）最小。
@@ -140,6 +159,8 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
 `nanoGPT` 是最简单、最快的中型 GPT 训练/微调存储库，优先考虑实用性而非教育性。介绍 Llama 开源模型，包括如何访问模型、托管、操作方法和集成指南。
 
 ---
+
+* Python 语言 12 天速成 [ [在线文档](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]
 
 ## [Python 语言 12 天速成](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
 
