@@ -7,7 +7,7 @@ if __name__ == '__main__':
     output = numpy.array([1 if x + y > 0 else 0 for x, y in input])
     model = keras.Sequential()
     model.add(keras.layers.Input(shape=(2,)))
-    model.add(keras.layers.Dense(1, activation='sigmoid',
+    model.add(keras.layers.Dense(units=1, activation='sigmoid',
                                  kernel_initializer=keras.initializers.Constant(value=0),
                                  bias_initializer=keras.initializers.Constant(value=1.0)))
     model.summary()

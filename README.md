@@ -74,7 +74,17 @@
 
 ### 04 详解反向传播算法
 
-复习导数（求微分）、链式法则、极值、偏导数等数学概念。理解梯度和导数之间的关系，手写人工神经网络，求解函数 `loss = h(g(f(weights, biases)))` 的最小值（训练网络）。
+复习导数（求微分）、链式法则、极值、偏导数等数学概念。通过 `numpy` 实现常见的激活函数和损失函数，并求解它们的导数。
+
+```
+def binary_cross_entropy(y_pred, y_true):
+    return -(y_true * numpy.log(y_pred) + (1 - y_true) * numpy.log(1 - y_pred))
+
+def deriv_binary_cross_entry(y_pred, y_true):
+    return y_pred - y_true
+```
+
+理解梯度和导数之间的关系，手写 **全连接神经网络 (Dense Neural Network, DNN)** ，理解网络的训练过程，即求复合函数 `h(g(f(weights, biases)))` 的极值（极大或极小）。
 
 ### 05 MNIST 全连接神经网络
 
