@@ -43,13 +43,13 @@
 ### 01 认识机器学习：绘制直线
 本章将回顾常用函数的基本概念。使用传统解法和机器学习解法，求一条通过 100 个随机分布点的最佳拟合直线，即找到一条直线 `y = m * x + b` 使得所有的点到直线的垂直距离之和（或平方和）最小。
 
-![机器学习直线绘制](res/machine_learning/simplest_ml_anim.gif)
+![机器学习直线绘制](res/deep_learning/simplest_ml_anim.gif)
 
 ### 02 深度学习原理
 
 了解机器学习与传统编程的区别，理解深度学习原理，熟悉人工神经网络的训练过程，包括数据预处理、权重、损失函数、优化器、反向传播等概念。
 
-![深度学习原理](res/machine_learning/principle_deep_learning.png)
+![深度学习原理](res/deep_learning/principle_deep_learning.png)
 
 ### 03 二分类问题：Keras 求解
 
@@ -70,7 +70,7 @@
     model.fit(input, output, epochs=5, batch_size=1)
 ```
 
-![二分类问题](res/machine_learning/binary_classify_anim.gif)
+![二分类问题](res/deep_learning/binary_classify_anim.gif)
 
 ### 04 详解反向传播算法
 
@@ -97,7 +97,7 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
     model.evaluate(x_test, y_test)
 ```
 
-![手写数据集样本](res/machine_learning//mnist_dataset_sample.png)
+![手写数据集样本](res/deep_learning//mnist_dataset_sample.png)
 
 ### 06 张量和自动微分
 
