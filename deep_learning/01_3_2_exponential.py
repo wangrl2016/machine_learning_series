@@ -12,8 +12,8 @@ if __name__ == '__main__':
     
     # e
     n = numpy.linspace(0, 100, 100)
-    m = numpy.power((1 + 1 / n), n)
-    pyplot.plot(n, m, label='m = (1 + 1 / n)^n')
+    e = numpy.power((1 + 1 / n), n)
+    pyplot.plot(n, e, label='e = (1 + 1 / n)^n')
     pyplot.grid(True)
     pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)

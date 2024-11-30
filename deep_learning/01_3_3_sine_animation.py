@@ -8,6 +8,7 @@ if __name__ == '__main__':
         figsize=(6, 2),
         gridspec_kw=dict(width_ratios=[1, 3], wspace=0),)
     axl.set_aspect(1)
+    axl.grid(True)
     axr.set_box_aspect(1/3)
     axr.yaxis.set_visible(False)
     axr.xaxis.set_ticks([0, numpy.pi, 2 * numpy.pi], ["0", r"$\pi$", r"$2\pi$"])
@@ -49,5 +50,6 @@ if __name__ == '__main__':
         blit=False,  # blitting can't be used with Figure artists
         frames=x,
         repeat=False,)
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=1, bottom=0)
     animation.save("temp/sine_animation.gif", writer="pillow")
     pyplot.show()
