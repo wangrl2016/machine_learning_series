@@ -3,6 +3,7 @@ from matplotlib import pyplot
 
 if __name__ == '__main__':
     x = numpy.linspace(-3, 3, 600)
+    # numpy.power 默认正数
     y = numpy.sign(x) * numpy.power(numpy.abs(x), 1/3)
     pyplot.plot(x, y, label='y=x^1/3')
     y = y + 1
@@ -11,4 +12,3 @@ if __name__ == '__main__':
     pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
     pyplot.show()
-
