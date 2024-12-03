@@ -4,6 +4,7 @@ from matplotlib import pyplot
 if __name__ == '__main__':
     x = numpy.linspace(-4, 0, 400)
     pyplot.plot(x, x * x + 4 * x + 4, label='f(g(x)) = x^2 + 4x + 4')
+    x = numpy.linspace(-2, 2, 400)
     pyplot.plot(x, x * x + 2, label='g(f(x)) = x^2 + 2')
     pyplot.legend()
     pyplot.grid(True)
