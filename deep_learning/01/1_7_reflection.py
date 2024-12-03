@@ -2,10 +2,10 @@ from matplotlib import pyplot
 import numpy
 
 if __name__ == '__main__':
-    x = numpy.linspace(1, 4, 300)
-    pyplot.plot(x, x**2, label='f(x) = x^2')
-    pyplot.plot(x, -x**2, linestyle='--', label='v(x) = -x^2')
-    pyplot.plot(-x, (-x)**2, linestyle='--', label='h(x) = f(-x)')
+    x = numpy.linspace(-1, 3, 400)
+    pyplot.plot(x, (x - 2)**2 + 2, label='f(x) = (x - 2)^2 + 2')
+    pyplot.plot(x, -((x - 2)**2 + 2), linestyle='--', label='v(x) = -f(x)')
+    pyplot.plot(-x, (-(x - 2))**2 + 2, linestyle='--', label='h(x) = f(-x)')
     pyplot.axvline(x=0)
     pyplot.axhline(y=0)
     pyplot.grid(True)
