@@ -3,11 +3,9 @@ from matplotlib import pyplot
 
 if __name__ == '__main__':
     x = numpy.linspace(-2, 2, 400)
-    y = x * x
-    pyplot.plot(x, y, label='y = x^2')
+    pyplot.plot(x, x**2, label='y = x^2')
     x = numpy.linspace(0, 4, 400)
-    y = numpy.power(x - 2, 2)
-    pyplot.plot(x, y, label='y = (x - 2)^2')
+    pyplot.plot(x, (x - 2)**2, label='y = (x - 2)^2')
     pyplot.grid(True)
     pyplot.legend()
     pyplot.axis('equal')
