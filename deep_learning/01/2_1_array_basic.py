@@ -9,3 +9,4 @@ if __name__ == '__main__':
 
     a2 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
     print('Two dimensional array:', a2.tolist())
+    print('Element in row 1 and column 3:', a2[1, 3])
