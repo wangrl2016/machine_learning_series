@@ -18,13 +18,3 @@ if __name__ == '__main__':
     a6 = numpy.array([5, 6, 7], dtype=numpy.uint32)
     assert ((a5 - a6) == numpy.array([4294967293, 4294967293, 4294967293])).all()
     assert ((a5 - a6.astype(numpy.int32)) == numpy.array([-3, -3, -3])).all()
-
-    a7 = numpy.arange(10)
-    assert (a7 == numpy.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])).all()
-    a8 = numpy.arange(2, 10, dtype=float)
-    assert numpy.allclose(a8, numpy.array([2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]))
-    a9 = numpy.arange(2, 3, 0.1)
-    assert numpy.allclose(a9, numpy.array([2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9]))
-    
-    a10 = numpy.linspace(1.0, 4.0, 6)
-    assert numpy.allclose(a10, numpy.array([1.0, 1.6, 2.2, 2.8, 3.4, 4.0]))
