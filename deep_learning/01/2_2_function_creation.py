@@ -42,7 +42,7 @@ if __name__ == '__main__':
     print(a17)
 
     a18 = numpy.indices((2, 3))
-    assert (a18.shape == numpy.array((2, 2, 3))).all()
+    assert a18.shape == (2, 2, 3)
     print(a18)
     a19 = numpy.indices((2, 3, 4))
     print(a19)
