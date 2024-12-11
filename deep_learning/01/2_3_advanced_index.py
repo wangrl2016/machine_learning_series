@@ -35,3 +35,25 @@ if __name__ == '__main__':
                   [14, 15, 16, 17, 18, 19, 20],
                   [28, 29, 30, 31, 32, 33, 34]]).all()
     
+    a8 = numpy.array([[1, 2], [3, 4], [5, 6]])
+    assert (a8[[0, 1, 2], [0, 1, 0]] == [1, 4, 5]).all()
+    
+    a9 = numpy.array([[0, 1, 2],
+                      [3, 4, 5],
+                      [6, 7, 8],
+                      [9, 10, 11]])
+    rows = numpy.array([[0, 0], [3, 3]])
+    columns = numpy.array([[0, 2], [0, 2]])
+    assert (a9[rows, columns] == [[0, 2], [9, 11]]).all()
+    
+    rows = numpy.array([0, 3])
+    columns = numpy.array([0, 2])
+    assert (rows[:, numpy.newaxis] == [[0], [3]]).all()
+    assert (a9[rows[:, numpy.newaxis], columns] == [[0, 2], [9, 11]]).all()
+    
+    a10 = a9[numpy.ix_(rows, columns)]
+    assert (a10 == [[0, 2], [9, 11]]).all()
+
+    a11 = a9[rows, columns]
+    assert (a11 == [0, 11]).all()
+    
