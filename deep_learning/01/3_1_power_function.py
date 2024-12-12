@@ -10,5 +10,5 @@ if __name__ == '__main__':
     pyplot.legend()
     pyplot.grid(True)
     pyplot.axis('equal')
-    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
+    pyplot.subplots_adjust(left=0.1, right=0.9, top=0.96, bottom=0.06)
     pyplot.show()
