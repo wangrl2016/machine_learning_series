@@ -17,6 +17,7 @@ momentum = 0.85
 epochs = 100
 
 if __name__ == '__main__':
+    dpi = pyplot.rcParams['figure.dpi']
     # 记录小球的位置
     x_values = [x_start]
     # 初始动量
@@ -42,5 +43,5 @@ if __name__ == '__main__':
         return ball,
 
     anim = animation.FuncAnimation(fig, animate, frames=len(x_values), interval=40, blit=True, repeat=False)
-    anim.save('temp/sgd_momentum.gif', writer='pillow')
+    anim.save('temp/sgd_momentum.gif', writer='pillow', dpi=100)
     pyplot.show()
