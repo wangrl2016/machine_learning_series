@@ -1,6 +1,8 @@
 # Machine Learning Series (机器学习系列)
 
-📖 **深度学习 12 天速成**   [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ 官方网站 ]  
+## 📖 [深度学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
+
+[ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ 官方网站 ]  
 
 这是一本面向初学者的深度学习综合指南。编写过程中借鉴了大量的经典教材、论文、文章，包括使用 AI 生成许多代码片段。教程主要分为四个阶段： 
 
@@ -22,23 +24,7 @@
 
 文本以清晰简洁的风格编写，使其成为任何有兴趣学习深度学习的人的理想资源。
 
-
 ---
-
-## [深度学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
-
-第 01 天 认识机器学习：绘制直线  
-第 02 天 深度学习原理  
-第 03 天 分类问题：Keras 求解  
-第 04 天 详解反向传播算法  
-第 05 天 张量与自动微分  
-第 06 天 训练神经网络  
-第 07 天 卷积神经网络  
-第 08 天 循环神经网络  
-第 09 天 注意力机制 (Transformer)  
-第 10 天 生成式 (Generative)  
-第 11 天 大语言模型 (LLM)  
-第 12 天 前沿探索
 
 ### 01 认识机器学习：绘制直线
 
@@ -62,7 +48,13 @@
 
 ### 03 分类问题：Keras 求解
 
-二分类问题是指在机器学习或统计学中，将数据划分为两个类别的分类任务。常见的二分类问题包括垃圾邮件分类（垃圾邮件与正常邮件）、疾病诊断（有病与无病）、图像分类（有目标与无目标）等。
+介绍统计学的基础知识，包括采样、数据统计、概率、正态分布等。使用标准正态函数，生成分类问题的随机分布点。  
+
+二分类问题是指在机器学习或统计学中，将数据划分为两个类别的分类任务。常见的二分类问题包括垃圾邮件分类（垃圾邮件与正常邮件）、疾病诊断（有病与无病）、图像分类（有目标与无目标）等。  
+
+多分类问题是机器学习中的一个常见任务，其目标是将输入数据分配到多个类别中的一个。例如给定一张图片，模型需要判断图片中的内容是猫、狗还是鸟。  
+
+本章主要使用 Keras 高级 API 来解决以上两个问题，进一步熟悉深度学习中常见的模块，包括模型、层、损失函数、优化器等。通过快速上手简单的示例，理解深度学习全流程，为后续详细介绍奠定基础。  
 
 ```
     rng = numpy.random.default_rng(seed=0)

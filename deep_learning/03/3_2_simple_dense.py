@@ -8,6 +8,7 @@ class SimpleDense(keras.Layer):
         self.units = units
     
     def build(self, input_shape):
+        # 矩阵乘法最后一个维度和第一个维度相同
         self.kernel = self.add_weight(
             shape=(input_shape[-1], self.units),
             initializer='glorot_uniform',
