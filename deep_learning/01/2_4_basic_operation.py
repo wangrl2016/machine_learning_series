@@ -18,6 +18,3 @@ if __name__ == '__main__':
     a8 = numpy.array([[1, 1], [2, 2]])
     assert (a8.sum(axis=0) == [3, 3]).all()
     assert (a8.sum(axis=1) == [2, 4]).all()
-    
-    a9 = numpy.array([1.0, 2.0])
-    assert numpy.allclose(a9 * 1.6, [1.6, 3.2])
