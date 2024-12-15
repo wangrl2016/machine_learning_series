@@ -1,5 +1,11 @@
 # Machine Learning Series (机器学习系列)
 
+* Python 语言 12 天速成
+
+* 深度学习 12 天速成
+
+---
+
 ## 📖 [深度学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
 [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ 官方网站 ]  
@@ -46,6 +52,8 @@
 
 将日常生活中的常见表示（特征数据、文字、图片、视频、声音）转换为神经网络的数据输入，对数据进行一些预处理操作，手动实现常见的数据处理算法。  
 
+![手写数据集样本](res/deep_learning//mnist_dataset_sample.png)
+
 ### 03 分类问题：Keras 求解
 
 介绍统计学的基础知识，包括采样、数据统计、概率、正态分布等。使用标准正态函数，生成分类问题的随机分布点。  
@@ -71,28 +79,6 @@
 
 多分类问题是机器学习中的一个常见任务，其目标是将输入数据分配到多个类别中的一个。例如给定一张图片，模型需要判断图片中的内容是猫、狗还是鸟。  
 
-本章主要使用 Keras 高级 API 来解决以上两个问题，进一步熟悉深度学习中常见的模块，包括模型、层、损失函数、优化器等。通过快速上手简单的示例，理解深度学习全流程，为后续详细介绍奠定基础。  
-
-![随机梯度优化器](res/deep_learning/sgd_momentum.gif)
-
-### 04 详解反向传播算法
-
-复习导数（求微分）、链式法则、极值、偏导数等数学概念。通过 `NumPy` 实现常见的激活函数和损失函数，并求解它们的导数。
-
-```
-def binary_cross_entropy(y_pred, y_true):
-    return -(y_true * numpy.log(y_pred) + (1 - y_true) * numpy.log(1 - y_pred))
-
-def deriv_binary_cross_entry(y_pred, y_true):
-    return y_pred - y_true
-```
-
-理解梯度和导数之间的关系，手写 **全连接神经网络 (Dense Neural Network, DNN)** ，理解网络的训练过程，即求复合函数 `h(g(f(weights, biases)))` 的极值（极大或极小）。
-
-### 05 MNIST 全连接神经网络
-
-MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9) 的灰度图像。全连接神经网络通常包含输入层、多个隐藏层和输出层，使用反向传播算法训练，从而使网络能够识别数字。
-
 ```
     (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
@@ -110,9 +96,25 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
     model.evaluate(x_test, y_test)
 ```
 
-![手写数据集样本](res/deep_learning//mnist_dataset_sample.png)
+本章主要使用 Keras 高级 API 来解决以上两个问题，进一步熟悉深度学习中常见的模块，包括模型、层、损失函数、优化器等。通过快速上手简单的示例，理解深度学习全流程，为后续详细介绍奠定基础。  
 
-### 06 张量和自动微分
+![随机梯度优化器](res/deep_learning/sgd_momentum.gif)
+
+### 04 详解反向传播算法
+
+复习导数（求微分）、链式法则、极值、偏导数等数学概念。通过 `NumPy` 实现常见的激活函数和损失函数，并求解它们的导数。使用链式法则求解模型的梯度，理解权重是如何更新的。  
+
+```
+def binary_cross_entropy(y_pred, y_true):
+    return -(y_true * numpy.log(y_pred) + (1 - y_true) * numpy.log(1 - y_pred))
+
+def deriv_binary_cross_entry(y_pred, y_true):
+    return y_pred - y_true
+```
+
+手写**全连接神经网络 (Dense Neural Network, DNN)** ，理解网络的训练过程，即求复合函数 `h(g(f(weights, biases)))` 的极值（极大或极小），实现几个简单的模型。  
+
+### 05 张量和自动微分
 
 复习线性代数中的向量和矩阵。介绍主流机器学习库 (`TensorFlow/PyTorch/JAX`) 的核心内容：张量和自动微分。参考 `micrograd` 实现一个更易理解的，对标量值进行自动求导的神经网络引擎。
 
@@ -146,48 +148,37 @@ MNIST 是一个入门的机器学习数据集，包含数万张手写数字 (0-9
     dl_dw, dl_db = grads
 ```
 
-### 07 训练神经网络
+### 06 训练神经网络
 
 学习常见的微型数据集。使用 `TensorFlow/PyTorch/JAX` 进行训练，理解它们的异同之处，熟练使用主流机器学习库。介绍如何对训练过程进行优化。
 
-### 08 AlexNet 卷积模型
+### 07 卷积神经网络
 
 介绍卷积神经网络，理解卷积和池化操作。翻译著名论文 _ImageNet Classification with Deep Convolutional Neural Networks_ ，并提供代码实现。
-
-### 09 U-Net 和 ResNet 网络
 
 论文 _U-Net: Convolutional Networks for Biomedical Image Segmentation_ 提出大量使用数据增强的样本来训练网络的策略，相比于传统的卷积网络，需要更少的数据集，但是效果却更好。  
 论文 _Deep Residual Learning for Image Recognition_ 提出一个残差学习框架 (Residual Network) ，可以很容易训练比以前更深的网络，具有更高的准确性。
 
-### 10 注意力机制 (Transformer)
+### 08 循环神经网络
 
-介绍循环神经网络，认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释，彻底理解 `Transformer` 架构。
+### 09 注意力机制 (Transformer)
 
-### 11 生成式 (Generative)
+认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释，彻底理解 `Transformer` 架构。
+
+### 10 生成式 (Generative)
 
 生成式方法的目标是在已知的样本数据上学习其特征分布，然后生成具有相似特征的全新数据，包括：稳定扩撒、神经风格迁移、DeepDream、卷积生成对抗网络、Pix2Pix 、CycleGAN 。
 
-### 12 大语言模型 (LLM)
+### 11 大语言模型 (LLM)
 
 `nanoGPT` 是最简单、最快的中型 GPT 训练/微调存储库，优先考虑实用性而非教育性。介绍 Llama 开源模型，包括如何访问模型、托管、操作方法和集成指南。
 
+### 12 前沿探索
+
 ---
 
-* Python 语言 12 天速成 [ [在线文档](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]
+## 📖 [Python 语言 12 天速成](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
 
-## [Python 语言 12 天速成](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
-
-第 1 天 Python 介绍  
-第 2 天 计算机基础  
-第 3 天 常量与变量  
-第 4 天 控制流  
-第 5 天 函数详解  
-第 6 天 实战：Android 控制  
-第 7 天 数据结构与算法  
-第 8 天 面向对象  
-第 9 天 标准库  
-第 10 天 实战：绘制跳动的爱心  
-第 11 天 实战：WAVE 音频解析  
-第 12 天 机器学习常用库  
+[ [在线文档](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]
 
 ---
