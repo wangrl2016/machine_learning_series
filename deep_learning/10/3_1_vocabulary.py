@@ -13,7 +13,6 @@ if __name__ == '__main__':
         sentence = re.sub(r'[.,]', '', sentence)
         words = sentence.split()
         unique_words.update(words)
-
     print(unique_words)
     print(len(unique_words))
 
