@@ -10,5 +10,6 @@ if __name__ == '__main__':
     pyplot.scatter(x, y, s=5)
     pyplot.plot(x, 3 * x + 4, c='red',label='f(x) = 3x + 4')
     pyplot.grid(True)
+    pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
     pyplot.show()
