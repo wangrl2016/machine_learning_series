@@ -118,7 +118,7 @@ def deriv_binary_cross_entry(y_pred, y_true):
 
 ### 05 张量和自动微分
 
-复习线性代数中的向量和矩阵。介绍主流机器学习库 (`TensorFlow/PyTorch/JAX`) 的核心内容：张量和自动微分。参考 `micrograd` 实现一个更易理解的，对标量值进行自动求导的神经网络引擎。
+介绍主流机器学习库 (TensorFlow/PyTorch/JAX) 的核心内容：张量和自动微分。张量是机器学习中的一种核心数据结构，它可以看作是多维数组。自动微分是机器学习库用来自动计算梯度的工具。  
 
 ```
     w = tensorflow.Variable(tensorflow.fill((3, 2), 0.1), name='w')
@@ -150,16 +150,25 @@ def deriv_binary_cross_entry(y_pred, y_true):
     dl_dw, dl_db = grads
 ```
 
+实现一个对标量值进行自动求导的神经网络引擎 micrograd ，它主要用于构建简单的神经网络并计算梯度，使用它构建深度神经网络，进行二分类展示。  
+
+分析 tinygrad 源码，不仅是教育目的（理解深度学习框架的底层原理），相比 micrograd 还增加了多维张量支持和更丰富的功能，使其接近实际深度学习框架的核心工作方式。  
+
 ### 06 训练神经网络
 
-学习常见的微型数据集。使用 `TensorFlow/PyTorch/JAX` 进行训练，理解它们的异同之处，熟练使用主流机器学习库。介绍如何对训练过程进行优化。
+
 
 ### 07 卷积神经网络
 
-介绍卷积神经网络，理解卷积和池化操作。翻译著名论文 _ImageNet Classification with Deep Convolutional Neural Networks_ ，并提供代码实现。
+介绍卷积神经网络，理解卷积和池化操作。卷积操作通过滑动卷积核对输入进行加权求和，提取局部特征，如边缘或纹理。池化操作则通过选择局部区域的最大值或平均值，减少图像的尺寸。  
 
-论文 _U-Net: Convolutional Networks for Biomedical Image Segmentation_ 提出大量使用数据增强的样本来训练网络的策略，相比于传统的卷积网络，需要更少的数据集，但是效果却更好。  
-论文 _Deep Residual Learning for Image Recognition_ 提出一个残差学习框架 (Residual Network) ，可以很容易训练比以前更深的网络，具有更高的准确性。
+论文 _ImageNet Classification with Deep Convolutional Neural Networks_ 使用 ReLU 激活函数，利用 GPU 加速训练，证明深度学习在大规模图像数据上的潜力，成为现代深度学习崛起的里程碑。  
+
+论文 _U-Net: Convolutional Networks for Biomedical Image Segmentation_ 采用对称的编码-解码结构，提出了有效的小样本训练方法。广泛应用于医学图像分析领域，例如肿瘤检测、器官分割等任务。  
+
+论文 _Deep Residual Learning for Image Recognition_ 使用残差模块，使网络深度达到数百甚至上千层，同时提升性能。成为深度网络的基础架构，被广泛应用于图像分类、目标检测、语义分割等任务。  
+
+通过翻译论文的形式，可以深入理解卷积神经网络的发展历程及其在各个领域的应用，为后续的深入学习打下基础。  
 
 ### 08 循环神经网络
 
