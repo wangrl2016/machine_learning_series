@@ -1,12 +1,48 @@
 # Machine Learning Series (机器学习系列)
 
-* Python 语言 12 天速成
+* Python 语言入门
 
-* 深度学习 12 天速成
+* 深度学习 7 天速成
+
+* 深度学习综合指南
 
 ---
 
-## 📖 [深度学习 12 天速成](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
+## 📖 深度学习 7 天速成
+
+这是《深度学习综合指南》的极简版，手写几个典型的神经网络模型，快速建立对深度学习的认识，判断自己是否需要继续学习。相比于现有的经验知识，学习的兴趣更加重要！
+
+第 01 天：NumPy 介绍
+
+讲述 [1.2 小节 - NumPy 介绍](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.2487081sleby) 的内容，使用数组的索引，对数组进行计算。
+
+第 02 天：线性回归
+
+讲述 [1.5 小节 - 机器学习求解](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.18l76umvbf2c) 的内容，找到随机分布点的最佳拟合直线。
+
+第 03 天：二分类
+
+讲述 [3.2 小节 - 二分类问题](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.gwlce2gp5532) 的内容，解决二分类问题，理解深度学习原理。
+
+第 04 天：全连接神经网络
+
+讲述 [4.5 小节 - 手写神经网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.cloq0vde3l33) 的内容，链式求导，理解全连接神经网络。
+
+第 05 天：卷积神经网络
+
+讲述 [7.2 小节 - 手写卷积网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.55wghfs6kp0) 的内容，理解卷积和池化操作，解决图片识别问题。
+
+第 06 天：循环神经网络
+
+讲述 [8.1 小节 - 循环神经网络入门](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.jkz5isqopbs9) 的内容，对文本内容进行好与坏的分类。
+
+第 07 天：注意力机制
+
+讲述 [9.3 小节 - 手写 Transformer](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.pxwhv6bfacd4) 的内容，理解 Transformer 架构，预测文本输出。
+
+---
+
+##  [深度学习综合指南](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
 [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ 官方网站 ]  
 
