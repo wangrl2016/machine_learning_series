@@ -42,7 +42,7 @@
 
 ---
 
-##  [深度学习综合指南](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
+## 📖 [深度学习综合指南](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
 [ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ 官方网站 ]  
 
@@ -211,6 +211,8 @@ def deriv_binary_cross_entry(y_pred, y_true):
 ### 09 注意力机制 (Transformer)
 
 认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释，彻底理解 `Transformer` 架构。
+
+![Transformer 架构](res/deep_learning/transformer_arch.png)
 
 ### 10 生成式 (Generative)
 
