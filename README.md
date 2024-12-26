@@ -76,6 +76,16 @@
 
 详细介绍 `NumPy` 科学计算库，使用各种方法创建 `ndarray` 数组，对数组进行索引和切片，并探讨数组之间的计算，例如广播、连接、乘法等运算。  
 
+```
+    arr = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+    assert (arr[1, 2:4] == [7, 8]).all()
+    assert (arr[:, 1] == [2, 6, 10, 14]).all()
+    assert (arr[2:, 2:] == [[11, 12], [15, 16]]).all()
+    assert (arr[1::2, ::2] == [[5, 7], [13, 15]]).all()
+```
+
+![数组索引](res/deep_learning/array_index.png)
+
 使用传统解法和机器学习解法，求一条通过 100 个随机分布点的最佳拟合直线，即找到一条直线 `y = m * x + b` 使得所有的点到直线的垂直距离之和（或平方和）最小。  
 
 ![机器学习直线绘制](res/deep_learning/simplest_ml_anim.gif)
@@ -208,7 +218,7 @@ def deriv_binary_cross_entry(y_pred, y_true):
 
 ### 08 循环神经网络
 
-### 09 注意力机制 (Transformer)
+### 09 Transformer 架构
 
 认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释，彻底理解 `Transformer` 架构。
 
