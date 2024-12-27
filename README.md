@@ -214,6 +214,8 @@ def deriv_binary_cross_entry(y_pred, y_true):
 
 论文 _Deep Residual Learning for Image Recognition_ 使用残差模块，使网络深度达到数百甚至上千层，同时提升性能。成为深度网络的基础架构，被广泛应用于图像分类、目标检测、语义分割等任务。  
 
+![残差学习](res/deep_learning/residual_learning.png)
+
 通过翻译论文的形式，可以深入理解卷积神经网络的发展历程及其在各个领域的应用，为后续的深入学习打下基础。  
 
 ### 08 循环神经网络
