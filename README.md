@@ -10,7 +10,7 @@
 
 ## 📖 深度学习 7 天速成
 
-这是《深度学习综合指南》的极简版，手写几个典型的神经网络模型，快速建立对深度学习的认识，判断自己是否需要继续学习。相比于现有的经验知识，学习的兴趣更加重要！
+这是《深度学习综合指南》的极简版，手写几个典型的神经网络模型，快速建立对深度学习的认识，判断自己是否想要继续学习。相比于现有的经验知识，学习的兴趣更加重要！
 
 第 01 天：NumPy 介绍
 
@@ -38,7 +38,7 @@
 
 第 07 天：注意力机制
 
-讲述 [9.3 小节 - 手写 Transformer](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.pxwhv6bfacd4) 的内容，理解 Transformer 架构，预测文本输出。
+讲述 [9.3 小节 - Transformer 分解](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.pxwhv6bfacd4) 的内容，理解 Transformer 架构，预测文本输出。
 
 ---
 
@@ -196,9 +196,9 @@ def deriv_binary_cross_entry(y_pred, y_true):
     dl_dw, dl_db = grads
 ```
 
-实现一个对标量值进行自动求导的神经网络引擎 micrograd ，它主要用于构建简单的神经网络并计算梯度，使用它构建深度神经网络，进行二分类展示。  
+实现一个对标量值进行自动求导的神经网络引擎 `micrograd` ，它主要用于构建简单的神经网络并计算梯度，使用它构建深度神经网络，进行二分类展示。  
 
-分析 tinygrad 源码，不仅是教育目的（理解深度学习框架的底层原理），相比 micrograd 还增加了多维张量支持和更丰富的功能，使其接近实际深度学习框架的核心工作方式。  
+分析 `tinygrad` 源码，不仅是教育目的（理解深度学习框架的底层原理），相比 micrograd 还增加了多维张量支持和更丰富的功能，使其接近实际深度学习框架的核心工作方式。  
 
 ### 06 训练神经网络
 
@@ -206,19 +206,22 @@ def deriv_binary_cross_entry(y_pred, y_true):
 
 ### 07 卷积神经网络
 
-介绍卷积神经网络，理解卷积和池化操作。卷积操作通过滑动卷积核对输入进行加权求和，提取局部特征，如边缘或纹理。池化操作则通过选择局部区域的最大值或平均值，减少图像的尺寸。  
+卷积神经网络 (Convolutional Neural Network, CNN) 是一类主要用于图像处理的深度学习模型，擅长提取图像的空间特征和模式。CNN 是现代计算机视觉领域的核心模型之一，广泛应用于图像分类、目标检测、语义分割等任务。  
+
+卷积神经网络主要包括卷积层和池化层。卷积层通过滑动卷积核对输入进行加权求和，提取局部特征，如边缘或纹理。池化层则通过选择局部区域的最大值或平均值，减少图像的尺寸。  
 
 论文 _ImageNet Classification with Deep Convolutional Neural Networks_ 使用 ReLU 激活函数，利用 GPU 加速训练，证明深度学习在大规模图像数据上的潜力，成为现代深度学习崛起的里程碑。  
 
-论文 _U-Net: Convolutional Networks for Biomedical Image Segmentation_ 采用对称的编码-解码结构，提出了有效的小样本训练方法。广泛应用于医学图像分析领域，例如肿瘤检测、器官分割等任务。  
+论文 _U-Net: Convolutional Networks for Biomedical Image Segmentation_ 采用对称的编码-解码结构，提出了有效的小样本训练方法。它广泛应用于医学图像分析领域，例如肿瘤检测、器官分割等任务。  
 
-论文 _Deep Residual Learning for Image Recognition_ 使用残差模块，使网络深度达到数百甚至上千层，同时提升性能。成为深度网络的基础架构，被广泛应用于图像分类、目标检测、语义分割等任务。  
+论文 _Deep Residual Learning for Image Recognition_ 使用残差模块，使网络深度达到数百甚至上千层，同时提升性能，成为深度网络的基础架构。  
 
 ![残差学习](res/deep_learning/residual_learning.png)
 
-通过翻译论文的形式，可以深入理解卷积神经网络的发展历程及其在各个领域的应用，为后续的深入学习打下基础。  
+通过翻译论文的方式，可以清晰地展现深度学习从基础到深入的发展历程及其在各领域的应用，为后续学习更复杂的神经网络奠定坚实的理论基础。
 
 ### 08 循环神经网络
+
 
 ### 09 Transformer 架构
 
