@@ -202,7 +202,7 @@ def deriv_binary_cross_entry(y_pred, y_true):
 
 ### 06 训练神经网络
 
-
+![NumPy 训练](res/deep_learning/mnist_numpy.png)
 
 ### 07 卷积神经网络
 
