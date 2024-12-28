@@ -1,5 +1,5 @@
 import tensorflow
-import mnist_dataset
+import deep_learning.dataset.mnist as mnist
 
 LAYER_SIZES = [784, 256, 128, 10]
 BATCH_SIZE = 32
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         accuracy = tensorflow.reduce_mean(tensorflow.cast(correct_prediction, tensorflow.float32))
         return accuracy
 
-    (x_train, y_train), (x_test, y_test) = mnist_dataset.parse()
+    (x_train, y_train), (x_test, y_test) = mnist.parse()
     x_train, x_test = x_train.reshape(-1, 784).astype('float32') / 255.0, x_test.reshape(-1, 784).astype('float32') / 255.0
     y_train, y_test = tensorflow.one_hot(y_train, depth=10), tensorflow.one_hot(y_test, depth=10)
     train_dataset = tensorflow.data.Dataset.from_tensor_slices((x_train, y_train)).batch(BATCH_SIZE)

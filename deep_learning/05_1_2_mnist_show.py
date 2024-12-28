@@ -1,9 +1,9 @@
-import mnist_dataset
+import deep_learning.dataset.mnist as mnist
 from matplotlib import pyplot
 import random
 
 if __name__ == '__main__':
-    (x_train, y_train), (x_test, y_test) = mnist_dataset.parse()
+    (x_train, y_train), (x_test, y_test) = mnist.parse()
 
     images_show = []
     labels_show = []
