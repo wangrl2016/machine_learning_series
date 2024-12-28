@@ -1,4 +1,4 @@
-# Machine Learning Series (机器学习系列)
+# 机器学习系列
 
 * Python 语言入门
 
