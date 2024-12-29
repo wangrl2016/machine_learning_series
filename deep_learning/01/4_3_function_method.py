@@ -15,7 +15,7 @@ if __name__ == '__main__':
     for m in numpy.linspace(2, 4, 200):
         distance_square_sum = 0
         for i in range(len(x)):
-            distance_square_sum += numpy.pow(m * x[i] - y[i] + 4, 2) / (m * m + 1)
+            distance_square_sum += numpy.power(m * x[i] - y[i] + 4, 2) / (m * m + 1)
         sum_dict[m] = distance_square_sum
     min_key = min(sum_dict, key=sum_dict.get)
     print(min_key)

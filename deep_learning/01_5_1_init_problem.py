@@ -20,7 +20,7 @@ if __name__ == '__main__':
         param += step
     else:
         param -= step
-    print(param)
+    print('Param is ', param)
     pyplot.scatter(x, y_true_array, s=5)
     pyplot.plot(x, x + 4, c='red', linestyle='--')
     pyplot.plot(x, param * x + 4, c='red')
