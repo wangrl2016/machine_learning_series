@@ -21,3 +21,5 @@ if __name__ == '__main__':
     pyplot.grid(True)
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
     pyplot.show()
+
+    print('The derivative at x = 2 is', numpy.round(deriv_sigmoid(2), 4))

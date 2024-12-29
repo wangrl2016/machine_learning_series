@@ -9,7 +9,7 @@ class Neuron:
         self.bias = bias
 
     def feedforward(self, inputs):
-        total = numpy.dot(self.weights, inputs) + self.bias
+        total = numpy.matmul(self.weights, inputs) + self.bias
         return sigmoid(total)
 
 if __name__ == '__main__':
@@ -18,4 +18,4 @@ if __name__ == '__main__':
     neuron = Neuron(weights, bias)
     x = numpy.array([2, 3])
     # 0.9990889488055994
-    print(neuron.feedforward(x))
+    print('Neuron output is', neuron.feedforward(x))

@@ -26,7 +26,7 @@
 
 第 04 天：全连接神经网络
 
-讲述 [4.5 小节 - 手写神经网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.cloq0vde3l33) 的内容，链式求导，理解全连接神经网络。
+讲述 [4.5 小节 - 手写神经网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.cloq0vde3l33) 的内容，详解反向传播算法，理解全连接神经网络。
 
 第 05 天：卷积神经网络
 
@@ -34,11 +34,11 @@
 
 第 06 天：循环神经网络
 
-讲述 [8.1 小节 - 循环神经网络入门](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.jkz5isqopbs9) 的内容，对文本内容进行好与坏的分类。
+讲述 [8.1 小节 - 循环神经网络入门](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.jkz5isqopbs9) 的内容，处理时序样本，对文本内容进行好与坏的分类。
 
 第 07 天：注意力机制
 
-讲述 [9.3 小节 - Transformer 分解](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.pxwhv6bfacd4) 的内容，理解 Transformer 架构，预测文本输出。
+讲述 [9.3 小节 - Transformer 分解](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.pxwhv6bfacd4) 的内容，详细介绍注意力机制，理解 Transformer 架构。
 
 ---
 
