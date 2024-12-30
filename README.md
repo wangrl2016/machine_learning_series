@@ -95,6 +95,8 @@
 
 详细介绍 `NumPy` 科学计算库，使用各种方法创建 `ndarray` 数组，对数组进行索引和切片，并探讨数组之间的计算，例如广播、连接、乘法等运算。  
 
+![ndarray 结构体](res/deep_learning/ndarray_internal.png)
+
 ```
     arr = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
     assert (arr[1, 2:4] == [7, 8]).all()
