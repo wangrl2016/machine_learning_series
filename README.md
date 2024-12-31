@@ -16,7 +16,7 @@
 
 * [ [VIDEO]() ] 1-1-《深度学习 7 天速成》课程介绍
 
-第 01 天：NumPy 介绍
+**第 01 天：NumPy 介绍**
 
 讲述 [1.2 小节 - NumPy 介绍](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.2487081sleby) 的内容，使用数组的索引，对数组进行计算。
 
@@ -39,29 +39,80 @@
 * 1-18-修改数组形状
 * 1-19-生成随机数
 
-第 02 天：线性回归
+**第 02 天：线性回归**
 
 讲述 [1.5 小节 - 机器学习求解](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.18l76umvbf2c) 的内容，找到随机分布点的最佳拟合直线。
 
-第 03 天：二分类
+* 1-20-生成 100 个随机点，寻找最佳拟合直线
+* 1-21-使用渐进方法寻找拟合直线
+* 1-22-什么是线性回归
+* 1-23-使用线性回归模型寻找拟合直线
 
-讲述 [3.2 小节 - 二分类问题](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.gwlce2gp5532) 的内容，解决二分类问题，理解深度学习原理。
+**第 03 天：二分类**
 
-第 04 天：全连接神经网络
+讲述 [2.2 小节 - 人工神经网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.y414c71icdjb) 和 [3.2 小节 - 二分类问题](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.gwlce2gp5532) 的内容，理解深度学习原理，解决二分类问题，快速认识模型架构。
+
+* 1-24-神经网络原理
+* 1-25-神经元
+* 1-26-神经网络
+* 1-27-前向传播
+* 1-28-反向传播
+* 1-29-使用 NumPy 生成两组随机点
+* 1-30-使用 Keras 快速实现二分类模型
+* 1-31-运行过程可视化
+
+**第 04 天：全连接神经网络**
 
 讲述 [4.5 小节 - 手写神经网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.cloq0vde3l33) 的内容，详解反向传播算法，理解全连接神经网络。
 
-第 05 天：卷积神经网络
+* 1-32-构建模块：神经元
+* 1-33-合成神经网络
+* 1-34-损失函数及其梯度计算
+* 1-35-随机梯度下降
+* 1-36-完整训练过程
+
+**第 05 天：卷积神经网络**
 
 讲述 [7.2 小节 - 手写卷积网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.55wghfs6kp0) 的内容，理解卷积和池化操作，解决图片识别问题。
 
-第 06 天：循环神经网络
+* 1-37-介绍
+* 1-38-数据集
+* 1-39-卷积操作
+* 1-40-池化操作
+* 1-41-网络结构
+* 1-42-Softmax 梯度计算
+* 1-43-最大池化梯度计算
+* 1-44-卷积梯度计算
+* 1-45-完整训练过程
+
+**第 06 天：循环神经网络**
 
 讲述 [8.1 小节 - 循环神经网络入门](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.jkz5isqopbs9) 的内容，处理时序样本，对文本内容进行好与坏的分类。
 
-第 07 天：注意力机制
+* 1-46-介绍
+* 1-47-如何实现
+* 1-48-问题
+* 1-49-计划
+* 1-50-预处理
+* 1-51-前向传播
+* 1-52-反向传播
+* 1-53-完整训练过程
+
+**第 07 天：注意力机制**
 
 讲述 [9.3 小节 - Transformer 分解](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.pxwhv6bfacd4) 的内容，详细介绍注意力机制，理解 Transformer 架构。
+
+* 1-54-定义数据集
+* 1-55-单词编码
+* 1-56-计算嵌入
+* 1-57-位置编码
+* 1-58-嵌入连接
+* 1-59-多头注意力
+* 1-60-加法和标准化
+* 1-61-解码器部分
+* 1-62-掩码多头注意力
+* 1-63-预测单词
+* 1-64-总结
 
 这 7 天的学习涵盖了深度学习的核心内容，从数据处理到模型构建，以及最流行的注意力机制，层层递进，为深入理解人工智能技术奠定了坚实基础。
 

@@ -21,10 +21,9 @@ if __name__ == '__main__':
                 param -= LEARN_RATE
             history.append(param)
 
-    # history = history[::4]
     fig, ax = pyplot.subplots()
     line, = ax.plot(x_input_array, x_input_array + 4)
-    text = ax.text(3, 10, 'param: 3.00')
+    text = ax.text(3, 10, 'param: 1.00')
 
     ax.scatter(x_input_array, y_true_array, s=5, c='blue')
     ax.plot(x_input_array, x_input_array + 4, c='red', linestyle='--', label='f(x) = x + 4')
@@ -37,6 +36,7 @@ if __name__ == '__main__':
         text.set_text(f'param: {history[i]:.2f}')
         return line, text
 
-    animation = FuncAnimation(fig, animate, frames=len(history), interval=40, blit=True, repeat=False)
+    animation = FuncAnimation(fig, animate, frames=len(history),
+                              interval=40, blit=True, repeat=False)
     animation.save("temp/simple_train_anim.gif", writer="pillow")
     pyplot.show()
