@@ -9,16 +9,16 @@ if __name__ == '__main__':
 
     param = 1
     step = 0.01
+    intermediate_list = [1.0]
     for index, x in enumerate(input):
         y_pred = numpy.round(param * x + 4, 4)
-        change = ''
         if y_pred < output_true[index]:
             param += step
-            change = '+' + str(step)
         else:
             param -= step
-            change = '-' + str(step)
-        print(index, numpy.round(input[index], 4), y_pred,
-              output_true[index], change, param)
-        if index > 10:
-            break
+        intermediate_list.append(param)
+    
+    pyplot.plot(range(len(intermediate_list)), intermediate_list)
+    pyplot.grid(True)
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
+    pyplot.show()
