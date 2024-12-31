@@ -4,9 +4,9 @@ from matplotlib.animation import FuncAnimation
 
 if __name__ == '__main__':
     LEARN_RATE = 0.01       # 学习率
-    EPOCHS = 4               # 训练轮数
+    EPOCHS = 5
     rng = numpy.random.default_rng(seed=0)
-    random_numbers = rng.random(size=100) - 0.5
+    random_numbers = rng.standard_normal(size=100)
     x_input_array = numpy.linspace(0, 4, 100)
     y_true_array = 3 * x_input_array + 4 + random_numbers
     param = 1.0             # 模型参数
@@ -38,5 +38,5 @@ if __name__ == '__main__':
         return line, text
 
     animation = FuncAnimation(fig, animate, frames=len(history), interval=40, blit=True, repeat=False)
-    animation.save("temp/simplest_ml_anim.gif", writer="pillow")
+    animation.save("temp/simple_train_anim.gif", writer="pillow")
     pyplot.show()
