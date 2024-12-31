@@ -9,15 +9,17 @@ if __name__ == '__main__':
 
     param = 1
     step = 0.01
+    epochs = 5
     intermediate_list = [1.0]
-    for index, x in enumerate(input):
-        y_pred = numpy.round(param * x + 4, 4)
-        if y_pred < output_true[index]:
-            param += step
-        else:
-            param -= step
-        intermediate_list.append(param)
-    
+    for _ in range(epochs):
+        for index, x in enumerate(input):
+            y_pred = numpy.round(param * x + 4, 4)
+            if y_pred < output_true[index]:
+                param += step
+            else:
+                param -= step
+            intermediate_list.append(param)
+    print('Last param is', round(intermediate_list[-1], 4))
     pyplot.plot(range(len(intermediate_list)), intermediate_list)
     pyplot.grid(True)
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
