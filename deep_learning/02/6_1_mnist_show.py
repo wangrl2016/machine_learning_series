@@ -1,4 +1,7 @@
-import deep_learning.dataset.mnist as mnist
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from dataset import mnist
 from matplotlib import pyplot
 import random
 

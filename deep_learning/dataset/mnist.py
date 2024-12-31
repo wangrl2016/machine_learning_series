@@ -27,6 +27,16 @@ def mnist_read(images_path, labels_path):
 
     return numpy.array(images), numpy.array(labels)
 
+# def parse():
+#     base_url = 'https://yann.lecun.com/exdb/mnist/'
+#     filename_list = ['train-images-idx3-ubyte',
+#                       'train-labels-idx1-ubyte',
+#                       't10k-images-idx3-ubyte',
+#                       't10k-labels-idx1-ubyte']
+#     for filename in filename_list:
+#         url = os.path.join(base_url, filename) + '.gz'
+#         file_util.get_file(origin_url=url, dest_file_name=filename)
+
 # Load the MNIST dataset.
 def mnist_load(train_image_path, train_label_path,
                test_image_path, test_label_path):
