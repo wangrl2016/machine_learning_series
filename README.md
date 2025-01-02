@@ -18,26 +18,9 @@
 
 **第 01 天：NumPy 介绍**
 
-讲述 [1.2 小节 - NumPy 介绍](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.2487081sleby) 的内容，使用数组的索引，对数组进行计算。
+讲述 [1.2 小节 - NumPy 介绍](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.2487081sleby) 的内容，主要分为三个部分：数组创建、数组索引、数组计算。
 
 * [ [VIDEO]() ] 1-2-NumPy（多维数组计算库）入门
-* [ [VIDEO]() ] 1-3-复制 `copy` 和视图 `view`
-* 1-4-数组创建：使用 Python 序列
-* 1-5-数组创建：使用 NumPy 内置创建函数
-* 1-6-数组创建：复制、连接、改变现有数组
-* 1-7-数组创建：从磁盘读取
-* 1-8-基础索引：使用元素下标
-* 1-9-基础索引：使用 `slice` 对象
-* 1-10-基础索引：使用维度索引工具
-* 1-11-高级索引：使用整形数组
-* 1-12-高级索引：使用布尔数组
-* 1-13-高级索引：基础与高级结合
-* 1-14-字段索引
-* 1-15-数组的算术操作
-* 1-16-数组广播
-* 1-17-数据统计
-* 1-18-修改数组形状
-* 1-19-生成随机数
 
 **第 02 天：线性回归**
 
@@ -120,7 +103,7 @@
 
 ## 📖 [深度学习综合指南](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
-[ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ 官方网站 ]  
+[ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ [视频大纲](https://docs.google.com/document/d/1-8sYNkJhecb7f85S64jDq47n8nIaDvYkDu1XrBoOQec/edit?usp=sharing) ]  [ [英文版](https://docs.google.com/document/d/16bXNMj1Wslx6jSskyvsovPVzUt9eKmuOMAUktYHHa3s/edit?usp=sharing) ]  [ 官方网站 ]  
 
 这是一本面向初学者的深度学习综合指南。编写过程中借鉴了大量的经典教材、论文、文章，包括使用 AI 生成许多代码片段。教程主要分为四个阶段： 
 
@@ -151,6 +134,25 @@
 ![二次曲线变换动画](res/deep_learning/shift_anim.gif)
 
 详细介绍 NumPy 科学计算库，使用各种方法创建 `ndarray` 数组，对数组进行索引和切片，并探讨数组之间的计算，例如广播、连接、乘法等运算。  
+
+* NumPy 数组计算库入门
+* 复制 `copy` 和视图 `view`
+* 数组创建：使用 Python 序列
+* 数组创建：使用 NumPy 内置创建函数
+* 数组创建：复制、连接、改变现有数组
+* 数组创建：从磁盘读取
+* 基础索引：使用元素下标
+* 基础索引：使用 `slice` 对象
+* 基础索引：使用维度索引工具
+* 高级索引：使用整形数组
+* 高级索引：使用布尔数组
+* 高级索引：基础与高级结合
+* 字段索引
+* 数组的算术操作
+* 数组广播
+* 数据统计
+* 修改数组形状
+* 生成随机数
 
 ![ndarray 结构体](res/deep_learning/ndarray_internal.png)
 
