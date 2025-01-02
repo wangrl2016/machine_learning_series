@@ -233,14 +233,14 @@
 复习导数（求微分）、链式法则、极值、偏导数等数学概念。通过 `NumPy` 实现常见的激活函数和损失函数，并求解它们的导数。使用链式法则求解模型的梯度，理解权重是如何更新的。  
 
 ```
-def binary_cross_entropy(y_pred, y_true):
-    return -(y_true * numpy.log(y_pred) + (1 - y_true) * numpy.log(1 - y_pred))
+    def binary_cross_entropy(y_pred, y_true):
+        return -(y_true * numpy.log(y_pred) + (1 - y_true) * numpy.log(1 - y_pred))
 
-def deriv_binary_cross_entry(y_pred, y_true):
-    return y_pred - y_true
+    def deriv_binary_cross_entry(y_pred, y_true):
+        return y_pred - y_true
 ```
 
-手写**全连接神经网络 (Dense Neural Network, DNN)** ，理解网络的训练过程，即求复合函数 `h(g(f(weights, biases)))` 的极值（极大或极小），实现几个简单的模型。  
+手写全连接神经网络 (Dense Neural Network, DNN) ，理解网络的训练过程，即求复合函数 `h(g(f(weights, biases)))` 的极值（极大或极小），实现几个简单的模型。  
 
 ### 05 张量和自动微分
 
@@ -287,6 +287,8 @@ def deriv_binary_cross_entry(y_pred, y_true):
 ### 07 卷积神经网络
 
 卷积神经网络 (Convolutional Neural Network, CNN) 是一类主要用于图像处理的深度学习模型，擅长提取图像的空间特征和模式。CNN 是现代计算机视觉领域的核心模型之一，广泛应用于图像分类、目标检测、语义分割等任务。  
+
+![卷积神经网络架构](res/deep_learning/simple_conv_arch.png)
 
 卷积神经网络主要包括卷积层和池化层。卷积层通过滑动卷积核对输入进行加权求和，提取局部特征，如边缘或纹理。池化层则通过选择局部区域的最大值或平均值，减少图像的尺寸。  
 
