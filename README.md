@@ -21,7 +21,7 @@
 讲述 [1.2 小节 - NumPy 介绍](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.2487081sleby) 的内容，使用数组的索引，对数组进行计算。
 
 * [ [VIDEO]() ] 1-2-NumPy（多维数组计算库）入门
-* 1-3-复制 `copy` 和视图 `view`
+* [ [VIDEO]() ] 1-3-复制 `copy` 和视图 `view`
 * 1-4-数组创建：使用 Python 序列
 * 1-5-数组创建：使用 NumPy 内置创建函数
 * 1-6-数组创建：复制、连接、改变现有数组
