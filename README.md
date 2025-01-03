@@ -1,12 +1,14 @@
 # 机器学习系列
 
+[ [视频讲解](https://www.youtube.com/@machine-learning-series) ]  [ [视频大纲](https://docs.google.com/document/d/1-8sYNkJhecb7f85S64jDq47n8nIaDvYkDu1XrBoOQec/edit?usp=sharing) ]
+
 《机器学习系列》是一个深入浅出地介绍机器学习各个领域的学习资源的集合，旨在帮助读者全面理解和掌握机器学习的核心技术与应用。包括以下几个部分：
 
 * [Python 语言入门](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
 
 * 深度学习 7 天速成
 
-* [深度学习综合指南](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
+* [深度学习综合指南](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
 ---
 
@@ -106,7 +108,7 @@
 
 ## 📖 [深度学习综合指南](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
-[ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]  [ [视频大纲](https://docs.google.com/document/d/1-8sYNkJhecb7f85S64jDq47n8nIaDvYkDu1XrBoOQec/edit?usp=sharing) ]  [ [英文版](https://docs.google.com/document/d/16bXNMj1Wslx6jSskyvsovPVzUt9eKmuOMAUktYHHa3s/edit?usp=sharing) ]  [ 官方网站 ]  
+[ [在线文档](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing) ]  [ [英文版](https://docs.google.com/document/d/16bXNMj1Wslx6jSskyvsovPVzUt9eKmuOMAUktYHHa3s/edit?usp=sharing) ]   
 
 这是一本面向初学者的深度学习综合指南。编写过程中借鉴了大量的经典教材、论文、文章，包括使用 AI 生成许多代码片段。教程主要分为四个阶段： 
 

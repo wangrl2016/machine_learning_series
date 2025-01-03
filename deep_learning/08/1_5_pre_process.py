@@ -1,5 +1,5 @@
 import numpy
-from pos_peg_dataset import train_data, test_data
+from deep_learning.dataset.pos_peg import train_data, test_data
 
 # Create the vocabulary
 vocab = list(set([w for text in train_data.keys() for w in text.split(' ')]))

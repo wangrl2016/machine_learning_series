@@ -1,6 +1,6 @@
 import numpy
 import random
-from pos_peg_dataset import train_data, test_data
+from deep_learning.dataset.pos_peg import train_data, test_data
 
 def softmax(xs):
     # Applies the softmax function to the input array.
