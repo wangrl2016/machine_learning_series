@@ -2,11 +2,11 @@
 
 《机器学习系列》是一个深入浅出地介绍机器学习各个领域的学习资源的集合，旨在帮助读者全面理解和掌握机器学习的核心技术与应用。包括以下几个部分：
 
-* Python 语言入门
+* [Python 语言入门](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
 
 * 深度学习 7 天速成
 
-* 深度学习综合指南
+* [深度学习综合指南](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing)
 
 ---
 
@@ -300,6 +300,8 @@
 论文 _ImageNet Classification with Deep Convolutional Neural Networks_ 使用 ReLU 激活函数，利用 GPU 加速训练，证明深度学习在大规模图像数据上的潜力，成为现代深度学习崛起的里程碑。  
 
 论文 _U-Net: Convolutional Networks for Biomedical Image Segmentation_ 采用对称的编码-解码结构，提出了有效的小样本训练方法。它广泛应用于医学图像分析领域，例如肿瘤检测、器官分割等任务。  
+
+![U-Net 网络架构](res/deep_learning/u_net_arch.png)
 
 论文 _Deep Residual Learning for Image Recognition_ 使用残差模块，使网络深度达到数百甚至上千层，同时提升性能，成为深度网络的基础架构。  
 
