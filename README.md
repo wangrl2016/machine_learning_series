@@ -320,6 +320,8 @@
 
 生成式方法的目标是在已知的样本数据上学习其特征分布，然后生成具有相似特征的全新数据，包括：稳定扩撒、神经风格迁移、DeepDream、卷积生成对抗网络、Pix2Pix 、CycleGAN 。
 
+生成对抗网络 (Generative Adversarial Networks, GANs) 通过对抗过程训练两个网络，生成器 (Generator) 学习创建看起来真实的图像，而鉴别器 (Discriminator) 学习区分真实图像和假图像。  
+
 ### 11 大语言模型 (LLM)
 
 `nanoGPT` 是最简单、最快的中型 GPT 训练/微调存储库，优先考虑实用性而非教育性。介绍 Llama 开源模型，包括如何访问模型、托管、操作方法和集成指南。
