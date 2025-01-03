@@ -316,6 +316,10 @@
 
 ### 09 Transformer 架构
 
+在计算机科学的注意力机制中，查询 (Query) 、键 (Key) 和值 (value) 的核心思想是模仿人类的注意力机制来动态选择重要信息。主动注意对应的是 Query 的作用，被动注意对应的是 Key 的显著性作用。
+
+![注意力机制](res/deep_learning/attention_mechanism.png)
+
 认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释，彻底理解 `Transformer` 架构。
 
 ![Transformer 架构](res/deep_learning/transformer_arch.png)
