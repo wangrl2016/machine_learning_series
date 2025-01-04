@@ -22,7 +22,7 @@
 
 讲述 [1.2 小节 - NumPy 介绍](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.2487081sleby) 的内容，主要分为三个部分：数组创建、数组索引、数组计算。
 
-* [ [VIDEO]() ] 1-2-NumPy（多维数组计算库）入门
+* [ [VIDEO](https://youtu.be/5KISqYekgxA) ] 1-2-NumPy（多维数组计算库）入门
 * [ [VIDEO]() ] 1-3-数组创建：几种常用方法
 * [ [VIDEO]() ] 1-4-数组索引 `indexing` ：基础和高级
 * [ [VIDEO]() ] 1-5-数组计算：排序、统计、转换等
