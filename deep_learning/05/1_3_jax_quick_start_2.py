@@ -1,5 +1,5 @@
 import jax.numpy as jnp
-from jax import grad, jit, jacobian
+from jax import grad, jit, jacobian, random
 
 def sum_logistic(x):
     return jnp.sum(1.0 / (1.0 + jnp.exp(-x)))
