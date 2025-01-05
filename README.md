@@ -31,47 +31,32 @@
 
 讲述 [1.5 小节 - 机器学习求解](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.18l76umvbf2c) 的内容，找到随机分布点的最佳拟合直线。
 
-* 1-20-生成 100 个随机点，寻找最佳拟合直线
-* 1-21-使用渐进方法寻找拟合直线
-* 1-22-什么是线性回归
-* 1-23-使用线性回归模型寻找最佳拟合直线
+* [ [VIDEO]() ] 1-6-使用线性回归模型寻找最佳拟合直线
+* [ [VIDEO]() ] 1-7-Matplotlib 绘制线性回归动画
 
 **第 03 天：二分类**
 
 讲述 [2.2 小节 - 人工神经网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.y414c71icdjb) 和 [3.2 小节 - 二分类问题](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.gwlce2gp5532) 的内容，理解深度学习原理，解决二分类问题，快速认识模型架构。
 
-* 1-24-神经网络原理
-* 1-25-神经元
-* 1-26-神经网络
-* 1-27-前向传播
-* 1-28-反向传播
-* 1-29-使用 NumPy 生成两组随机点
-* 1-30-使用 Keras 快速实现二分类模型
-* 1-31-运行过程可视化
+* [ [VIDEO]() ] 1-8-深度学习原理（前向和反向传播）
+* [ [VIDEO]() ] 1-9-使用 Keras 快速实现二分类模型
 
 **第 04 天：全连接神经网络**
 
 讲述 [4.5 小节 - 手写神经网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.cloq0vde3l33) 的内容，详解反向传播算法，理解全连接神经网络。
 
-* 1-32-构建模块：神经元
-* 1-33-合成神经网络
-* 1-34-损失函数及其梯度计算
-* 1-35-随机梯度下降
-* 1-36-完整训练过程
+* [ [VIDEO]() ] 1-10-全连接网络的前向传播
+* [ [VIDEO]() ] 1-11-微积分中的导数和链式法则
+* [ [VIDEO]() ] 1-12-手写梯度计算训练神经网络
 
 **第 05 天：卷积神经网络**
 
 讲述 [7.2 小节 - 手写卷积网络](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?tab=t.0#heading=h.55wghfs6kp0) 的内容，理解卷积和池化操作，解决图片识别问题。
 
-* 1-37-介绍
-* 1-38-数据集
-* 1-39-卷积操作
-* 1-40-池化操作
-* 1-41-网络结构
-* 1-42-Softmax 梯度计算
-* 1-43-最大池化梯度计算
-* 1-44-卷积梯度计算
-* 1-45-完整训练过程
+* [ [VIDEO]() ] 1-13-加载 MNIST 手写数据集
+* [ [VIDEO]() ] 1-14-理解卷积网络的卷积操作
+* [ [VIDEO]() ] 1-15-理解卷积网络的池化操作
+* [ [VIDEO]() ] 1-16-手写卷积网络的训练过程
 
 **第 06 天：循环神经网络**
 
