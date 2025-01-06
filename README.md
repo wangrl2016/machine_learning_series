@@ -1,6 +1,6 @@
 # 机器学习系列
 
-[ [视频讲解](https://www.youtube.com/@machine-learning-series) ]  [ [视频大纲](https://docs.google.com/document/d/1-8sYNkJhecb7f85S64jDq47n8nIaDvYkDu1XrBoOQec/edit?usp=sharing) ]
+[ [视频讲解](https://www.youtube.com/@machine-learning-series/videos) ]  [ [视频大纲](https://docs.google.com/document/d/1-8sYNkJhecb7f85S64jDq47n8nIaDvYkDu1XrBoOQec/edit?usp=sharing) ]
 
 《机器学习系列》是一个深入浅出地介绍机器学习各个领域的学习资源的集合，旨在帮助读者全面理解和掌握机器学习的核心技术与应用。包括以下几个部分：
 
