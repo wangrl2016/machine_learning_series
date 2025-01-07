@@ -303,12 +303,18 @@
 
 ### 08 循环神经网络
 
+循环神经网络 (Recurrent Neural Network, RNN) 是一种用于处理序列数据的神经网络架构，与传统的前馈神经网络不同，RNN 在每一时刻的输出不仅依赖当前输入，还依赖于前一时刻的隐藏状态，从而能够捕捉序列中的时间依赖关系。  
+
 
 ### 09 Transformer 架构
 
 在计算机科学的注意力机制中，查询 (Query) 、键 (Key) 和值 (value) 的核心思想是模仿人类的注意力机制来动态选择重要信息。主动注意对应的是 Query 的作用，被动注意对应的是 Key 的显著性作用。
 
 ![注意力机制](res/deep_learning/attention_mechanism.png)
+
+查询和键之间的交互形成了注意力汇聚，注意力汇聚有选择地聚合了值以生成最终的输出。通常两种交互方式：加性注意力和缩放点积注意力，它们被称为注意力评分函数。
+
+![注意力评分函数](res/deep_learning/attention_score.png)
 
 认识它和前馈网络的不同之处。翻译著名论文 _Attention Is All You Need_ ，并作出详细的解释，彻底理解 `Transformer` 架构。
 

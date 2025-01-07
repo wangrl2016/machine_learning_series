@@ -1,4 +1,3 @@
-import numpy
 import torch
 
 def sequence_mask(x, valid_length, value=-1e6):
