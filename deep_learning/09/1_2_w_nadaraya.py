@@ -17,6 +17,16 @@ class NWKernelRegression(torch.nn.Module):
         return torch.bmm(self.attention_weights.unsqueeze(1),
                          values.unsqueeze(-1)).reshape(-1)
 
+def show_heatmaps(matrices, cmap='Reds'):
+    num_rows, num_cols = matrices.shape[0], matrices.shape[1]
+    fig, axes = pyplot.subplots(num_rows, num_cols,
+                                sharex=True, sharey=True, squeeze=False)
+    for (row_axes, row_matrices) in zip(axes, matrices):
+        for (ax, matrix) in zip(row_axes, row_matrices):
+            pcm = ax.imshow(matrix, cmap=cmap)
+    fig.colorbar(pcm, ax=axes, shrink=0.6)
+    pyplot.show()
+
 if __name__ == '__main__':
     rng = numpy.random.default_rng(0)
     n_train = 50
@@ -63,3 +73,5 @@ if __name__ == '__main__':
     pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
     pyplot.show()
+    
+    show_heatmaps(net.attention_weights.unsqueeze(0).unsqueeze(0).detach().numpy())
