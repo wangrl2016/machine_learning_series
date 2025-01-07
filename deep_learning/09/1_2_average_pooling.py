@@ -12,13 +12,10 @@ if __name__ == '__main__':
     x_test = numpy.arange(0, 5, 0.1)
     y_test = func(x_test)
     n_test = len(x_test)
-    y_hat = y_train.mean().repeat(n_test)
     
     pyplot.plot(x_train, y_train, 'o', alpha=0.5, label='Samples')
     pyplot.plot(x_test, y_test, label='True')
-    pyplot.plot(x_test, y_hat, '--', label='Pred')
     pyplot.grid(True)
     pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
     pyplot.show()
-    
