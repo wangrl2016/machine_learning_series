@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     pyplot.plot(x_train, y_train, 'o', alpha=0.5, label='Samples')
     pyplot.plot(x_test, y_test, label='True')
-    pyplot.plot(x_test, y_hat, label='Pred')
+    pyplot.plot(x_test, y_hat, '--', label='Pred')
     pyplot.grid(True)
     pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
