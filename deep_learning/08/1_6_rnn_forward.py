@@ -1,5 +1,8 @@
 import numpy
-from deep_learning.dataset.pos_peg import train_data
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from dataset import pos_peg
 
 def softmax(xs):
     # Applies the softmax function to the input array.
@@ -28,22 +31,22 @@ class RNN:
         # Compute the output.
         y = self.Why @ h + self.by
         return y, h
+    
+def create_inputs(text):
+    inputs = []
+    for w in text.split(' '):
+        v = numpy.zeros((vocab_size, 1))
+        v[word_to_idx[w]] = 1
+        inputs.append(v)
+    return inputs
 
 if __name__ == '__main__':
     # Create the vocabulary
-    vocab = list(set([w for text in train_data.keys() for w in text.split(' ')]))
+    vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' ')]))
     vocab_size = len(vocab)
 
     word_to_idx = { w: i for i, w in enumerate(vocab) }
     idx_to_word = { i: w for i, w in enumerate(vocab) }
-
-    def create_inputs(text):
-        inputs = []
-        for w in text.split(' '):
-            v = numpy.zeros((vocab_size, 1))
-            v[word_to_idx[w]] = 1
-            inputs.append(v)
-        return inputs
 
     rnn = RNN(vocab_size, 2)
     inputs = create_inputs('i am very good')

@@ -1,6 +1,10 @@
 import numpy
 import random
-from deep_learning.dataset.pos_peg import train_data, test_data
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from dataset import pos_peg
+from matplotlib import pyplot
 
 def softmax(xs):
     # Applies the softmax function to the input array.
@@ -46,7 +50,7 @@ class RNN:
         # dl/dh = dl/dy * dy/dh
         dh = self.Why.T @ dy
 
-        # backprogagate through time
+        # backpropagation through time
         for t in reversed(range(n)):
             # an intermediate value: dl/dh * (1 - h^2)
             temp = ((1 - self.last_hs[t+1] ** 2) * dh)
@@ -57,7 +61,7 @@ class RNN:
             # dl/dwxh = dl/dh * (1 - h^2) * x
             dwxh += temp @ self.last_inputs[t].T
             # next dl/dh = dl/dh * (1 - h^2) * Whh
-            dh = self.Whh @ temp
+            dh = self.Whh.T @ temp
         
         # clip to prevent exploding gradients
         for d in [dwxh, dwhh, dwhy, dbh, dby]:
@@ -72,7 +76,7 @@ class RNN:
 
 if __name__ == '__main__':
     # Create the vocabulary
-    vocab = list(set([w for text in train_data.keys() for w in text.split(' ')]))
+    vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' ')]))
     vocab_size = len(vocab)
 
     word_to_idx = { w: i for i, w in enumerate(vocab) }
@@ -114,14 +118,28 @@ if __name__ == '__main__':
 
                 # backward
                 rnn.backprop(dl_dy)
+        # Convert NumPy scalar to Python scalar.
+        if isinstance(loss, numpy.ndarray):
+            loss = loss.item()
         return loss / len(data), num_correct / len(data)
 
+    losses = []
+    accuracies = []
     # training loop
-    for epoch in range(1000):
-        train_loss, train_acc = process(train_data)
-        if epoch % 100 == 99:
+    for epoch in range(500):
+        train_loss, train_acc = process(pos_peg.train_data)
+        if (epoch + 1) % 50 == 0:
+            losses.append(train_loss)
+            accuracies.append(train_acc)
             print('Epoch %d' % (epoch + 1))
-            print('Train:\t loss %.3f | accuracy: %.3f' % (train_loss, train_acc))
+            print('Train: loss %.3f | accuracy: %.3f' % (train_loss, train_acc))
 
-            test_loss, test_acc = process(test_data, backprop=False)
+            test_loss, test_acc = process(pos_peg.test_data, backprop=False)
             print('Test: loss %.3f | accuracy: %.3f' % (test_loss, test_acc))
+
+    pyplot.plot(numpy.array(range(len(losses))) * 50, losses, label='Loss')
+    pyplot.plot(numpy.array(range(len(accuracies))) * 50, accuracies, label='Accuracy')
+    pyplot.grid(True)
+    pyplot.legend()
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
+    pyplot.show()

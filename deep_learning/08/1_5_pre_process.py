@@ -1,10 +1,13 @@
 import numpy
-from deep_learning.dataset.pos_peg import train_data, test_data
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from dataset import pos_peg
 
 # Create the vocabulary
-vocab = list(set([w for text in train_data.keys() for w in text.split(' ')]))
+vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' ')]))
 vocab_size = len(vocab)
-print('%d unidque words found' % vocab_size)
+print('%d unique words found' % vocab_size)
 
 # Assign indices to each word.
 word_to_idx = { w: i for i, w in enumerate(vocab) }
@@ -17,7 +20,7 @@ def create_inputs(text):
     Return an array of one-hot vectors representing the words
     in the input text string.
     - text is a string
-    - each ont-hot vector has shape (vocab_size, 1)
+    - each one-hot vector has shape (vocab_size, 1)
     '''
     inputs = []
     for w in text.split(' '):
@@ -25,3 +28,7 @@ def create_inputs(text):
         v[word_to_idx[w]] = 1
         inputs.append(v)
     return inputs
+
+if __name__ == '__main__':
+    inputs = create_inputs('i am not at all good')
+    print(numpy.array(inputs).shape)

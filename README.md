@@ -308,6 +308,10 @@
 ![网络架构](res/deep_learning/rnn_arch.png)
 
 
+
+![门控循环网络](res/deep_learning/rnn_advance.png)
+
+
 ### 09 Transformer 架构
 
 在计算机科学的注意力机制中，查询 (Query) 、键 (Key) 和值 (value) 的核心思想是模仿人类的注意力机制来动态选择重要信息。主动注意对应的是 Query 的作用，被动注意对应的是 Key 的显著性作用。
