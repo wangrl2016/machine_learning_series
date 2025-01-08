@@ -305,6 +305,8 @@
 
 循环神经网络 (Recurrent Neural Network, RNN) 是一种用于处理序列数据的神经网络架构，与传统的前馈神经网络不同，RNN 在每一时刻的输出不仅依赖当前输入，还依赖于前一时刻的隐藏状态，从而能够捕捉序列中的时间依赖关系。  
 
+![网络架构](res/deep_learning/rnn_arch.png)
+
 
 ### 09 Transformer 架构
 
