@@ -307,7 +307,9 @@
 
 ![网络架构](res/deep_learning/rnn_arch.png)
 
+将常规循环网络 (RNN) 扩展成为双向循环网络 (Bidirectional Recurrent Neural Network, BRNN) 。BRNN 的训练不受输入信息的限制，这是通过同时在正负时间方向上进行训练来实现的。
 
+![双向循环网络架构](res/deep_learning/brnn_arch.png)
 
 ![门控循环网络](res/deep_learning/rnn_advance.png)
 
