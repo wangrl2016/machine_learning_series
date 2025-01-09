@@ -239,6 +239,10 @@
 
 手写全连接神经网络 (Dense Neural Network, DNN) ，理解网络的训练过程，即求复合函数 `h(g(f(weights, biases)))` 的极值（极大或极小），实现几个简单的模型。  
 
+
+
+![数据点分类](res/deep_learning/moon_classify.png)
+
 ### 05 张量和自动微分
 
 介绍主流机器学习库 (TensorFlow/PyTorch/JAX) 的核心内容：张量和自动微分。张量是机器学习中的一种核心数据结构，它可以看作是多维数组。自动微分是机器学习库用来自动计算梯度的工具。  
