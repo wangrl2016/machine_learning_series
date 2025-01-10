@@ -56,27 +56,29 @@ if __name__ == '__main__':
     batch_size = 64
     datagen = image.ImageDataGenerator(rescale=1.0/255)
     data = datagen.flow_from_directory(
-        'source/',
+        '/Users/admin/Downloads/archive/UTKFace/',
         target_size=(img_size, img_size),
         batch_size=batch_size,
         class_mode=None
     )
+
     def preprocess_data(images):
         return (images - 0.5) * 2
-    
     dataset = (preprocess_data(batch) for batch in data)
-    
+
     generator = build_generator(latent_dim)
+    optimizer = keras.optimizers.Adam(learning_rate=0.0002, beta_1=0.5)
+    generator.compile(optimizer=optimizer, loss='binary_crossentropy')
     generator.summary()
     discriminator = build_discriminator(img_size)
     discriminator.summary()
 
     discriminator.compile(
         optimizer=keras.optimizers.Adam(learning_rate=0.0002, beta_1=0.5),
-        loss='binary_crossentropy',
+        loss=keras.losses.BinaryCrossentropy(from_logits=True),
         metrics=['accuracy']
     )
-    discriminator.trainable = False
+    # discriminator.trainable = False
 
     z = keras.layers.Input(shape=(latent_dim,))
     img =generator(z)
@@ -98,7 +100,6 @@ if __name__ == '__main__':
             for real_imgs in dataset:
                 idx = numpy.random.randint(0, real_imgs.shape[0], batch_size)
                 real_imgs_batch = real_imgs[idx]
-                
                 z = numpy.random.normal(0, 1, (batch_size, latent_dim))
                 fake_imgs = generator.predict(z)
 
