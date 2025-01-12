@@ -1,3 +1,5 @@
+import torch
+
 # 原语言的词汇表大小
 src_vocab_size = 5000
 # 目标语言的词汇表大小
@@ -15,7 +17,7 @@ max_seq_length = 100
 # 随机失活概率
 dropout = 0.1
 
-class Transformer(nn.Module):
+class Transformer(torch.nn.Module):
     pass
 
 if __name__ == '__main__':
