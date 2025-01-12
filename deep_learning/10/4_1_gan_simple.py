@@ -32,13 +32,13 @@ def batch_and_shuffle(data, batch_size, shuffle=True):
 def get_generator(image_shape: tuple = (28, 28, 1),
                     latent_dim: int = 100):
   inputs = layers.Input(shape=(latent_dim,), name="generator_input")
-  x = layers.Dense(512)(inputs)
+  x = layers.Dense(256)(inputs)
+  x = layers.LeakyReLU(negative_slope=0.2)(x)
+  x = layers.BatchNormalization(momentum=0.5)(x)
+  x = layers.Dense(512)(x)
   x = layers.LeakyReLU(negative_slope=0.2)(x)
   x = layers.BatchNormalization(momentum=0.5)(x)
   x = layers.Dense(1024)(x)
-  x = layers.LeakyReLU(negative_slope=0.2)(x)
-  x = layers.BatchNormalization(momentum=0.5)(x)
-  x = layers.Dense(2048)(x)
   x = layers.LeakyReLU(negative_slope=0.2)(x)
   x = layers.BatchNormalization(momentum=0.5)(x)
   x = layers.Dense(ops.prod(jnp.array(image_shape)).item(), activation="tanh")(x)
@@ -49,11 +49,11 @@ def get_generator(image_shape: tuple = (28, 28, 1),
 def get_discriminator(image_shape: tuple = (28, 28, 1)):
   inputs = layers.Input(shape=image_shape, name="discriminator_input")
   x = layers.Flatten()(inputs)
-  x = layers.Dense(1024)(x)
-  x = layers.LeakyReLU(negative_slope=0.2)(x)
   x = layers.Dense(512)(x)
   x = layers.LeakyReLU(negative_slope=0.2)(x)
   x = layers.Dense(256)(x)
+  x = layers.LeakyReLU(negative_slope=0.2)(x)
+  x = layers.Dense(128)(x)
   x = layers.LeakyReLU(negative_slope=0.2)(x)
   outputs = layers.Dense(1, activation="sigmoid",
                          name="discriminator_output")(x)

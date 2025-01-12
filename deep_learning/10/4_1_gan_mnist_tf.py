@@ -87,7 +87,7 @@ if __name__ == '__main__':
     generator_optimizer = keras.optimizers.Adam(1e-4)
     discriminator_optimizer = keras.optimizers.Adam(1e-4)
 
-    checkpoint_dir = './training_checkpoints'
+    checkpoint_dir = './temp/training_checkpoints'
     checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
     checkpoint = tensorflow.train.Checkpoint(generator_optimizer=generator_optimizer,
                                     discriminator_optimizer=discriminator_optimizer,
@@ -133,7 +133,7 @@ if __name__ == '__main__':
             pyplot.imshow(predictions[i, :, :, 0] * 127.5 + 127.5, cmap='gray')
             pyplot.axis('off')
         
-        pyplot.savefig('image_at_epoch_{:04d}.png'.format(epoch))
+        pyplot.savefig('temp/image_at_epoch_{:04d}.png'.format(epoch))
         # pyplot.show()
 
     def train(dataset, epochs):
