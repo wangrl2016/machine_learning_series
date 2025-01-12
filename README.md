@@ -336,6 +336,8 @@
 
 生成式方法的目标是在已知的样本数据上学习其特征分布，然后生成具有相似特征的全新数据，包括：稳定扩撒、神经风格迁移、DeepDream、卷积生成对抗网络、Pix2Pix 、CycleGAN 。
 
+![扩散模型架构](res/deep_learning/latent_diffusion_arch.png)
+
 生成对抗网络 (Generative Adversarial Networks, GANs) 通过对抗过程训练两个网络，生成器 (Generator) 学习创建看起来真实的图像，而鉴别器 (Discriminator) 学习区分真实图像和假图像。  
 
 ![生成对抗网络架构](res/deep_learning/gan_arch.png)
