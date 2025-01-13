@@ -10,6 +10,8 @@
 
 * [深度学习综合指南](https://docs.google.com/document/d/18V6H_600l-drkXd99pjNtSJtA7rIWWnER-KxIrB-lQY/edit?usp=sharing)
 
+* [机器学习速览课程](https://developers.google.com/machine-learning/crash-course)
+
 ---
 
 ## 📖 深度学习 7 天速成
@@ -342,11 +344,13 @@
 
 ![生成对抗网络架构](res/deep_learning/gan_arch.png)
 
-### 11 大语言模型 (LLM)
+### 11 图片扩散 (Diffusion)
+
+
+
+### 12 大语言模型 (LLM)
 
 `nanoGPT` 是最简单、最快的中型 GPT 训练/微调存储库，优先考虑实用性而非教育性。介绍 Llama 开源模型，包括如何访问模型、托管、操作方法和集成指南。
-
-### 12 前沿探索
 
 ---
 

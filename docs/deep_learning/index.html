@@ -3,10 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Page</title>
+    <title>教程页面模板</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            scroll-behavior: smooth; /* 平滑滚动 */
+        }
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #343a40;
+        }
+        .content-section {
+            padding-top: 50px;
+            margin-bottom: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to My GitHub Page!</h1>
-    <p>This is a simple page hosted on GitHub Pages.</p>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 左侧目录 -->
+            <nav class="col-md-3 col-lg-2 bg-light sidebar">
+                <h5 class="p-3">目录</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="#section1">01 认识机器学习：绘制直线</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section2">02 深度学习原理</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section3">章节 3</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section4">章节 4</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section5">章节 5</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section6">章节 6</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section7">章节 7</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section8">章节 8</a></li>
+                </ul>
+            </nav>
+
+            <!-- 右侧内容 -->
+            <main class="col-md-9 col-lg-10">
+                <section id="section1" class="content-section">
+                    <h2> 01 认识机器学习：绘制直线</h2>
+                    <p>这是章节 1 的内容。适合放教程的详细内容。</p>
+                </section>
+                <section id="section2" class="content-section">
+                    <h2> 02 深度学习原理</h2>
+                    <p>这是章节 2 的内容。可以继续扩展。</p>
+                </section>
+                <section id="section3" class="content-section">
+                    <h2>章节 3</h2>
+                    <p>这是章节 3 的内容。布局整洁易用。</p>
+                </section>
+                <section id="section4" class="content-section">
+                    <h2>章节 4</h2>
+                    <p>这是章节 4 的内容。欢迎补充更多章节。</p>
+                </section>
+                <section id="section5" class="content-section">
+                    <h2>章节 5</h2>
+                    <p>这是章节 1 的内容。适合放教程的详细内容。</p>
+                </section>
+                <section id="section6" class="content-section">
+                    <h2>章节 6</h2>
+                    <p>这是章节 2 的内容。可以继续扩展。</p>
+                </section>
+                <section id="section7" class="content-section">
+                    <h2>章节 7</h2>
+                    <p>这是章节 3 的内容。布局整洁易用。</p>
+                </section>
+                <section id="section8" class="content-section">
+                    <h2>章节 8</h2>
+                    <p>这是章节 4 的内容。欢迎补充更多章节。</p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- 引入 Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
