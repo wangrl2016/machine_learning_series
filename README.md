@@ -355,3 +355,7 @@
 [ [在线文档](https://docs.google.com/document/d/13dJIhnj4FbxFApRbaxyYz436vsRMAK9FhqPyuqBMY9Q/edit?usp=sharing) ] [ [YouTube 视频](https://www.youtube.com/@machine-learning-series) ]
 
 ---
+
+## 参考教材
+
+* [An Introduction to Bayesian Thinking](https://statswithr.github.io/book/)
