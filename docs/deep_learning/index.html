@@ -15,11 +15,40 @@
             top: 0;
             height: 100vh;
             overflow-y: auto;
-            background-color: #343a40;
+            background-color: #fff;
+            color: #000;
+            border-right: 1px solid #ddd;
+        }
+        .sidebar a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            color: #0056b3;
         }
         .content-section {
             padding-top: 50px;
             margin-bottom: 50px;
+        }
+        .right-sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-left: 1px solid #ddd;
+        }
+        .right-sidebar a {
+            color: #343a40;
+            text-decoration: none;
+        }
+        .right-sidebar a:hover {
+            text-decoration: underline;
+        }
+        .right-sidebar .active {
+            font-weight: bold;
+            color: #007bff;
         }
     </style>
 </head>
@@ -27,7 +56,7 @@
     <div class="container-fluid">
         <div class="row">
             <!-- 左侧目录 -->
-            <nav class="col-md-3 col-lg-2 bg-light sidebar">
+            <nav class="col-md-2 bg-light sidebar">
                 <h5 class="p-3">目录</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item"><a class="nav-link" href="#section1">01 认识机器学习：绘制直线</a></li>
@@ -41,19 +70,45 @@
                 </ul>
             </nav>
 
-            <!-- 右侧内容 -->
-            <main class="col-md-9 col-lg-10">
+            <!-- 中间内容 -->
+            <main class="col-md-8">
                 <section id="section1" class="content-section">
-                    <h2> 01 认识机器学习：绘制直线</h2>
-                    <p>这是章节 1 的内容。适合放教程的详细内容。</p>
+                    <h2>01 认识机器学习：绘制直线</h2>
+                    <p>这是章节 1 的内容。</p>
+                    <h3 id="section1-sub1">子标题 1</h3>
+                    <p>这是章节 1 的子标题 1 内容。</p>
+                    <h3 id="section1-sub2">子标题 2</h3>
+                    <p>这是章节 1 的子标题 2 内容。</p>
+                    <h3 id="section1-sub3">子标题 3</h3>
+                    <p>这是章节 1 的子标题 3 内容。</p>
+                    <h3 id="section1-sub4">子标题 4</h3>
+                    <p>这是章节 1 的子标题 4 内容。</p>
+                    <h3 id="section1-sub5">子标题 5</h3>
+                    <p>这是章节 1 的子标题 5 内容。</p>
+                    <h3 id="section1-sub6">子标题 6</h3>
+                    <p>这是章节 1 的子标题 6 内容。</p>
                 </section>
                 <section id="section2" class="content-section">
-                    <h2> 02 深度学习原理</h2>
-                    <p>这是章节 2 的内容。可以继续扩展。</p>
+                    <h2>02 深度学习原理</h2>
+                    <p>这是章节 2 的内容。</p>
+                    <h3 id="section2-sub1">子标题 1</h3>
+                    <p>这是章节 2 的子标题 1 内容。</p>
+                    <h3 id="section2-sub2">子标题 2</h3>
+                    <p>这是章节 2 的子标题 2 内容。</p>
+                    <p>123</p>
+                    <p>123</p>
+                    <p>123</p>
                 </section>
                 <section id="section3" class="content-section">
-                    <h2>章节 3</h2>
+                    <h2>03 分类问题：Keras 求解</h2>
                     <p>这是章节 3 的内容。布局整洁易用。</p>
+                    <h3 id="section3-sub1">子标题 1</h3>
+                    <p>这是章节 3 的子标题 1 内容。</p>
+                    <h3 id="section3-sub2">子标题 2</h3>
+                    <p>这是章节 3 的子标题 2 内容。</p>
+                    <h3 id="section3-sub3">子标题 3</h3>
+                    <p>这是章节 3 的子标题 3 内容。</p>
+                    <p>123</p>
                 </section>
                 <section id="section4" class="content-section">
                     <h2>章节 4</h2>
@@ -76,10 +131,97 @@
                     <p>这是章节 4 的内容。欢迎补充更多章节。</p>
                 </section>
             </main>
+
+            <!-- 右侧小标题导航 -->
+            <aside class="col-md-2 right-sidebar">
+                <h5>本章小标题</h5>
+                <ul id="dynamic-sidebar" class="nav flex-column">
+                    <!-- 动态内容 -->
+                </ul>
+            </aside>
         </div>
     </div>
 
     <!-- 引入 Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 定义章节与小标题的映射关系
+        const chapterMap = {
+            section1: [
+                { id: "section1-sub1", title: "子标题 1" },
+                { id: "section1-sub2", title: "子标题 2" },
+                { id: "section1-sub3", title: "子标题 3" },
+                { id: "section1-sub4", title: "子标题 4" },
+                { id: "section1-sub5", title: "子标题 5" },
+                { id: "section1-sub6", title: "子标题 6" },
+            ],
+            section2: [
+                { id: "section2-sub1", title: "子标题 -1" },
+                { id: "section2-sub2", title: "子标题 -2" }
+            ],
+            section3: [
+                { id: "section3-sub1", title: "子标题 1" },
+                { id: "section3-sub2", title: "子标题 2" },
+                { id: "section3-sub3", title: "子标题 3" },
+            ]
+        };
+
+        // 动态生成右侧导航内容
+        function updateRightSidebar(currentSection) {
+            const sidebar = document.getElementById("dynamic-sidebar");
+            sidebar.innerHTML = ""; // 清空当前内容
+
+            if (chapterMap[currentSection]) {
+                chapterMap[currentSection].forEach(subtitle => {
+                    const li = document.createElement("li");
+                    li.className = "nav-item";
+                    li.innerHTML = `<a class="nav-link" href="#${subtitle.id}" data-id="${subtitle.id}">${subtitle.title}</a>`;
+                    sidebar.appendChild(li);
+                });
+                // 默认高亮第一个子标题
+                highlightActiveSubtitle(chapterMap[currentSection][0].id);
+            }
+        }
+
+        // 高亮当前子标题
+        function highlightActiveSubtitle(subtitleId) {
+            const links = document.querySelectorAll("#dynamic-sidebar a");
+            links.forEach(link => {
+                if (link.getAttribute("data-id") === subtitleId) {
+                    link.classList.add("active");
+                } else {
+                    link.classList.remove("active");
+                }
+            });
+        }
+
+        // 添加事件监听器，处理点击高亮
+        document.addEventListener("click", (e) => {
+            if (e.target.matches("#dynamic-sidebar a")) {
+                e.preventDefault(); // 阻止默认跳转
+                const id = e.target.getAttribute("href").substring(1);
+                document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+                highlightActiveSubtitle(id);
+            }
+        });
+
+        // 监听章节滚动
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    updateRightSidebar(entry.target.id); // 更新右侧小标题
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.5
+        });
+
+        // 观察章节
+        document.querySelectorAll(".content-section").forEach(section => observer.observe(section));
+
+        // 初始加载第一个章节的小标题
+        updateRightSidebar("section1");
+    </script>
 </body>
 </html>
