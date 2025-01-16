@@ -26,9 +26,51 @@
         .sidebar a:hover {
             color: #0056b3;
         }
+        .child-chapters {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .child-chapters li:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
         .content-section {
             padding-top: 50px;
             margin-bottom: 50px;
+        }
+        h2, h3, h4 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .content-section > h2 {
+            color: #2980b9; /* 深蓝色 */
+            font-size: 2.5em;
+            border-bottom: 4px solid #2980b9;
+            padding-bottom: 15px;
+            margin-bottom: 50px;
+        }
+        .content-section h3 {
+            color: #e74c3c; /* 红色 */
+            font-size: 2em;
+            border-left: 6px solid #e74c3c;
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 25px;
+        }
+        .content-section h4 {
+            color: #8e44ad; /* 紫色 */
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            border-left: 5px solid #8e44ad;
+            padding-left: 12px;
+        }
+        p {
+            margin: 20px 0;
+            font-size: 1.1em;
+            text-indent: 2em;
         }
         .right-sidebar {
             position: sticky;
@@ -59,6 +101,16 @@
             <nav class="col-md-2 bg-light sidebar">
                 <h5 class="p-3">目录</h5>
                 <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section1" onclick="toggleChildChapters(event, 'chapter1')">01 认识机器学习：绘制直线</a>
+                        <ul id="chapter1" class="child-chapters" style="display: none;">
+                            <li><a class="nav-link" href="#section1-sub1">1.1 函数基础</a></li>
+                            <li><a class="nav-link" href="#section1-sub2">1.2 NumPy 介绍</a></li>
+                            <li><a class="nav-link" href="#section1-sub3">1.3 常见函数</a></li>
+                            <li><a class="nav-link" heaf="#section1-sub4">1.4 传统方程求解</a></li>
+                            <li><a class="nav-link" heaf="#section1-sub5">1.5 机器学习求解</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#section1">01 认识机器学习：绘制直线</a></li>
                     <li class="nav-item"><a class="nav-link" href="#section2">02 深度学习原理</a></li>
                     <li class="nav-item"><a class="nav-link" href="#section3">03 分类问题：Keras 求解</a></li>
@@ -79,18 +131,54 @@
                 <section id="section1" class="content-section">
                     <h2>01 认识机器学习：绘制直线</h2>
                     <p>这是章节 1 的内容。</p>
-                    <h3 id="section1-sub1">子标题 1</h3>
+                    <h3 id="section1-sub1" class="content-section-sub">1.1 函数基础</h3>
                     <p>这是章节 1 的子标题 1 内容。</p>
-                    <h3 id="section1-sub2">子标题 2</h3>
+                    
+                    <h4 id="section1-sub1-sub1">1.1.1 函数定义</h4>
+                    <h4 id="section1-sub1-sub2">1.1.2 线性函数</h4>
+                    <h4 id="section1-sub1-sub3">1.1.3 函数图像</h4>
+                    <h4 id="section1-sub1-sub4">1.1.4 二次函数</h4>
+                    <h4 id="section1-sub1-sub5">1.1.5 变化率</h4>
+                    <h4 id="section1-sub1-sub6">1.1.6 函数组合</h4>
+                    <h4 id="section1-sub1-sub7">1.1.7 函数变换</h4>
+                    <h4 id="section1-sub1-sub8">1.1.8 反函数</h4>
+
+                    <h3 id="section1-sub2" class="content-section-sub">1.2 NumPy 介绍</h3>
                     <p>这是章节 1 的子标题 2 内容。</p>
-                    <h3 id="section1-sub3">子标题 3</h3>
+
+                    <h4 id="section1-sub2-sub1">1.2.1 数组基础</h4>
+                    <h4 id="section1-sub2-sub2">1.2.2 复制和视图</h4>
+                    <h4 id="section1-sub2-sub3">1.2.3 数组创建</h4>
+                    <h4 id="section1-sub2-sub4">1.2.4 索引和切片</h4>
+                    <h4 id="section1-sub2-sub5">1.2.5 数组操作</h4>
+                    <h4 id="section1-sub2-sub6">1.2.6 生成随机数</h4>
+
+                    <h3 id="section1-sub3" class="content-section-sub">1.3 常见函数</h3>
                     <p>这是章节 1 的子标题 3 内容。</p>
-                    <h3 id="section1-sub4">子标题 4</h3>
+
+                    <h4 id="section1-sub3-sub1">1.3.1 多项式函数</h4>
+                    <h4 id="section1-sub3-sub2">1.3.2 有理函数</h4>
+                    <h4 id="section1-sub3-sub3">1.3.3 指数函数</h4>
+                    <h4 id="section1-sub3-sub4">1.3.4 对数函数</h4>
+                    <h4 id="section1-sub3-sub5">1.3.5 三角函数</h4>
+                    <h4 id="section1-sub3-sub6">1.3.6 三角恒等式</h4>
+
+                    <h3 id="section1-sub4" class="content-section-sub">1.4 传统方程求解</h3>
                     <p>这是章节 1 的子标题 4 内容。</p>
+
+                    <h4 id="section1-sub4-sub1">1.4.1 寻找线性方程</h4>
+                    <h4 id="section1-sub4-sub2">1.4.2 目视方法</h4>
+                    <h4 id="section1-sub4-sub3">1.4.3 函数方法</h4>
+
                     <h3 id="section1-sub5">子标题 5</h3>
                     <p>这是章节 1 的子标题 5 内容。</p>
-                    <h3 id="section1-sub6">子标题 6</h3>
-                    <p>这是章节 1 的子标题 6 内容。</p>
+
+                    <h4 id="section1-sub5-sub1">1.5.1 问题分析</h4>
+                    <h4 id="section1-sub5-sub2">1.5.2 渐近方法</h4>
+                    <h4 id="section1-sub5-sub3">1.5.3 线性回归</h4>
+                    <h4 id="section1-sub5-sub4">1.5.4 机器学习方法</h4>
+                    <h4 id="section1-sub5-sub5">1.5.5 思考与展望</h4>
+
                 </section>
                 <section id="section2" class="content-section">
                     <h2>02 深度学习原理</h2>
@@ -146,7 +234,7 @@
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5>本章小标题</h5>
+                <h5>标题</h5>
                 <ul id="dynamic-sidebar" class="nav flex-column">
                     <!-- 动态内容 -->
                 </ul>
@@ -157,45 +245,50 @@
     <!-- 引入 Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 定义章节与小标题的映射关系
-        const chapterMap = {
-            section1: [
-                { id: "section1-sub1", title: "子标题 1" },
-                { id: "section1-sub2", title: "子标题 2" },
-                { id: "section1-sub3", title: "子标题 3" },
-                { id: "section1-sub4", title: "子标题 4" },
-                { id: "section1-sub5", title: "子标题 5" },
-                { id: "section1-sub6", title: "子标题 6" },
-            ],
-            section2: [
-                { id: "section2-sub1", title: "子标题 -1" },
-                { id: "section2-sub2", title: "子标题 -2" }
-            ],
-            section3: [
-                { id: "section3-sub1", title: "子标题 1" },
-                { id: "section3-sub2", title: "子标题 2" },
-                { id: "section3-sub3", title: "子标题 3" },
-            ]
-        };
-
-        // 动态生成右侧导航内容
-        function updateRightSidebar(currentSection) {
+        function toggleChildChapters(event, chapterId) {
+            event.preventDefault();
+            const chapter = document.getElementById(chapterId);
+            if (chapter.style.display === "none" || !chapter.style.display) {
+                chapter.style.display = "block";
+            } else {
+                chapter.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        // 更新右侧导航，显示当前h3的小节
+        function updateRightSidebar(currentH3Id) {
             const sidebar = document.getElementById("dynamic-sidebar");
             sidebar.innerHTML = ""; // 清空当前内容
 
-            if (chapterMap[currentSection]) {
-                chapterMap[currentSection].forEach(subtitle => {
-                    const li = document.createElement("li");
-                    li.className = "nav-item";
-                    li.innerHTML = `<a class="nav-link" href="#${subtitle.id}" data-id="${subtitle.id}">${subtitle.title}</a>`;
-                    sidebar.appendChild(li);
-                });
-                // 默认高亮第一个子标题
-                highlightActiveSubtitle(chapterMap[currentSection][0].id);
+            // 查找当前h3下的所有h4元素
+            const h3Element = document.getElementById(currentH3Id);
+            let nextSibling = h3Element.nextElementSibling;
+            const h4Elements = [];
+
+            // 获取所有h4标签，直到遇到下一个h3标签
+            while (nextSibling && nextSibling.tagName !== "H3") {
+                if (nextSibling.tagName === "H4") {
+                    h4Elements.push(nextSibling);
+                }
+                nextSibling = nextSibling.nextElementSibling;
+            }
+
+            // 为每个h4元素创建导航项
+            h4Elements.forEach(h4 => {
+                const li = document.createElement("li");
+                li.className = "nav-item";
+                li.innerHTML = `<a class="nav-link" href="#${h4.id}" data-id="${h4.id}">${h4.innerText}</a>`;
+                sidebar.appendChild(li);
+            });
+
+            // 默认高亮第一个小节
+            if (h4Elements.length > 0) {
+                highlightActiveSubtitle(h4Elements[0].id);
             }
         }
 
-        // 高亮当前子标题
+        // 高亮当前h4小节
         function highlightActiveSubtitle(subtitleId) {
             const links = document.querySelectorAll("#dynamic-sidebar a");
             links.forEach(link => {
@@ -207,33 +300,23 @@
             });
         }
 
-        // 添加事件监听器，处理点击高亮
-        document.addEventListener("click", (e) => {
-            if (e.target.matches("#dynamic-sidebar a")) {
-                e.preventDefault(); // 阻止默认跳转
-                const id = e.target.getAttribute("href").substring(1);
-                document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-                highlightActiveSubtitle(id);
-            }
-        });
-
-        // 监听章节滚动
+        // 监听h3小节滚动，显示对应的h4小节
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    updateRightSidebar(entry.target.id); // 更新右侧小标题
+                    const currentH3Id = entry.target.id;
+                    updateRightSidebar(currentH3Id);
                 }
             });
         }, {
-            root: null,
-            threshold: 0.5
+            threshold: 0.5 // 当h3元素有一半进入视口时触发
         });
 
-        // 观察章节
-        document.querySelectorAll(".content-section").forEach(section => observer.observe(section));
-
-        // 初始加载第一个章节的小标题
-        updateRightSidebar("section1");
+        // 观察所有h3元素
+        const h3Elements = document.querySelectorAll("h3");
+        h3Elements.forEach(h3 => {
+            observer.observe(h3);
+        });
     </script>
 </body>
 </html>
