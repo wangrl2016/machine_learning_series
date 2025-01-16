@@ -40,6 +40,17 @@
             padding-top: 50px;
             margin-bottom: 50px;
         }
+        h1 {
+            color: #2c3e50;
+            font-size: 3.5em;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-bottom: 6px solid #2c3e50;
+            padding-bottom: 20px;
+        }
         h2, h3, h4 {
             margin-top: 30px;
             margin-bottom: 15px;
@@ -128,6 +139,7 @@
 
             <!-- 中间内容 -->
             <main class="col-md-8">
+                <h1>深度学习综合指南</h1>
                 <section id="section1" class="content-section">
                     <h2>01 认识机器学习：绘制直线</h2>
                     <p>这是章节 1 的内容。</p>
@@ -219,8 +231,34 @@
                     <p>这是章节 3 的内容。布局整洁易用。</p>
                 </section>
                 <section id="section8" class="content-section">
-                    <h2>章节 8</h2>
-                    <p>这是章节 4 的内容。欢迎补充更多章节。</p>
+                    <h2>08 循环神经网络</h2>
+                    <p>这是章节 7 的内容。布局整洁易用。</p>
+
+                    <h3 id="section8-sub1" class="content-section-sub">8.1 循环神经网络入门</h3>
+                    <p>循环神经网络 (Recurrent Neural Network, RNN) 是一种专门处理序列的神经网络。由于其在处理文本方面非常有效，因此经常用于 自然语言处理 (Natural Language Processing)  任务中。</p>
+                    <p>在本小节中，我们将探索 RNN 是什么，了解其工作原理，并使用 Python 从头开始构建一个真正的 RNN 网络（仅使用 NumPy 库） 。</p>
+                    <p>
+                        序列数据是指具有顺序性的结构化数据，通常以特定的时间或逻辑顺序排列。它在自然语言处理、时间序列分析、信号处理等领域中广泛使用。以下是序列数据的特点：
+                    </p>
+                    <ol>
+                        <li>
+                            <strong>顺序性：</strong>数据点之间的顺序至关重要，打乱顺序可能会丢失信息或改变数据的意义。比如股票价格：100, 102, 105, 101，顺序决定价格变化的趋势；句子中单词的顺序：“I am happy”和“Happy am I”的意思不同。
+                        </li>
+                        <li>
+                            <strong>依赖性：</strong>前后数据点之间可能存在依赖关系，比如当前数据点只依赖于临近的点，或者当前数据依赖较远的历史数据。比如文本序列“The cat is on the …”，预测最后一个单词，通常只需要考虑最近的几个单词“is on the”。
+                        </li>
+                    </ol>
+                    
+
+                    <h4 id="section8-sub1-sub1">8.1.1 为什么</h4>
+                    <h4 id="section8-sub1-sub2">8.1.2 如何实现</h4>
+                    <h4 id="section8-sub1-sub3">8.1.3 问题</h4>
+                    <h4 id="section8-sub1-sub4">8.1.4 计划</h4>
+                    <h4 id="section8-sub1-sub5">8.1.5 预处理</h4>
+                    <h4 id="section8-sub1-sub6">8.1.6 前向传播</h4>
+                    <h4 id="section8-sub1-sub7">8.1.7 为什么</h4>
+                    <h4 id="section8-sub1-sub8">8.1.8 如何实现</h4>
+
                 </section>
                 <section id="section9" class="content-section">
                     <h2>09 Transformer 架构</h2>
@@ -229,6 +267,21 @@
                     <p>在计算机科学的注意力机制中，查询 (Query) 、键 (Key) 和值 (value) 的核心思想是模仿人类的注意力机制来动态选择重要信息。主动注意对应的是 Query 的作用，被动注意对应的是 Key 的显著性作用。</p>
                     <h3 id="section9-sub2">子标题 2</h3>
                     <p>这是章节 9 的子标题 2 内容。</p>
+                </section>
+
+                <section id="section10" class="content-section">
+                    <h2>章节 10</h2>
+                    <p>这是章节 4 的内容。欢迎补充更多章节。</p>
+                </section>
+
+                <section id="section11" class="content-section">
+                    <h2>章节 11</h2>
+                    <p>这是章节 4 的内容。欢迎补充更多章节。</p>
+                </section>
+
+                <section id="section12" class="content-section">
+                    <h2>章节 12</h2>
+                    <p>这是章节 4 的内容。欢迎补充更多章节。</p>
                 </section>
             </main>
 
