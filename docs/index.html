@@ -1,21 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>机器学习系列</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hero {
+            background: #f8f9fa;
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            padding: 3rem 0;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+
+        footer a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>机器学习系列</h1>
+    <!-- Header -->
+    <header class="bg-dark text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">机器学习系列</h1>
+            <nav>
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link text-white" href="#home">首页</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#learning-path">学习路径</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#tutorials">教程</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#tools">工具</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-    <a href="deep_learning/index.html" style="text-decoration: underline; text-underline-offset: 4px;">访问《深度学习综合指南》</a>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h2>欢迎来到机器学习学习资源平台</h2>
+            <p class="lead">这里汇总了机器学习入门、进阶的内容与工具，助您轻松开启机器学习之旅。</p>
+            <a href="#learning-path" class="btn btn-primary btn-lg">开始学习</a>
+        </div>
+    </section>
 
-    <h2>深度学习 7 天速成</h2>
+    <!-- Learning Path Section -->
+    <section id="learning-path" class="section bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">学习路径</h2>
+            <p class="text-center text-muted mb-5">系统化的学习路径，适合不同阶段的学习者。</p>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">基础入门</h3>
+                            <p class="card-text">学习基础知识，如监督学习与无监督学习。</p>
+                            <a href="#" class="btn btn-outline-primary">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">深度学习综合指南</h3>
+                            <p class="card-text">深入学习神经网络与深度学习框架。</p>
+                            <a href="deep_learning/index.html" class="btn btn-outline-primary">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">数据处理</h3>
+                            <p class="card-text">掌握数据清理、特征工程与数据可视化。</p>
+                            <a href="#" class="btn btn-outline-primary">了解更多</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/op7y3C70YFU?si=EhMkbrh64-H74R0z" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    
-    <h3>第 01 天：NumPy 介绍</h3>
-    
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/5KISqYekgxA?si=VEqZi4w3-JdJ6UJV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <!-- Tutorials Section -->
+    <section id="tutorials" class="section">
+        <div class="container">
+            <h2 class="text-center mb-4">教程</h2>
+            <p class="text-center text-muted mb-5">精选教程，快速掌握机器学习相关技能。</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a href="#" class="text-decoration-none">线性回归从零开始</a></li>
+                <li class="list-group-item"><a href="#" class="text-decoration-none">决策树的构建与应用</a></li>
+                <li class="list-group-item"><a href="#" class="text-decoration-none">使用 TensorFlow 构建神经网络</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="tools" class="section bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">工具与代码示例</h2>
+            <p class="text-center text-muted mb-5">常用机器学习框架与工具的介绍与使用。</p>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">TensorFlow</h3>
+                            <p class="card-text">强大的机器学习框架。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">Scikit-learn</h3>
+                            <p class="card-text">轻量化机器学习工具。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">Keras</h3>
+                            <p class="card-text">快速搭建深度学习模型。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-5">
+        <div class="container">
+            <p class="mb-0">© 2025 机器学习学习资源. 保留所有权利。</p>
+            <a href="#home">返回顶部</a>
+        </div>
+    </footer>
+
+    <!-- 引入 Bootstrap 脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
