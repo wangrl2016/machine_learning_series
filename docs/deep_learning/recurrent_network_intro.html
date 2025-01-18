@@ -22,6 +22,7 @@
             font-weight: 700;
             color: #4caf50;
             text-align: center;
+            margin-bottom: 20px;
             border-bottom: 3px solid #4caf50; /* 标题下边框 */
         }
 
@@ -30,6 +31,7 @@
             color: #6c757d; /* Bootstrap 灰色 */
             text-align: center;
             margin-top: -10px;
+            margin-bottom: 40px;
         }
         body {
             font-family: 'Arial', sans-serif;
@@ -51,7 +53,7 @@
             line-height: 1.6;
             color: #4caf50;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             border-bottom: 3px solid #4caf50;
             display: inline-block;
             padding-bottom: 10px;
@@ -78,11 +80,15 @@
             font-size: 1.1em;
             margin: 20px 0;
         }
+        .highlight-math {
+            background-color: #FFCC99;
+            padding: 5px;
+            border-radius: 5px;
+        }
         .highlight-link {
             color: #f39c12;
             font-weight: bold;
         }
-
         .highlight {
             background-color: #f1c40f;
             font-weight: bold;
@@ -171,12 +177,7 @@
         <div class="row">
         <!-- 左侧小节列表 -->
         <nav class="col-md-2 sidebar">
-            <h4>第1章：基础知识</h4>
-            <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link text-dark" href="subsection1-1.html">1.1 子章节</a></li>
-            <li class="nav-item"><a class="nav-link text-dark" href="subsection1-2.html">1.2 子章节</a></li>
-            <li class="nav-item"><a class="nav-link text-dark" href="subsection1-3.html">1.3 子章节</a></li>
-            </ul>
+
         </nav>
 
         <!-- 中间内容：显示具体某一个小节 -->
@@ -221,12 +222,65 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
     
             <h3 id="how">8.1.2 如何实现</h3>
 
-            
+            <p>让我们考虑“多对多”的 RNN 网络，它的输入为 \( x_0, x_1, \dots, x_{n-1}, x_n \) ，想要产生的输出为 \( y_0, y_1, \dots, y_{n-1}, y_n \) 。 \(x_i\) 和 \(y_i\) 都是向量，可以任意长度。</p>
+            <p>RNN 通过迭代中间隐藏状态 \(h\) 工作，\(h\) 是一个任意维度的向量。初始时，没有隐藏状态，\(h_0\) 使用随机值进行初始化，通过输入 \(x_0\) 和 \(h_0\) 计算输出 \(y_0\) 。在任意给定步骤 \(t\) ：</p>
+            <ul>
+                <li>
+                    <p>1. 下一个隐藏状态 \(h_t\) 可以通过之前的隐藏状态 \(h_{t-1}\) 和下一个输入 \(x_t\) 计算出来。</p>
+                </li>
+                <li>
+                    <p>2. 下一个输出 \(y_t\) 可以使用 \(h_t\) 计算。</p>
+                </li>
+            </ul>
+            <p>以上操作让 RNN 具有循环性：它在每个步骤中使用相同的权重。更具体地说，一个典型的基础循环神经网络仅使用 3 组权重来执行计算：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>\(W_{xh}\) ，用于所有 \(x_t\) -> \(h_t\) 连接；</p>
+                </li>
+                <li>
+                    <p>\(W_{hh}\) ，用于所有 \(h_t\) -> \(h_t\) 连接；</p>
+                </li>
+                <li>
+                    <p>Why ，用于所有 htyt 连接。</p>
+                </li>
+            </ul>
+            <p>我们的 RNN 网络还有两个偏置：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>bh ，用于计算 ht 的相加操作；</p>
+                </li>
+                <li>
+                    <p>by ，用于计算 yt 的相加操作。</p>
+                </li>
+            </ul>
+            <p>使用矩阵表示权重，使用向量表示偏置，上面 3 组权重和 2 组偏置就能构成一个完整的 RNN 。下面公式将所有的参数放在一起：</p>
+            <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(y_t = W_{hy} \cdot h_t + b_y\)</p>
+            <div class="comment">注：不要跳过这些等式，停下来思考一分钟，记住这些权重是矩阵，其它变量是向量。</div>
+            <p>所有权重都使用矩阵乘法计算，并将偏置添加到乘积结果中。然后我们使用 tanh 作为第一个激活函数（也可以使用其它激活函数，如 sigmoid 函数）。如果不知道什么是激活函数，<a href="#">第 4.2 节 激活函数</a> 详细地介绍了它们。</p>
+        
+            <h3 id="problem">8.1.3 问题</h3>
 
-            <div class="highlight">
-                小贴士：保持段落内容清晰，并适当地使用空白区域，有助于提升阅读体验。
-            </div>
+            <p>让我们开始动手吧！将从头开始实现一个 RNN 来执行一个简单的情感分析任务：确定给定的文本字符串是情绪是积极 (Positive) 的，还是消极 (Negative) 的。</p>
+            <p>文件 pos_peg.py 存放全部的样本数据，以Python 字典的形式，包含训练集和测试集：</p>
+            <pre><code>test_data = {
+                'this is happy': True,
+                'i am good': True,
+                'this is not happy': False,
+                'i am not good': False,
+                'this is not bad': True,
+                'i am not sad': True,
+                'i am very good': True,
+             }</code></pre>
+             <p>下表是一小部分样本数据：</p>
 
+            <h3 id="plan">8.1.4 计划</h3>
+
+            <p>由于这是一个分类问题，我们将使用“多对一”的 RNN 。这与我们之前讨论的“多对多“的 RNN 类似，但它仅使用最后的隐藏状态产生一个输出 y ：</p>
+
+            <h3 id="pre-process">8.1.5 预处理</h3>
+            <h3 id="forward">8.1.6 前向传播</h3>
+            <h3 id="backward">8.1.7 反向传播</h3>
         </main>
 
             <!-- 右侧小标题导航 -->
@@ -241,6 +295,10 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
 
         <!-- 引入 Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
 
         <script>
             // 获取所有的 h3 元素
@@ -263,11 +321,10 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             function highlightCurrentLink(targetId) {
                 const links = sidebar.querySelectorAll('a');
                 links.forEach(link => {
-                    const parentLi = link.parentElement;
                     if (link.getAttribute('href') === `#${targetId}`) {
-                        parentLi.classList.add('highlight-link');
+                        link.classList.add('highlight-link');
                     } else {
-                        parentLi.classList.remove('highlight-link');
+                        link.classList.remove('highlight-link');
                     }
                 });
             }

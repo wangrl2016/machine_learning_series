@@ -21,7 +21,7 @@ class RNN:
     def forward(self, inputs):
         '''
         Perform a forward pass of the RNN using the given inputs.
-        Inputs is an array of one-hot vectors with shape (input_size, 1).
+        Inputs is an array of one-hot vectors with shape (word_size, vocab_size, 1).
         Returns the final output and hidden state.
         '''
         h = numpy.zeros((self.Whh.shape[0], 1))
