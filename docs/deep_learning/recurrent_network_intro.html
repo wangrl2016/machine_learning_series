@@ -12,7 +12,7 @@
             top: 0;
             height: 100vh;
             overflow-y: auto;
-            background-color: #fff;
+            background-color: #f8f9fa;
             color: #000;
             border-right: 1px solid #ddd;
         }
@@ -99,9 +99,14 @@
             padding-left: 20px;
             margin: 10px 0;
         }
+        .with-bullets {
+            list-style: disc;
+            padding-left: 10px;
+            margin: 10px 0 10px 20px;
+        }
         ul li {
             margin: 8px 0;
-            color: #4caf50;
+            color: #34495e;;
         }
         li .title {
             font-weight: bold;
@@ -149,6 +154,14 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 -2px 6px rgba(0, 0, 0, 0.1);;
         }
+        .comment {
+            color: #6c757d;
+            font-size: 0.9em;
+            font-style: italic;
+            margin: 20px 0;
+            border-left: 3px solid #d6d8db;
+            padding-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -167,8 +180,7 @@
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
             <h2 class="custom-title">8.1 循环神经网络入门</h2>
-            <p class="title-subtext">探索深度学习中的核心概念</p>
-            
+            <p class="title-subtext">探索循环神经网络的基础概念，使用 NumPy 实现从头情绪分析模型！</p>
             <p><strong>循环神经网络 (Recurrent Neural Network, RNN)</strong> 是一种专门处理序列的神经网络，由于其在处理文本方面非常有效，因此常用于 自然语言处理 (Natural Language processing) 任务中。本节我们将探索 RNN 是什么，理解其工作原理，并使用 Python 语言从头开始构建一个真正的 RNN 网络（仅使用 <a href="https://numpy.org/">NumPy</a> 库）。</p>
             <p>这需要我们有神经网络的基础知识，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
             <h3 id="why">8.1.1 为什么</h3>
@@ -176,35 +188,43 @@
             <ul>
                 <li>
                     <div class="title">1. 顺序性</div>
-                    <p>数据点之间的顺序至关重要，打乱顺序可能会丢失信息或改变数据的意义。比如股票价格：100, 102, 105, 101 ，顺序决定价格变化的趋势；句子中单词的顺序：“I am happy” 和 “Happy am I” 的意思不同。</p>
+                    <p>数据点之间的顺序至关重要，打乱顺序可能会丢失信息或改变数据的意义。比如股票价格：100, 102, 105, 101 ，顺序决定价格变化的趋势；句子中单词的顺序：<em>“I am happy”</em> 和 <em>“Happy am I”</em> 的意思不同。</p>
                 </li>
         
                 <li>
                     <div class="title">2. 依赖性</div>
-                    <p>前后数据点之间可能存在依赖关系，比如当前数据点只依赖于临近的点，或者当前数据依赖较远的历史数据。比如文本序列 “The cat is on the …” ，预测最后一个单词，通常只需要考虑最近的几个单词 “is on the” 。</p>
+                    <p>前后数据点之间可能存在依赖关系，比如当前数据点只依赖于临近的点，或者当前数据依赖较远的历史数据。比如文本序列 <em>“The cat is on the …”</em> ，预测最后一个单词，通常只需要考虑最近的几个单词 <em>“is on the”</em> 。</p>
                 </li>
             </ul>
             <p>序列数据具有独特的顺序性和依赖性，能够有效地表示时间、空间或逻辑顺序关系。在实际应用中，了解序列数据的特点并选择合适的分析方法和模型，对于提高预测精度和决策质量具有重要意义。</p>
-            <p>代码对序列数据进行绘制（可以使用 yfinance 获取真实股票数据）：</p>
+            <p>文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/1_1_sequence_data.py">1_1_sequence_data.py</a> 对序列数据进行绘制（可以使用 yfinance 获取真实股票数据）：</p>
             <pre><code>stock = [100, 102, 105, 101, 109, 114, 108, 100, 105, 108]
 pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
-
+            <p>结果如下图所示：</p>
+            <img src="stock_data.png" alt="股票趋势">
             <p>基础的神经网络（包括 CNN ）的一个问题是它们只能处理预定大小的样本：使用固定大小的输入，并产生固定大小的输出。RNN 很有用，因为它们允许我们将可变长度的序列作为输入和输出。下图列举 RNN 的几种样式：</p>
             <img src="rnn_relationship.svg" alt="RNN 网络关系">
-            <h3 id="how">8.1.2 如何实现</h3>
-            <p>创建漂亮的段落可以通过以下几点实现：</p>
-            <ul>
-                <li>合理的字体大小和行高，提升可读性。</li>
-                <li>添加背景色、边框或阴影，让段落显得更有层次感。</li>
-                <li>使用突出部分的高亮样式，吸引读者注意。</li>
+            <div class="comment">注：红色表示输入，绿色表示 RNN 自己，蓝色表示输出。</div>
+            
+            <p>这种处理序列的能力使得 RNN 非常有用。例如：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>机器翻译（例如谷歌翻译）是通过“多对多” RNN 完成的，原始文本序列输入到 RNN 中，然后 RNN 生成翻译文本作为输出。</p>
+                </li>
+                <li>
+                    <p>情绪分析（例如这是正面还是负面）通常使用“多对一” 的 RNN 网络。要分析的文本被输入到 RNN 中，然后 RNN 产生单个输出分类（例如这是正面）。</p>
+                </li>
             </ul>
+            <p>接下来，我们将从头构建一个“多对一” RNN 网络，来执行基本的情绪分析，比如 <em>“This is not happy”</em> 属于负面情绪。</p>
     
+            <h3 id="how">8.1.2 如何实现</h3>
+
+            
+
             <div class="highlight">
                 小贴士：保持段落内容清晰，并适当地使用空白区域，有助于提升阅读体验。
             </div>
 
-            
-            <p>效果如上所示。可以尝试调整样式，使其更适合具体需求。</p>
         </main>
 
         <!-- 右侧内容概括 -->
