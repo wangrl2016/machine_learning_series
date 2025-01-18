@@ -8,12 +8,13 @@ from dataset import pos_peg
 vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' ')]))
 vocab_size = len(vocab)
 print('%d unique words found' % vocab_size)
+print(vocab)
 
 # Assign indices to each word.
 word_to_idx = { w: i for i, w in enumerate(vocab) }
 idx_to_word = { i: w for i, w in enumerate(vocab) }
-print(word_to_idx['good'])
-print(idx_to_word[0])
+print('Word of good index is', word_to_idx['good'])
+print('First word is "' + idx_to_word[0] + '"')
 
 def create_inputs(text):
     '''

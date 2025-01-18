@@ -78,12 +78,14 @@
             font-size: 1.1em;
             margin: 20px 0;
         }
+        .highlight-link {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
         .highlight {
-            background: #e8f5e9;
-            border-left: 5px solid #4caf50;
-            padding: 10px 15px;
-            margin: 20px 0;
-            color: #2e7d32;
+            background-color: #f1c40f;
+            font-weight: bold;
         }
         pre {
             background: #263238;
@@ -244,29 +246,60 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             // 获取所有的 h3 元素
             const h3Elements = document.querySelectorAll('h3');
             const sidebar = document.getElementById('dynamic-sidebar');
-    
+
             // 动态生成目录项
             h3Elements.forEach(h3 => {
                 const link = document.createElement('a');
                 link.href = `#${h3.id}`;
                 link.textContent = h3.textContent;
-    
+
                 const listItem = document.createElement('li');
                 listItem.appendChild(link);
-    
+
                 sidebar.appendChild(listItem);
             });
-    
-            // 为每个 h3 元素添加点击事件
-            h3Elements.forEach(h3 => {
-                h3.addEventListener('click', () => {
-                    // 移除所有 h3 元素的高亮
-                    h3Elements.forEach(item => item.classList.remove('highlight'));
-                    
-                    // 为当前点击的 h3 添加高亮
-                    h3.classList.add('highlight');
+
+            // 高亮当前目录项
+            function highlightCurrentLink(targetId) {
+                const links = sidebar.querySelectorAll('a');
+                links.forEach(link => {
+                    const parentLi = link.parentElement;
+                    if (link.getAttribute('href') === `#${targetId}`) {
+                        parentLi.classList.add('highlight-link');
+                    } else {
+                        parentLi.classList.remove('highlight-link');
+                    }
+                });
+            }
+
+            // 页面滚动时更新高亮
+            window.addEventListener('scroll', () => {
+                let found = false;
+                h3Elements.forEach(h3 => {
+                    const rect = h3.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
+                        if (!found) {
+                            highlightCurrentLink(h3.id);
+                            found = true;
+                        }
+                    }
                 });
             });
+
+            // 为每个目录链接添加点击事件
+            const links = sidebar.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                        highlightCurrentLink(targetId);
+                    }
+                });
+            });
+
         </script>
 </body>
 </html>
