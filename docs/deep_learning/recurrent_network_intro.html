@@ -135,11 +135,19 @@
         }
         a {
             text-decoration: underline;
-            text-underline-offset: 3px;
+            text-underline-offset: 4px;
             color: #3498db;
         }
         a:hover {
             color: #2c3e50;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 -2px 6px rgba(0, 0, 0, 0.1);;
         }
     </style>
 </head>
@@ -164,7 +172,7 @@
             <p><strong>循环神经网络 (Recurrent Neural Network, RNN)</strong> 是一种专门处理序列的神经网络，由于其在处理文本方面非常有效，因此常用于 自然语言处理 (Natural Language processing) 任务中。本节我们将探索 RNN 是什么，理解其工作原理，并使用 Python 语言从头开始构建一个真正的 RNN 网络（仅使用 <a href="https://numpy.org/">NumPy</a> 库）。</p>
             <p>这需要我们有神经网络的基础知识，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
             <h3 id="why">8.1.1 为什么</h3>
-            <p>序列数据 是指具有顺序性的结构化数据，通常以特定的时间或逻辑顺序排列。它在自然语言处理、时间序列分析、信号处理等领域中广泛使用。以下是序列数据的特点：</p>
+            <p><strong>序列数据 (Sequence Data)</strong> 是指具有顺序性的结构化数据，通常以特定的时间或逻辑顺序排列。它在自然语言处理、时间序列分析、信号处理等领域中广泛使用。以下是序列数据的特点：</p>
             <ul>
                 <li>
                     <div class="title">1. 顺序性</div>
@@ -181,6 +189,8 @@
             <pre><code>stock = [100, 102, 105, 101, 109, 114, 108, 100, 105, 108]
 pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
 
+            <p>基础的神经网络（包括 CNN ）的一个问题是它们只能处理预定大小的样本：使用固定大小的输入，并产生固定大小的输出。RNN 很有用，因为它们允许我们将可变长度的序列作为输入和输出。下图列举 RNN 的几种样式：</p>
+            <img src="rnn_relationship.svg" alt="RNN 网络关系">
             <h3 id="how">8.1.2 如何实现</h3>
             <p>创建漂亮的段落可以通过以下几点实现：</p>
             <ul>
