@@ -58,8 +58,20 @@
             font-weight: bold;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
         }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        code {
+            font-family: "Courier New", Courier, monospace;
+        }
         .content h3 {
-            margin-top: 40px;
+            margin-top: 60px;
             color: #8e44ad;
         }
         .content p {
@@ -121,6 +133,14 @@
             font-weight: bold;
             color: #007bff;
         }
+        a {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            color: #3498db;
+        }
+        a:hover {
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -157,7 +177,10 @@
                 </li>
             </ul>
             <p>序列数据具有独特的顺序性和依赖性，能够有效地表示时间、空间或逻辑顺序关系。在实际应用中，了解序列数据的特点并选择合适的分析方法和模型，对于提高预测精度和决策质量具有重要意义。</p>
-            
+            <p>代码对序列数据进行绘制（可以使用 yfinance 获取真实股票数据）：</p>
+            <pre><code>stock = [100, 102, 105, 101, 109, 114, 108, 100, 105, 108]
+pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
+
             <h3 id="how">8.1.2 如何实现</h3>
             <p>创建漂亮的段落可以通过以下几点实现：</p>
             <ul>
