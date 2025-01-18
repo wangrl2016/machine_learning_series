@@ -74,6 +74,10 @@
             margin-top: 60px;
             color: #8e44ad;
         }
+        .content h4 {
+            margin-top: 40px;
+            color: #8e44ad;
+        }
         .content p {
             font-size: 1.1em;
             margin: 20px 0;
@@ -203,7 +207,7 @@
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
             <h2 class="custom-title">8.1 循环神经网络入门</h2>
-            <p class="title-subtext">探索循环神经网络的基础概念，使用 NumPy 实现从头情绪分析模型！</p>
+            <p class="title-subtext">探索循环神经网络的基础概念，使用 NumPy 从头实现情绪分析模型！</p>
             <p>创建日期: 2025-01-01 <br> 修改日期: 2025-01-18</p>
             <p><strong>循环神经网络 (Recurrent Neural Network, RNN)</strong> 是一种专门处理序列的神经网络，由于其在处理文本方面非常有效，因此常用于 自然语言处理 (Natural Language processing) 任务中。本节我们将探索 RNN 是什么，理解其工作原理，并使用 Python 语言从头开始构建一个真正的 RNN 网络（仅使用 <a href="https://numpy.org/">NumPy</a> 库）。</p>
             <p>这需要我们有神经网络的基础知识，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
@@ -284,7 +288,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <h3 id="problem">8.1.3 问题</h3>
 
             <p>让我们开始动手吧！将从头开始实现一个 RNN 来执行一个简单的情感分析任务：确定给定的文本字符串是情绪是积极 (Positive) 的，还是消极 (Negative) 的。</p>
-            <p>文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/dataset/pos_peg.py">pos_peg.py</a> 存放全部的样本数据，以Python 字典的形式，包含训练集和测试集：</p>
+            <p>文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/dataset/pos_peg.py">pos_peg.py</a> 存放全部的样本数据，以 Python 字典的形式，包含训练集和测试集：</p>
             <pre><code>test_data = {
     'this is happy': True,
     'i am good': True,
@@ -352,7 +356,7 @@ vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' 
 vocab_size = len(vocab)
 print('%d unique words found' % vocab_size)
 print('Vocab:', vocab)</code></pre>
-            <p>可以运行文件 1_5_pre_process.py 查看具体的情况，因为使用的 python 语言 set 结构体，内部的顺序是打乱的，所以每次都能获取到不同的下标值：</p>
+            <p>可以运行文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/1_5_pre_process.py">1_5_pre_process.py</a> 查看具体的情况，因为使用的 Python 语言 set 结构体，内部的顺序是打乱的，所以每个单词每次都能获取到不同的下标值：</p>
             <pre><code>18 unique words found
 Vocab: ['now', 'and', 'or', 'good', 'not', 'sad', 'is', 'right', 'was', 'earlier',
     'at', 'very', 'am', 'i', 'bad', 'this', 'all', 'happy']</code></pre>
@@ -366,10 +370,10 @@ print('First word is "' + idx_to_word[0] + '"')</code></pre>
             <p>上述代码生成了两个 dict 结构体，使用第一个结构体查看单词 good 的下标，使用第二个结构体查看下标 0 是哪个单词：</p>
             <pre><code>Word of good index is 3
 First word is "now"</code></pre>
-            <p>之前提到过每个输入 xi 都是一个向量，我们使用 独热 (One-Hot) 向量，用于将离散的类别数据编码成向量的形式。每个类别由一个独特的向量表示，其中只有一个位置为1，其他位置为0。</p>
+            <p>之前提到过每个输入 \(x_i\) 都是一个向量，这里我们使用 独热 (One-Hot) 向量进行编码，用于将离散的单词数据编码成向量的形式。每个单词由一个独特的向量表示，其中只有一个位置为1，其他位置为0。</p>
             <p>假设有三个类别：“Cat” ，“Dog” ，“Rabbit” ，对应的索引为 0，1，2 。那么 “Cat” 的 one-hot 向量为 [1, 0, 0] ，“Dog” 的 one-hot 向量为 [0, 1, 0] 。</p>
             <p>因为在字典里有 18 个不同的单词，所以每个 xi 的 one-hot 向量长度为 18 。使用 create_inputs 将文本数据转换为向量输入传递到神经网络中：</p>
-            <p><code>def create_inputs(text):
+            <pre><code>def create_inputs(text):
     '''
     Return an array of one-hot vectors representing the words
     in the input text string.
@@ -381,13 +385,64 @@ First word is "now"</code></pre>
         v = numpy.zeros((vocab_size, 1))
         v[word_to_idx[w]] = 1
             inputs.append(v)
-    return inputs</code></p>
+    return inputs</code></pre>
             <p>比如将 “i am not at all good” 编码成为输入矩阵，得到的形状为 (6, 18, 1) 。</p>
             <pre><code>inputs = create_inputs('i am not at all good')
 print('Input data shape', numpy.array(inputs).shape)</code></pre>
             <p>第一个维度大小表示句子中单词的个数，第二个维度表示词汇表中单词的个数，注意第三个维度的大小为 1 ，主要是便于后续计算。</p>
+            
             <h3 id="forward">8.1.6 前向传播</h3>
+                <p>让我们开始实现 RNN 网络。使用标准正态分布，初始化 3 组权重值和 2 组偏置：</p>
+                <pre><code>class RNN:
+    # A vanilla recurrent neural network.
+    def __init__(self, vocab_size, output_size, hidden_size=64):
+        rng = numpy.random.default_rng(seed=0)
+        self.Whh = rng.standard_normal((hidden_size, hidden_size)) / 1000
+        self.Wxh = rng.standard_normal((hidden_size, vocab_size)) / 1000
+        self.Why = rng.standard_normal((output_size, hidden_size)) / 1000
+        self.bh = numpy.zeros((hidden_size, 1))
+        self.by = numpy.zeros((output_size, 1))</code></pre>
+        <div class="comment">注：我们将初始化的值除以 1000 ，这并不是一个最佳做法，但是它对于本模型非常简单且有效。</div>
+                <p>接下来实现 RNN 网络的前向传播，记住下面两个公式：</p>
+                <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
+                <p class="highlight-math" style="text-align: center;">\(y_t = W_{hy} \cdot h_t + b_y\)</p>
+                <p>文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/1_6_rnn_forward.py">1_6_rnn_forward.py</a> 将它们用代码实现：</p>
+            <pre><code>def forward(self, inputs):
+    '''
+    Perform a forward pass of the RNN using the given inputs.
+    Inputs is an array of one-hot vectors with shape (word_size, vocab_size, 1).
+    Returns the final output and hidden state.
+    '''
+    h = numpy.zeros((self.Whh.shape[0], 1))
+    # Perform each step of the RNN.
+    for _, x in enumerate(inputs):
+        h = numpy.tanh(self.Wxh @ x + self.Whh @ h + self.bh)
+        # Compute the output.
+        y = self.Why @ h + self.by
+    return y, h</code></pre>
+            <p>看上去非常简单？注意第一步我们将 h 初始化为零向量，因为在那之前没有隐藏状态。</p>
+            <p>例如当我们的第一个输入单词为 \(x \in \mathbb{R}^{18 \times 1}\) 时，下述公式可以看到网络的维度变化：</p>
+            <p>\(h \in \mathbb{R}^{64 \times 1} = tanh(W_{xh} \in \mathbb{R}^{64 \times 18} \cdot x \in \mathbb{R}^{18 \times 1} + W_{hh} \in \mathbb{R}^{64 \times 64} \cdot h \in \mathbb{R}^{18 \times 1} + b_h \in \mathbb{R}^{64 \times 1})\)</p>
+            <p>\(y \in \mathbb{R}^{2 \times 1} = W_{hy} \in \mathbb{R}^{2 \times 64} \cdot h \in \mathbb{R}^{64 \times 1}\)</p>
+            <p>以此类推，直到最后一个单词，经过 softmax 函数转换为概率值，完成网络的前向传播过程：</p>
+            <pre><code>rnn = RNN(vocab_size, 2)
+inputs = create_inputs('i am very good')
+out, h = rnn.forward(inputs)
+porbs = softmax(out)
+print(porbs)</code></pre>
+            <p>传递 “i am very good” 看看网络的输出情况：</p>
+            <pre><code>[[0.4999993]
+ [0.5000007]]</code></pre>
+                <p>此时网络起作用了，输出两个相近的概率值，但是并没有什么用，接下来使用反向传播进行训练！</p>
+            
             <h3 id="backward">8.1.7 反向传播</h3>
+            <h4 id='loss-function'>8.1.7.1 损失函数</h4>
+            <h4 id='definition'>8.1.7.2 定义</h4>
+            <h4 id='setup'>8.1.7.3 设置</h4>
+            <h4 id='gradient'>8.1.7.4 梯度</h4>
+
+            <h3 id="test">8.1.8 测试</h3>
+
         </main>
 
             <!-- 右侧小标题导航 -->
