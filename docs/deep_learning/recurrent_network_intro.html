@@ -284,7 +284,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <h3 id="problem">8.1.3 问题</h3>
 
             <p>让我们开始动手吧！将从头开始实现一个 RNN 来执行一个简单的情感分析任务：确定给定的文本字符串是情绪是积极 (Positive) 的，还是消极 (Negative) 的。</p>
-            <p>文件 pos_peg.py 存放全部的样本数据，以Python 字典的形式，包含训练集和测试集：</p>
+            <p>文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/dataset/pos_peg.py">pos_peg.py</a> 存放全部的样本数据，以Python 字典的形式，包含训练集和测试集：</p>
             <pre><code>test_data = {
     'this is happy': True,
     'i am good': True,
@@ -293,7 +293,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
     'this is not bad': True,
     'i am not sad': True,
     'i am very good': True,
-             }</code></pre>
+}</code></pre>
             <p>下表是一小部分样本数据：</p>
              <table>
                 <thead>
@@ -341,8 +341,51 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <h3 id="plan">8.1.4 计划</h3>
 
             <p>由于这是一个分类问题，我们将使用“多对一”的 RNN 。这与我们之前讨论的“多对多“的 RNN 类似，但它仅使用最后的隐藏状态产生一个输出 y ：</p>
+            <img src="many_to_one.svg" alt="多对一网络">
+            <p>每个 \(x_i\) 都是个向量，表示文本中的单词。输出 \(y\) 是一个包含两个数字的向量，一个代表正向情绪，另一个代表负向情绪。我们将应用 softmax 函数将这些值转换为概率，并最终在 正向 / 负向 之间做出判断。</p>
+            <p>让我们开始构建 RNN 模型！</p>
 
             <h3 id="pre-process">8.1.5 预处理</h3>
+            <p>之前提到的数据集包含两个 Python 字典结构：train_data 和 test_data 。我们需要对数据进行预处理，将它转换为可用的形式。对数据集里面存在的单词，构建一个单词表 vocab ，使用单词表中的下标表示单词。</p>
+            <pre><code># Create the vocabulary
+vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' ')]))
+vocab_size = len(vocab)
+print('%d unique words found' % vocab_size)
+print('Vocab:', vocab)</code></pre>
+            <p>可以运行文件 1_5_pre_process.py 查看具体的情况，因为使用的 python 语言 set 结构体，内部的顺序是打乱的，所以每次都能获取到不同的下标值：</p>
+            <pre><code>18 unique words found
+Vocab: ['now', 'and', 'or', 'good', 'not', 'sad', 'is', 'right', 'was', 'earlier',
+    'at', 'very', 'am', 'i', 'bad', 'this', 'all', 'happy']</code></pre>
+            <div class="comment">注：set 结构体会自动过滤到重复的单词。</div>
+            <p>vocab 包含训练集中至少出现一次的所有单词，现在可以使用对应的整数表示单词表中的单词，这是必要的，因为 RNN 不能理解文本，我们必须给它输入数字。</p>
+            <pre><code># Assign indices to each word.
+word_to_idx = { w: i for i, w in enumerate(vocab) }
+idx_to_word = { i: w for i, w in enumerate(vocab) }
+print('Word of good index is', word_to_idx['good'])
+print('First word is "' + idx_to_word[0] + '"')</code></pre>
+            <p>上述代码生成了两个 dict 结构体，使用第一个结构体查看单词 good 的下标，使用第二个结构体查看下标 0 是哪个单词：</p>
+            <pre><code>Word of good index is 3
+First word is "now"</code></pre>
+            <p>之前提到过每个输入 xi 都是一个向量，我们使用 独热 (One-Hot) 向量，用于将离散的类别数据编码成向量的形式。每个类别由一个独特的向量表示，其中只有一个位置为1，其他位置为0。</p>
+            <p>假设有三个类别：“Cat” ，“Dog” ，“Rabbit” ，对应的索引为 0，1，2 。那么 “Cat” 的 one-hot 向量为 [1, 0, 0] ，“Dog” 的 one-hot 向量为 [0, 1, 0] 。</p>
+            <p>因为在字典里有 18 个不同的单词，所以每个 xi 的 one-hot 向量长度为 18 。使用 create_inputs 将文本数据转换为向量输入传递到神经网络中：</p>
+            <p><code>def create_inputs(text):
+    '''
+    Return an array of one-hot vectors representing the words
+    in the input text string.
+    - text is a string
+    - each one-hot vector has shape (vocab_size, 1)
+    '''
+    inputs = []
+    for w in text.split(' '):
+        v = numpy.zeros((vocab_size, 1))
+        v[word_to_idx[w]] = 1
+            inputs.append(v)
+    return inputs</code></p>
+            <p>比如将 “i am not at all good” 编码成为输入矩阵，得到的形状为 (6, 18, 1) 。</p>
+            <pre><code>inputs = create_inputs('i am not at all good')
+print('Input data shape', numpy.array(inputs).shape)</code></pre>
+            <p>第一个维度大小表示句子中单词的个数，第二个维度表示词汇表中单词的个数，注意第三个维度的大小为 1 ，主要是便于后续计算。</p>
             <h3 id="forward">8.1.6 前向传播</h3>
             <h3 id="backward">8.1.7 反向传播</h3>
         </main>

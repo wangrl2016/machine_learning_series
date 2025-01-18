@@ -8,7 +8,7 @@ from dataset import pos_peg
 vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' ')]))
 vocab_size = len(vocab)
 print('%d unique words found' % vocab_size)
-print(vocab)
+print('Vocab:', vocab)
 
 # Assign indices to each word.
 word_to_idx = { w: i for i, w in enumerate(vocab) }
