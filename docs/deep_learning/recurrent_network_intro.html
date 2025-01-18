@@ -227,19 +227,46 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
 
         </main>
 
-        <!-- 右侧内容概括 -->
-        <aside class="col-md-2 summary">
-            <h4>内容概括</h4>
-            <ul>
-            <li><a href="#section-overview">概述</a></li>
-            <li><a href="#section-example">示例</a></li>
-            <li><a href="#section-summary">总结</a></li>
-            </ul>
-        </aside>
+            <!-- 右侧小标题导航 -->
+            <aside class="col-md-2 right-sidebar">
+                <h5>标题</h5>
+                <ul id="dynamic-sidebar" class="nav flex-column">
+                    <!-- 动态内容 -->
+                </ul>
+            </aside>
         </div>
     </div>
 
         <!-- 引入 Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            // 获取所有的 h3 元素
+            const h3Elements = document.querySelectorAll('h3');
+            const sidebar = document.getElementById('dynamic-sidebar');
+    
+            // 动态生成目录项
+            h3Elements.forEach(h3 => {
+                const link = document.createElement('a');
+                link.href = `#${h3.id}`;
+                link.textContent = h3.textContent;
+    
+                const listItem = document.createElement('li');
+                listItem.appendChild(link);
+    
+                sidebar.appendChild(listItem);
+            });
+    
+            // 为每个 h3 元素添加点击事件
+            h3Elements.forEach(h3 => {
+                h3.addEventListener('click', () => {
+                    // 移除所有 h3 元素的高亮
+                    h3Elements.forEach(item => item.classList.remove('highlight'));
+                    
+                    // 为当前点击的 h3 添加高亮
+                    h3.classList.add('highlight');
+                });
+            });
+        </script>
 </body>
 </html>

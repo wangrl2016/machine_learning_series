@@ -31,4 +31,5 @@ def create_inputs(text):
 
 if __name__ == '__main__':
     inputs = create_inputs('i am not at all good')
-    print(numpy.array(inputs).shape)
+
+    print('Input data shape', numpy.array(inputs).shape)
