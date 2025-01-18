@@ -30,8 +30,6 @@
             font-size: 1.2rem;
             color: #6c757d; /* Bootstrap 灰色 */
             text-align: center;
-            margin-top: -10px;
-            margin-bottom: 40px;
         }
         body {
             font-family: 'Arial', sans-serif;
@@ -170,6 +168,28 @@
             border-left: 3px solid #d6d8db;
             padding-left: 10px;
         }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .positive {
+            color: green;
+            font-weight: bold;
+        }
+        .negative {
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -184,6 +204,7 @@
         <main class="col-md-8 content">
             <h2 class="custom-title">8.1 循环神经网络入门</h2>
             <p class="title-subtext">探索循环神经网络的基础概念，使用 NumPy 实现从头情绪分析模型！</p>
+            <p>创建日期: 2025-01-01 <br> 修改日期: 2025-01-18</p>
             <p><strong>循环神经网络 (Recurrent Neural Network, RNN)</strong> 是一种专门处理序列的神经网络，由于其在处理文本方面非常有效，因此常用于 自然语言处理 (Natural Language processing) 任务中。本节我们将探索 RNN 是什么，理解其工作原理，并使用 Python 语言从头开始构建一个真正的 RNN 网络（仅使用 <a href="https://numpy.org/">NumPy</a> 库）。</p>
             <p>这需要我们有神经网络的基础知识，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
             <h3 id="why">8.1.1 为什么</h3>
@@ -232,6 +253,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
                     <p>2. 下一个输出 \(y_t\) 可以使用 \(h_t\) 计算。</p>
                 </li>
             </ul>
+            <img src="rnn_arch.svg" alt="RNN 架构">
             <p>以上操作让 RNN 具有循环性：它在每个步骤中使用相同的权重。更具体地说，一个典型的基础循环神经网络仅使用 3 组权重来执行计算：</p>
             <ul class="with-bullets">
                 <li>
@@ -241,16 +263,16 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
                     <p>\(W_{hh}\) ，用于所有 \(h_t\) -> \(h_t\) 连接；</p>
                 </li>
                 <li>
-                    <p>Why ，用于所有 htyt 连接。</p>
+                    <p>\(W_{hy}\) ，用于所有 \(h_t\) -> \(y_t\) 连接。</p>
                 </li>
             </ul>
             <p>我们的 RNN 网络还有两个偏置：</p>
             <ul class="with-bullets">
                 <li>
-                    <p>bh ，用于计算 ht 的相加操作；</p>
+                    <p>\(b_h\) ，用于计算 \(h_t\) 的相加操作；</p>
                 </li>
                 <li>
-                    <p>by ，用于计算 yt 的相加操作。</p>
+                    <p>\(b_y\) ，用于计算 \(y_t\) 的相加操作。</p>
                 </li>
             </ul>
             <p>使用矩阵表示权重，使用向量表示偏置，上面 3 组权重和 2 组偏置就能构成一个完整的 RNN 。下面公式将所有的参数放在一起：</p>
@@ -264,15 +286,57 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <p>让我们开始动手吧！将从头开始实现一个 RNN 来执行一个简单的情感分析任务：确定给定的文本字符串是情绪是积极 (Positive) 的，还是消极 (Negative) 的。</p>
             <p>文件 pos_peg.py 存放全部的样本数据，以Python 字典的形式，包含训练集和测试集：</p>
             <pre><code>test_data = {
-                'this is happy': True,
-                'i am good': True,
-                'this is not happy': False,
-                'i am not good': False,
-                'this is not bad': True,
-                'i am not sad': True,
-                'i am very good': True,
+    'this is happy': True,
+    'i am good': True,
+    'this is not happy': False,
+    'i am not good': False,
+    'this is not bad': True,
+    'i am not sad': True,
+    'i am very good': True,
              }</code></pre>
-             <p>下表是一小部分样本数据：</p>
+            <p>下表是一小部分样本数据：</p>
+             <table>
+                <thead>
+                    <tr>
+                        <th>Text</th>
+                        <th>Positive?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>I am good</td>
+                        <td class="positive">✓</td>
+                    </tr>
+                    <tr>
+                        <td>I am bad</td>
+                        <td class="negative">❌</td>
+                    </tr>
+                    <tr>
+                        <td>This is very good</td>
+                        <td class="positive">✓</td>
+                    </tr>
+                    <tr>
+                        <td>This is not bad</td>
+                        <td class="positive">✓</td>
+                    </tr>
+                    <tr>
+                        <td>I am bad not good</td>
+                        <td class="negative">❌</td>
+                    </tr>
+                    <tr>
+                        <td>I am not at all happy</td>
+                        <td class="negative">❌</td>
+                    </tr>
+                    <tr>
+                        <td>This was good earlier</td>
+                        <td class="positive">✓</td>
+                    </tr>
+                    <tr>
+                        <td>I am not at all bad or sad right now</td>
+                        <td class="positive">✓</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <h3 id="plan">8.1.4 计划</h3>
 
