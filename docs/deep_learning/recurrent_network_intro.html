@@ -148,6 +148,13 @@
             font-weight: bold;
             color: #007bff;
         }
+        #dynamic-sidebar ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        #dynamic-sidebar ul ul {
+            padding-left: 20px;
+        }
         a {
             text-decoration: underline;
             text-underline-offset: 4px;
@@ -463,17 +470,26 @@ print(porbs)</code></pre>
         </script>
 
         <script>
-            // 获取所有的 h3 元素
-            const h3Elements = document.querySelectorAll('h3');
+            // 获取所有的 h3 和 h4 元素
             const sidebar = document.getElementById('dynamic-sidebar');
+            const elements = Array.from(document.querySelectorAll('h3, h4')); // 获取所有 h3 和 h4 元素
 
             // 动态生成目录项
-            h3Elements.forEach(h3 => {
+            elements.forEach(element => {
+                // 如果没有 id，则为该元素生成一个 id
+                if (!element.id) {
+                    element.id = `${element.tagName.toLowerCase()}-${Math.random().toString(36).substr(2, 9)}`;
+                }
+
                 const link = document.createElement('a');
-                link.href = `#${h3.id}`;
-                link.textContent = h3.textContent;
+                link.href = `#${element.id}`;
+                link.textContent = element.textContent;
 
                 const listItem = document.createElement('li');
+                // 如果是 h4 元素，添加缩进
+                if (element.tagName.toLowerCase() === 'h4') {
+                    listItem.style.marginLeft = '20px'; // 控制缩进
+                }
                 listItem.appendChild(link);
 
                 sidebar.appendChild(listItem);
@@ -494,11 +510,11 @@ print(porbs)</code></pre>
             // 页面滚动时更新高亮
             window.addEventListener('scroll', () => {
                 let found = false;
-                h3Elements.forEach(h3 => {
-                    const rect = h3.getBoundingClientRect();
+                elements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
                     if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
                         if (!found) {
-                            highlightCurrentLink(h3.id);
+                            highlightCurrentLink(el.id);
                             found = true;
                         }
                     }
@@ -518,7 +534,6 @@ print(porbs)</code></pre>
                     }
                 });
             });
-
         </script>
 </body>
 </html>
