@@ -593,16 +593,92 @@ print(porbs)</code></pre>
             <p>\(\frac{\partial l}{\partial W_{hy}} = \frac{\partial l}{\partial y} \cdot \frac{\partial y}{\partial W_{hy}}\)</p>
             <p>根据公式 \(y = W_{hy} \cdot h_n + b_y\)</p>
             <p> \(\frac{\partial y}{\partial W_{hy}} = h_n\)，其中 \(h_n\) 是最后的隐藏状态，因此可以得到：</p>
-            <p class="highlight-math" style="text-align: center;">\(\frac{\partial y}{\partial W_{hy}} = \frac{\partial l}{\partial y} \cdot h_n\)</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{hy}} = \frac{\partial l}{\partial y} \cdot h_n\)</p>
             <p>同样 \(\frac{\partial y}{\partial b_y} = 1\) ，得到：</p>
-            <p>\(\frac{\partial l}{\partial b_y} = \frac{\partial l}{\partial y}\)</p>
-
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial b_y} = \frac{\partial l}{\partial y}\)</p>
+            <p>如下使用代码表示：</p>
+            <pre><code>def backprop(self, dy, learn_rate=2e-2):
+    # dy (dl/dy) has shape (output_size, 1)
+    n = len(self.last_inputs)
+        
+    # calculate dl/dwhy and dl/dby
+<span class="added">    dwhy = dy @ self.last_hs[n].T</span>
+<span class="added">    dby = dy</span></code></pre>
             <p>第三阶段需要计算每一步的 Whh ，Wxh 和 bh 的梯度，我们有下面公式：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{xh}} = \frac{\partial l}{\partial y} \sum_{t=0}^{n} (\frac{\partial y}{\partial h_t} \cdot \frac{\partial h_t}{\partial W_{xh}}) \)</p>
-            <p>因为改变 Wxh 会影响每个 ht ，通过影响 y 值，最终影响损失 l 。为了计算 Wxh 的梯度，我们需要对所有的 t 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
-            <p></p>
-            <p>Wxh 在所有的 xtht 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 t ，我们需要计算 htWxh ：</p>
-
+            <p>因为改变 \(W_{xh}\) 会影响每个 \(h_t\) ，通过影响 \(y\) 值，最终影响损失 \(l\) 。为了计算 \(W_{xh}\) 的梯度，我们需要对所有的 \(t\) 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
+            <p>上述公式需要分别计算 \(y_{ht}\) 和 \(\frac{\partial h_t}{\partial W_{xh}}\) 的梯度。</p>
+            <p>\(W_{xh}\) 在所有的 \(x_t\) -> \(h_t\) 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 \(t\) ，我们需要计算 \(\frac{\partial h_t}{\partial W_{xh}}\) ：</p>
+            <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
+            <p>其中，我们知道 \(\frac{d \tanh(x)}{dx} = 1 - \tanh^2(x)\) ，因此</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial W_{xh}} = (1 - h_t)^2x(t)\)</p>
+            <p>同样根据上述公式对其它两个参数进行求导得到：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial W_{hh}} = (1 - h_t)^2h_{t-1}\)</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial b_h} = (1 - h_t)^2\)</p>
+            <p>最后需要 \(\frac{\partial y}{\partial h_t}\) ，我们可以使用循环计算：</p>
+            <p>yht=yht+1ht+1ht=yht+1(1-ht2)Whh</p>
+            <p>BPTT 的实现从最后一个隐藏状态开始，然后反向传递。因此当我们想要计算 \(\frac{\partial y}{\partial h_t}\) 时，已经计算出 \(\frac{\partial y}{\partial h_{t+1}}\) 的值，除了最后一个状态 \(h_n\) ：</p>
+            <p>\(\frac{\partial y}{\partial h_n} = \W_{hy}\)</p>
+            <p>现在我们已经有了实施 BPTT 需要的一切参数，文件 1_7_rnn_backward.py 用代码实现 RNN 的反向传播：</p>
+            <pre><code>class RNN:
+    # ...
+    def backprop(self, dy, learn_rate=2e-2):
+        # dy (dl/dy) has shape (output_size, 1)
+        n = len(self.last_inputs)
+            
+        # calculate dl/dwhy and dl/dby
+        dwhy = dy @ self.last_hs[n].T
+        dby = dy
+                    
+        # initialize dl/dwhh, dl/dwxh, and dl/dbh to zero
+                    dwhh = numpy.zeros(self.Whh.shape)
+                    dwxh = numpy.zeros(self.Wxh.shape)
+                    dbh = numpy.zeros(self.bh.shape)
+            
+                    # calculate dl/dh for the last h
+                    # dl/dh = dl/dy * dy/dh
+                    dh = self.Why.T @ dy
+            
+                    # backpropagation through time
+                    for t in reversed(range(n)):
+                        # an intermediate value: dl/dh * (1 - h^2)
+                        temp = ((1 - self.last_hs[t+1] ** 2) * dh)
+                        # dl/db = dl/dh * (1 - h^2)
+                        dbh += temp
+                        # dl/dwhh = dl/dh * (1 - h^2) * h_{t-1}
+                        dwhh += temp @ self.last_hs[t].T
+                        # dl/dwxh = dl/dh * (1 - h^2) * x
+                        dwxh += temp @ self.last_inputs[t].T
+                        # next dl/dh = dl/dh * (1 - h^2) * Whh
+                        dh = self.Whh.T @ temp
+                    
+                    # clip to prevent exploding gradients
+                    for d in [dwxh, dwhh, dwhy, dbh, dby]:
+                        numpy.clip(d, -1, 1, out=d)
+                
+                    # update weights and biases using gradient descent
+                    self.Whh -= learn_rate * dwhh
+                    self.Wxh -= learn_rate * dwxh
+                    self.Why -= learn_rate * dwhy
+                    self.bh -= learn_rate * dbh
+                    self.by -= learn_rate * dby</code></pre>
+            <p>有几点需要注意的是：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>为了方便使用 lh 直接代替 lyyh 。</p>
+                </li>
+                <li>
+                    <p>为了计算 Lht ，不停地更新 dh 的值，它存储最新计算出来的 Lht+1 的值。</p>
+                </li>
+                <li>
+                    <p>第结束 BPTT 后，使用 numpy.clip() 去掉梯度在 -1 以下，或者 1 以上的值。这有助于缓解梯度爆炸问题，即由于存在大量乘项导致梯度变得非常大。梯度爆炸或消失对于普通 RNN 来说是个问题 - 更复杂的 RNN （如 LSTM）通常更有能力处理它们。</p>
+                </li>
+                <li>
+                    <p>一旦计算出所有梯度，我们就使用梯度下降来更新权重和偏差。</p>
+                </li>
+            </ul>
+            <p>我们已经成功完成 RNN 的反向传播！</p>
+            
             <h3 id="test">8.1.8 测试</h3>
 
             <h3 id="torch_impl">8.1.9 PyTorch 实现</h3>
