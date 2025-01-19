@@ -222,7 +222,7 @@
             <p class="title-subtext">探索循环神经网络的基础概念，使用 NumPy 从头实现情绪分析模型！</p>
             <p>创建日期: 2025-01-01</p>
             <p><strong>循环神经网络 (Recurrent Neural Network, RNN)</strong> 是一种专门处理序列的神经网络，由于其在处理文本方面非常有效，因此常用于 自然语言处理 (Natural Language processing) 任务中。本节我们将探索 RNN 是什么，理解其工作原理，并使用 Python 语言从头开始构建一个真正的 RNN 网络（仅使用 <a href="https://numpy.org/">NumPy</a> 库）。</p>
-            <p>这需要我们有神经网络的基础知识，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
+            <p>这需要我们有神经网络的基础知识，如果不了解神经网络的概念，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
             <h3 id="why">8.1.1 为什么</h3>
             <p><strong>序列数据 (Sequence Data)</strong> 是指具有顺序性的结构化数据，通常以特定的时间或逻辑顺序排列。它在自然语言处理、时间序列分析、信号处理等领域中广泛使用。以下是序列数据的特点：</p>
             <ul>
@@ -519,12 +519,93 @@ print(porbs)</code></pre>
 <span class="added">        pass</span></code></pre>
 
             <h4 id='gradient'>8.1.7.4 梯度</h4>
-            <p>接下来是数学时间！计算 \(\frac{\partial l}{\partial y}\) ，根据公式：</p>
-            <p>\(l = -\ln(p_c) = -\ln(softmax(y_c))\)</p>
-            <p>\(l\) 关于 \(y_c\) 的偏导数，分两种情况讨论：当 i=c 和 ic ：</p>
+            <p>接下来是数学时间！梯度分为三个阶段进行计算：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>第一阶段计算损失 l 相对于输出 y 的梯度；</p>
+                </li>
+                <li>
+                    <p>第二个阶段计算输出 y 相对于最后一个节点的隐藏状态 hn 的梯度 ，同时更新参数 Why 和 by ；</p>
+                </li>
+                <li>
+                    <p>第三个阶段是计算最后一个隐藏状态 hn 相对于输入 x 的梯度，同时更新参数 Wxh 、Whh 和 bh 。</p>
+                </li>
+            </ul>
 
+            <p>第一阶段计算 \(\frac{\partial l}{\partial y}\) ，根据公式：</p>
+            <p class="highlight-math" style="text-align: center;">\(l = -\ln(p_c) = -\ln(softmax(y_c))\)</p>
+            <p>\(l\) 关于 \(y_c\) 的偏导数，分两种情况讨论：当 \(i = c\) 和 \(i \ne c\) ：</p>
+
+            <ul>
+                <li>
+                    <p>1. 当 \(i = c\) （目标类别）</p>
+                    <p>\(\frac{\partial l}{\partial y_c} = \frac{\partial (-ln(p_c))}{\partial y_c}\) ，利用链式法则：\(\frac{\partial l}{\partial y_c} = \frac{\partial l}{\partial p_c} \cdot \frac{\partial p_c}{\partial y_c}\)</p>
+                    <p>交叉熵损失函数的导数公式为：\(\frac{\partial l}{\partial p_c} = - \frac{1}{p_c}\)</p>
+                    <p>softmax 的导数公式为：\(\frac{\partial p_c}{\partial y_c} = p_c(1 - p_c)\)</p>
+                    <p>代入得到 \(\frac{\partial l}{\partial y_c} = -\frac{1}{p_c} \cdot p_c \cdot (1 - p_c) = p_c - 1\)</p>
+                </li>
+                <li>
+                    <p>2. 当 \(i \ne c\) （非目标类别）</p>
+                    <p>Lyi=(-ln(pc))yi 同样利用链式法则 Lyi=lpcpcyc</p>
+                    <p>softmax 的导数公式为：pcyi=-pcpi</p>
+                    <p>代入得到 Lyi=-1pc(-pcpi)=pi</p>
+                </li>
+            </ul>
+            <div class="comment">注：分类别讨论主要是 softmax 函数引起的。</div>
+            <p>经过计算我们得到损失 \(l\) 相对于输出 \(y\) 的梯度：</p>
+            <p class="highlight-math" style="text-align: center;">\(
+                \frac{\partial l}{\partial y_i} = \left\{
+                \begin{array}{ll}
+                p_i - 1 & \text{if } i = j \\
+                p_i & \text{if } i \neq j
+                \end{array}
+                \right.
+                \)</p>
+            <p>比如我们有一个概率 \(p = [0.2, 0.2, 0.6]\) ，正确得分类为 \(c = 0\) ，那么可以得到 \(\frac{\partial l}{\partial y} = [-0.8, 0.2, 0.6]\) 。这很容易转化为代码：</p>
+            <pre><code>def process(data, backprop=True):
+    items = list(data.items())
+    random.shuffle(items)
+        
+    loss = 0
+    num_correct = 0
+        
+    for x, y in items:
+        inputs = create_inputs(x)
+        target = int(y)
+        
+        # forward
+<span class="added">        out, _ = rnn.forward(inputs)</span>
+<span class="added">        probs = softmax(out)</span>
+        
+        # calculate loss / accuracy
+        loss -= numpy.log(probs[target])
+        num_correct += int(numpy.argmax(probs) == target)
+        
+        if backprop:
+            # build dl/dy
+<span class="added">            dl_dy = probs</span>
+<span class="added">            dl_dy[target] -= 1</span>
+        
+<span class="added">            # backward</span>
+<span class="added">            rnn.backprop(dl_dy)</span></code></pre>
+
+            <p>第二阶段需要计算 \(W_{hy}\) 和 \(b_y\) 的梯度，他们是唯一将隐藏状态转换为输出的节点：</p>
+            <p>\(\frac{\partial l}{\partial W_{hy}} = \frac{\partial l}{\partial y} \cdot \frac{\partial y}{\partial W_{hy}}\)</p>
+            <p>根据公式 \(y = W_{hy} \cdot h_n + b_y\)</p>
+            <p> \(\frac{\partial y}{\partial W_{hy}} = h_n\)，其中 \(h_n\) 是最后的隐藏状态，因此可以得到：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial y}{\partial W_{hy}} = \frac{\partial l}{\partial y} \cdot h_n\)</p>
+            <p>同样 \(\frac{\partial y}{\partial b_y} = 1\) ，得到：</p>
+            <p>\(\frac{\partial l}{\partial b_y} = \frac{\partial l}{\partial y}\)</p>
+
+            <p>第三阶段需要计算每一步的 Whh ，Wxh 和 bh 的梯度，我们有下面公式：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{xh}} = \frac{\partial l}{\partial y} \sum_{t=0}^{n} (\frac{\partial y}{\partial h_t} \cdot \frac{\partial h_t}{\partial W_{xh}}) \)</p>
+            <p>因为改变 Wxh 会影响每个 ht ，通过影响 y 值，最终影响损失 l 。为了计算 Wxh 的梯度，我们需要对所有的 t 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
+            <p></p>
+            <p>Wxh 在所有的 xtht 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 t ，我们需要计算 htWxh ：</p>
 
             <h3 id="test">8.1.8 测试</h3>
+
+            <h3 id="torch_impl">8.1.9 PyTorch 实现</h3>
 
         </main>
 
