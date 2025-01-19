@@ -35,6 +35,7 @@ class RNN:
         return y, h
     
     def backprop(self, dy, learn_rate=2e-2):
+        # dy (dl/dy) has shape (output_size, 1)
         n = len(self.last_inputs)
 
         # calculate dl/dwhy and dl/dby
@@ -136,6 +137,9 @@ if __name__ == '__main__':
 
             test_loss, test_acc = process(pos_peg.test_data, backprop=False)
             print('Test: loss %.3f | accuracy: %.3f' % (test_loss, test_acc))
+    
+    (predict, _) = rnn.forward(create_inputs('i am good'))
+    print('Predict text "i am good":', softmax(predict))
 
     pyplot.plot(numpy.array(range(len(losses))) * 50, losses, label='Loss')
     pyplot.plot(numpy.array(range(len(accuracies))) * 50, accuracies, label='Accuracy')

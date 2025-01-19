@@ -67,6 +67,11 @@
             font-size: 16px;
             line-height: 1.5;
         }
+        .added {
+            color: #10e6e2;
+            display: inline-block;
+            width: 100%;
+        }
         code {
             font-family: "Courier New", Courier, monospace;
         }
@@ -215,7 +220,7 @@
         <main class="col-md-8 content">
             <h2 class="custom-title">8.1 循环神经网络入门</h2>
             <p class="title-subtext">探索循环神经网络的基础概念，使用 NumPy 从头实现情绪分析模型！</p>
-            <p>创建日期: 2025-01-01 <br> 修改日期: 2025-01-18</p>
+            <p>创建日期: 2025-01-01</p>
             <p><strong>循环神经网络 (Recurrent Neural Network, RNN)</strong> 是一种专门处理序列的神经网络，由于其在处理文本方面非常有效，因此常用于 自然语言处理 (Natural Language processing) 任务中。本节我们将探索 RNN 是什么，理解其工作原理，并使用 Python 语言从头开始构建一个真正的 RNN 网络（仅使用 <a href="https://numpy.org/">NumPy</a> 库）。</p>
             <p>这需要我们有神经网络的基础知识，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
             <h3 id="why">8.1.1 为什么</h3>
@@ -443,10 +448,81 @@ print(porbs)</code></pre>
                 <p>此时网络起作用了，输出两个相近的概率值，但是并没有什么用，接下来使用反向传播进行训练！</p>
             
             <h3 id="backward">8.1.7 反向传播</h3>
+            <p>以下部分假设你具有微积分的基本知识，如果不想看，可以跳过它，但是我建议你不要跳过。如果你没有这部分背景，可以阅读 <a href="#">4.1 导数</a> 小节的内容。即使只是大概地浏览计算过程，对于理解循环神经网络也是有帮助的。</p>
+
             <h4 id='loss-function'>8.1.7.1 损失函数</h4>
+            <p>为了训练我们的 RNN ，需要有损失函数，这里选择交叉熵损失函数，它经常和 softmax 函数一起使用，具体介绍查看 <a href="#">4.3.3 交叉熵损失</a> 小节 ，计算规则如下：</p>
+            <p class="highlight-math" style="text-align: center;">\(loss = - \sum_{i=1}^n y_i \ln(p_i)\)</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>n 表示类别数量；</p>
+                </li>
+                <li>
+                    <p>yi 是目标分布的真实标签，如果属于类别 i ，则 yi=1 ，否则 yi=0 ；</p>
+                </li>
+                <li>
+                    <p>pi 是模型预测属于类别 i 的概率（通过 softmax 得到的概率值）。</p>
+                </li>
+            </ul>
+            <p>在本例中，目标分布有 [0, 1] 和 [1, 0] 两种情况，[0, 1] 表示目标为正向情绪的类别，[1, 0] 表示目标为负向情绪的类别。对于单个样本，如果真实类别为 \(c\) ，只有对应的 \(y_c = 1\) ，其它为 0。因此可以将上面公式进行简化：</p>
+            <p class="highlight-math" style="text-align: center;">\(l = - \ln(p_c)\)</p>
+            <p>其中 \(p_c\) 表示模型对正确类别（正向情绪或负向情绪）的预测概率。</p>
+            <p>比如文本预测出来的结果为 [0.1, 0.9] ，真实标签是正向的情绪，那么它的损失为：</p>
+            <p>\(l = -\ln(0.9) = 0.105\)</p>
+            <p>如果真实标签为负向情绪，那么它的损失为：</p>
+            <p>\(l = -\ln(0.1) = 2.302585\)</p>
+            <p>可以看到<strong>如果目标预测错误，那么它的损失较大</strong>。如果目标预测正确，那么它的损失接近于 0 。有了损失函数后，就可以用梯度下降最小化损失，这意味着需要对一些变量进行求导。</p>
+            
             <h4 id='definition'>8.1.7.2 定义</h4>
+            <p>对一些变量进行定义：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>y 表示 RNN 神经网络的输出；</p>
+                </li>
+                <li>
+                    <p>p 表示最后的概率：p=softmax(y) ；</p>
+                </li>
+                <li>
+                    <p>c 表示文本的正确标签；</p>
+                </li>
+                <li>
+                    <p>l 表示交叉熵损失：l=-ln(pc) ，pc 是预测正确类别的概率；</p>
+                </li>
+                <li>
+                    <p>Wxh ，Whh  和 Why 表示 RNN 的 3 个权重矩阵；</p>
+                </li>
+                <li>
+                    <p>bh 和 by 表示 RNN 的 2 个偏置向量。</p>
+                </li>
+            </ul>
+            
             <h4 id='setup'>8.1.7.3 设置</h4>
+
+            <p>另外我们需要在前向传播的过程中，存储一些数值，主要是每个单词的隐藏状态，用于反向传播的计算。构建反向传播的框架：</p>
+            <pre><code>class RNN:
+    def forward(self, inputs):
+        h = numpy.zeros((self.Whh.shape[0], 1))
+            
+<span class="added">        self.last_inputs = inputs</span>
+<span class="added">        self.last_hs = { 0: h}</span>
+            
+        # Perform each step of the RNN.
+        for i, x in enumerate(inputs):
+            h = numpy.tanh(self.Wxh @ x + self.Whh @ h + self.bh)
+<span class="added">            self.last_hs[i + 1] = h</span>
+            # Compute the output.
+            y = self.Why @ h + self.by
+            return y, h
+
+<span class="added">    def backprop(self, dy, learn_rate=2e-2):</span>
+<span class="added">        # dy (dl/dy) has shape (output_size, 1)</span>
+<span class="added">        pass</span></code></pre>
+
             <h4 id='gradient'>8.1.7.4 梯度</h4>
+            <p>接下来是数学时间！计算 \(\frac{\partial l}{\partial y}\) ，根据公式：</p>
+            <p>\(l = -\ln(p_c) = -\ln(softmax(y_c))\)</p>
+            <p>\(l\) 关于 \(y_c\) 的偏导数，分两种情况讨论：当 i=c 和 ic ：</p>
+
 
             <h3 id="test">8.1.8 测试</h3>
 
