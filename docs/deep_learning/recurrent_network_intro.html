@@ -618,7 +618,7 @@ print(porbs)</code></pre>
             <p>最后需要 \(\frac{\partial y}{\partial h_t}\) ，我们可以使用循环计算：</p>
             <p>yht=yht+1ht+1ht=yht+1(1-ht2)Whh</p>
             <p>BPTT 的实现从最后一个隐藏状态开始，然后反向传递。因此当我们想要计算 \(\frac{\partial y}{\partial h_t}\) 时，已经计算出 \(\frac{\partial y}{\partial h_{t+1}}\) 的值，除了最后一个状态 \(h_n\) ：</p>
-            <p>\(\frac{\partial y}{\partial h_n} = \W_{hy}\)</p>
+            <p>\(\frac{\partial y}{\partial h_n} = W_{hy}\)</p>
             <p>现在我们已经有了实施 BPTT 需要的一切参数，文件 1_7_rnn_backward.py 用代码实现 RNN 的反向传播：</p>
             <pre><code>class RNN:
     # ...
@@ -631,44 +631,44 @@ print(porbs)</code></pre>
         dby = dy
                     
         # initialize dl/dwhh, dl/dwxh, and dl/dbh to zero
-                    dwhh = numpy.zeros(self.Whh.shape)
-                    dwxh = numpy.zeros(self.Wxh.shape)
-                    dbh = numpy.zeros(self.bh.shape)
-            
-                    # calculate dl/dh for the last h
-                    # dl/dh = dl/dy * dy/dh
-                    dh = self.Why.T @ dy
-            
-                    # backpropagation through time
-                    for t in reversed(range(n)):
-                        # an intermediate value: dl/dh * (1 - h^2)
-                        temp = ((1 - self.last_hs[t+1] ** 2) * dh)
-                        # dl/db = dl/dh * (1 - h^2)
-                        dbh += temp
-                        # dl/dwhh = dl/dh * (1 - h^2) * h_{t-1}
-                        dwhh += temp @ self.last_hs[t].T
-                        # dl/dwxh = dl/dh * (1 - h^2) * x
-                        dwxh += temp @ self.last_inputs[t].T
-                        # next dl/dh = dl/dh * (1 - h^2) * Whh
-                        dh = self.Whh.T @ temp
-                    
-                    # clip to prevent exploding gradients
-                    for d in [dwxh, dwhh, dwhy, dbh, dby]:
-                        numpy.clip(d, -1, 1, out=d)
-                
-                    # update weights and biases using gradient descent
-                    self.Whh -= learn_rate * dwhh
-                    self.Wxh -= learn_rate * dwxh
-                    self.Why -= learn_rate * dwhy
-                    self.bh -= learn_rate * dbh
-                    self.by -= learn_rate * dby</code></pre>
+        dwhh = numpy.zeros(self.Whh.shape)
+        dwxh = numpy.zeros(self.Wxh.shape)
+        dbh = numpy.zeros(self.bh.shape)
+
+        # calculate dl/dh for the last h
+        # dl/dh = dl/dy * dy/dh
+        dh = self.Why.T @ dy
+
+        # backpropagation through time
+        for t in reversed(range(n)):
+            # an intermediate value: dl/dh * (1 - h^2)
+            temp = ((1 - self.last_hs[t+1] ** 2) * dh)
+            # dl/db = dl/dh * (1 - h^2)
+            dbh += temp
+            # dl/dwhh = dl/dh * (1 - h^2) * h_{t-1}
+            dwhh += temp @ self.last_hs[t].T
+            # dl/dwxh = dl/dh * (1 - h^2) * x
+            dwxh += temp @ self.last_inputs[t].T
+            # next dl/dh = dl/dh * (1 - h^2) * Whh
+            dh = self.Whh.T @ temp
+        
+        # clip to prevent exploding gradients
+        for d in [dwxh, dwhh, dwhy, dbh, dby]:
+            numpy.clip(d, -1, 1, out=d)
+    
+        # update weights and biases using gradient descent
+        self.Whh -= learn_rate * dwhh
+        self.Wxh -= learn_rate * dwxh
+        self.Why -= learn_rate * dwhy
+        self.bh -= learn_rate * dbh
+        self.by -= learn_rate * dby</code></pre>
             <p>有几点需要注意的是：</p>
             <ul class="with-bullets">
                 <li>
-                    <p>为了方便使用 lh 直接代替 lyyh 。</p>
+                    <p>为了方便，使用 \(\frac{\partial l}{\partial h}\) 直接代替 \(\frac{\partial l}{\partial y}\) \cdot \(\frac{\partial y}{\partial h}\) 。</p>
                 </li>
                 <li>
-                    <p>为了计算 Lht ，不停地更新 dh 的值，它存储最新计算出来的 Lht+1 的值。</p>
+                    <p>为了计算 \(\frac{\partial l}{\partial h_t}\) ，不停地更新 dh 的值，它存储最新计算出来的 \(\frac{\partial l}{\partial h_{t+1}}\) 的值。</p>
                 </li>
                 <li>
                     <p>第结束 BPTT 后，使用 numpy.clip() 去掉梯度在 -1 以下，或者 1 以上的值。这有助于缓解梯度爆炸问题，即由于存在大量乘项导致梯度变得非常大。梯度爆炸或消失对于普通 RNN 来说是个问题 - 更复杂的 RNN （如 LSTM）通常更有能力处理它们。</p>
@@ -681,7 +681,77 @@ print(porbs)</code></pre>
             
             <h3 id="test">8.1.8 测试</h3>
 
+            <p>终于到了激动人心的时刻，接下来就需要对 RNN 网络进行测试，编写一个辅助函数来处理在 RNN 网络中的数据：</p>
+            <pre><code>def process(data, backprop=True):
+items = list(data.items())
+random.shuffle(items)
+
+loss = 0
+num_correct = 0
+
+for x, y in items:
+    inputs = create_inputs(x)
+    target = int(y)
+
+    # forward
+    out, _ = rnn.forward(inputs)
+    probs = softmax(out)
+
+    # calculate loss / accuracy
+    loss -= numpy.log(probs[target])
+    num_correct += int(numpy.argmax(probs) == target)
+
+    if backprop:
+        # build dl/dy
+        dl_dy = probs
+        dl_dy[target] -= 1
+
+        # backward
+        rnn.backprop(dl_dy)
+# Convert NumPy scalar to Python scalar.
+if isinstance(loss, numpy.ndarray):
+    loss = loss.item()
+return loss / len(data), num_correct / len(data)</code></pre>
+            <p>编写训练循环：</p>
+            <pre><code>losses = []
+accuracies = []
+# training loop
+for epoch in range(500):
+    train_loss, train_acc = process(pos_peg.train_data)
+    if (epoch + 1) % 50 == 0:
+        losses.append(train_loss)
+        accuracies.append(train_acc)
+        print('Epoch %d' % (epoch + 1))
+        print('Train: loss %.3f | accuracy: %.3f' % (train_loss, train_acc))
+
+        test_loss, test_acc = process(pos_peg.test_data, backprop=False)
+        print('Test: loss %.3f | accuracy: %.3f' % (test_loss, test_acc))</code></pre>>
+
+            <p>跑我们的脚本文件 <a href="">1_7_rnn_backward.py</a> 会得到一些输出，像下面这样：</p>
+            
+            <p>训练完成后，使用新的用例进行预测:</p>
+            <pre><code>(predict, _) = rnn.forward(create_inputs('i am good'))
+print('Predict text "i am good":', softmax(predict))</code></pre>
+            <p>查看结果：</p>
+            <pre><code>Predict text "i am good": [[0.01181507] [0.98818493]]</code></pre>
+            <p>这就是全部！在这节中，我们经历了循环神经网络的整个过程，包括它们是什么、如何工作、它们为什么有用、如何训练它们以及如何实现。我们还可以做得更多：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>了解长短期记忆网络（LSTM ，一种更强大、更流行的 RNN 架构）或门控循环单元 （GRU，LSTM 的著名变体）。</p>
+                </li>
+                <li>
+                    <p>使用机器学习库，（如 TensorFlow 、PyTorch 、JAX ）实验更大/更好的数据。</p>
+                </li>
+                <li>
+                    <p>阅读有关 双向 RNNs 的信息，它可以处理正向的和反向序列，以便为输出层提供更多的信息。</p>
+                </li>
+                <li>
+                    <p>尝试使用 词嵌入 (Word Embedding) ，比如 GloVe 或 Word2Vec ，它可以将语句转换为更有用的向量表示。</p>
+                </li>
+            </ul>
+            
             <h3 id="torch_impl">8.1.9 PyTorch 实现</h3>
+        
 
         </main>
 
