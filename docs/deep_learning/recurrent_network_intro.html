@@ -725,9 +725,26 @@ for epoch in range(500):
         print('Train: loss %.3f | accuracy: %.3f' % (train_loss, train_acc))
 
         test_loss, test_acc = process(pos_peg.test_data, backprop=False)
-        print('Test: loss %.3f | accuracy: %.3f' % (test_loss, test_acc))</code></pre>>
+        print('Test: loss %.3f | accuracy: %.3f' % (test_loss, test_acc))</code></pre>
 
             <p>跑我们的脚本文件 <a href="">1_7_rnn_backward.py</a> 会得到一些输出，像下面这样：</p>
+            <pre><code>Epoch 20
+Train: loss 0.693 | accuracy: 0.552
+Test: loss 0.698 | accuracy: 0.500
+Epoch 40
+Train: loss 0.692 | accuracy: 0.552
+Test: loss 0.697 | accuracy: 0.500
+Epoch 60
+Train: loss 0.692 | accuracy: 0.552
+Test: loss 0.696 | accuracy: 0.500
+Epoch 80
+Train: loss 0.692 | accuracy: 0.552
+Test: loss 0.699 | accuracy: 0.500
+Epoch 100
+Train: loss 0.689 | accuracy: 0.534
+Test: loss 0.697 | accuracy: 0.500</code></pre>
+            <p>绘制训练过程的损失和精确度变化：</p>
+            <img src="">
             
             <p>训练完成后，使用新的用例进行预测:</p>
             <pre><code>(predict, _) = rnn.forward(create_inputs('i am good'))

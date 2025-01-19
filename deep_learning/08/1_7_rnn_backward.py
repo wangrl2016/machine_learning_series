@@ -129,7 +129,7 @@ if __name__ == '__main__':
     # training loop
     for epoch in range(500):
         train_loss, train_acc = process(pos_peg.train_data)
-        if (epoch + 1) % 50 == 0:
+        if (epoch + 1) % 20 == 0:
             losses.append(train_loss)
             accuracies.append(train_acc)
             print('Epoch %d' % (epoch + 1))
