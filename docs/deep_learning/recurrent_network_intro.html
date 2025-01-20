@@ -120,14 +120,14 @@
             margin: 10px 0 10px 20px;
         }
         ul li {
-            margin: 8px 0;
+            margin: 4px 0;
             color: #34495e;;
         }
         li .title {
             font-weight: bold;
             color: #2c3e50;
             font-size: 18px;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
         li p {
             color: #34495e;
@@ -220,9 +220,9 @@
         <main class="col-md-8 content">
             <h2 class="custom-title">8.1 循环神经网络入门</h2>
             <p class="title-subtext">探索循环神经网络的基础概念，使用 NumPy 从头实现情绪分析模型！</p>
-            <p>创建日期: 2025-01-01</p>
+            <p style="color: #a0a0a0;">创建日期: 2025-01-18</p>
             <p><strong>循环神经网络 (Recurrent Neural Network, RNN)</strong> 是一种专门处理序列的神经网络，由于其在处理文本方面非常有效，因此常用于 自然语言处理 (Natural Language processing) 任务中。本节我们将探索 RNN 是什么，理解其工作原理，并使用 Python 语言从头开始构建一个真正的 RNN 网络（仅使用 <a href="https://numpy.org/">NumPy</a> 库）。</p>
-            <p>这需要我们有神经网络的基础知识，如果不了解神经网络的概念，可以查看 <a href="#">第 02 章 深度学习原理</a> 和 <a href="#">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
+            <p>这需要我们有神经网络的基础知识，如果不了解神经网络的概念，可以查看 <a href="index.html#section2">第 02 章 深度学习原理</a> 和 <a href="index.html#section4">第 04 章 详解反向传播算法</a> 的内容，让我们开始吧！</p>
             <h3 id="why">8.1.1 为什么</h3>
             <p><strong>序列数据 (Sequence Data)</strong> 是指具有顺序性的结构化数据，通常以特定的时间或逻辑顺序排列。它在自然语言处理、时间序列分析、信号处理等领域中广泛使用。以下是序列数据的特点：</p>
             <ul>
@@ -242,7 +242,7 @@
 pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <p>结果如下图所示：</p>
             <img src="stock_data.png" alt="股票趋势">
-            <p>基础的神经网络（包括 CNN ）的一个问题是它们只能处理预定大小的样本：使用固定大小的输入，并产生固定大小的输出。RNN 很有用，因为它们允许我们将可变长度的序列作为输入和输出。下图列举 RNN 的几种样式：</p>
+            <p>基础神经网络（包括 CNN ）的一个问题是它们只能处理预定大小的样本：使用固定大小的输入，并产生固定大小的输出。RNN 很有用，因为它们允许我们将可变长度的序列作为输入和输出。下图列举 RNN 的几种样式：</p>
             <img src="rnn_relationship.svg" alt="RNN 网络关系">
             <div class="comment">注：红色表示输入，绿色表示 RNN 自己，蓝色表示输出。</div>
             
@@ -276,7 +276,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
                     <p>\(W_{xh}\) ，用于所有 \(x_t\) -> \(h_t\) 连接；</p>
                 </li>
                 <li>
-                    <p>\(W_{hh}\) ，用于所有 \(h_t\) -> \(h_t\) 连接；</p>
+                    <p>\(W_{hh}\) ，用于所有 \(h_{t-1}\) -> \(h_t\) 连接；</p>
                 </li>
                 <li>
                     <p>\(W_{hy}\) ，用于所有 \(h_t\) -> \(y_t\) 连接。</p>
@@ -384,7 +384,7 @@ print('First word is "' + idx_to_word[0] + '"')</code></pre>
 First word is "now"</code></pre>
             <p>之前提到过每个输入 \(x_i\) 都是一个向量，这里我们使用 独热 (One-Hot) 向量进行编码，用于将离散的单词数据编码成向量的形式。每个单词由一个独特的向量表示，其中只有一个位置为1，其他位置为0。</p>
             <p>假设有三个类别：“Cat” ，“Dog” ，“Rabbit” ，对应的索引为 0，1，2 。那么 “Cat” 的 one-hot 向量为 [1, 0, 0] ，“Dog” 的 one-hot 向量为 [0, 1, 0] 。</p>
-            <p>因为在字典里有 18 个不同的单词，所以每个 xi 的 one-hot 向量长度为 18 。使用 create_inputs 将文本数据转换为向量输入传递到神经网络中：</p>
+            <p>因为在字典里有 18 个不同的单词，所以每个 \(x_i\) 的 one-hot 向量长度为 18 。使用 create_inputs 将文本数据转换为向量输入传递到神经网络中：</p>
             <pre><code>def create_inputs(text):
     '''
     Return an array of one-hot vectors representing the words
@@ -432,10 +432,10 @@ print('Input data shape', numpy.array(inputs).shape)</code></pre>
         # Compute the output.
         y = self.Why @ h + self.by
     return y, h</code></pre>
-            <p>看上去非常简单？注意第一步我们将 h 初始化为零向量，因为在那之前没有隐藏状态。</p>
+            <p>看上去非常简单？注意第一步我们将 \(h\) 初始化为零向量，因为在那之前没有隐藏状态。</p>
             <p>例如当我们的第一个输入单词为 \(x \in \mathbb{R}^{18 \times 1}\) 时，下述公式可以看到网络的维度变化：</p>
-            <p>\(h \in \mathbb{R}^{64 \times 1} = tanh(W_{xh} \in \mathbb{R}^{64 \times 18} \cdot x \in \mathbb{R}^{18 \times 1} + W_{hh} \in \mathbb{R}^{64 \times 64} \cdot h \in \mathbb{R}^{18 \times 1} + b_h \in \mathbb{R}^{64 \times 1})\)</p>
-            <p>\(y \in \mathbb{R}^{2 \times 1} = W_{hy} \in \mathbb{R}^{2 \times 64} \cdot h \in \mathbb{R}^{64 \times 1}\)</p>
+            <p>\(h \in \mathbb{R}^{64 \times 1} = tanh(W_{xh} \in \mathbb{R}^{64 \times 18} \cdot x \in \mathbb{R}^{18 \times 1} + W_{hh} \in \mathbb{R}^{64 \times 64} \cdot h \in \mathbb{R}^{64 \times 1} + b_h \in \mathbb{R}^{64 \times 1})\)</p>
+            <p>\(y \in \mathbb{R}^{2 \times 1} = W_{hy} \in \mathbb{R}^{2 \times 64} \cdot h \in \mathbb{R}^{64 \times 1} + b_y \in \mathbb{R}^{2 \times 1}\)</p>
             <p>以此类推，直到最后一个单词，经过 softmax 函数转换为概率值，完成网络的前向传播过程：</p>
             <pre><code>rnn = RNN(vocab_size, 2)
 inputs = create_inputs('i am very good')
@@ -448,20 +448,20 @@ print(porbs)</code></pre>
                 <p>此时网络起作用了，输出两个相近的概率值，但是并没有什么用，接下来使用反向传播进行训练！</p>
             
             <h3 id="backward">8.1.7 反向传播</h3>
-            <p>以下部分假设你具有微积分的基本知识，如果不想看，可以跳过它，但是我建议你不要跳过。如果你没有这部分背景，可以阅读 <a href="#">4.1 导数</a> 小节的内容。即使只是大概地浏览计算过程，对于理解循环神经网络也是有帮助的。</p>
+            <p>以下部分假设你具有微积分的基本知识，如果不想看，可以跳过它，但是我建议你不要跳过。如果你没有这部分背景，可以阅读 <a href="#">第 4.1 节 导数</a> 的内容。即使只是大概地浏览计算过程，对于理解循环神经网络也是有帮助的。</p>
 
             <h4 id='loss-function'>8.1.7.1 损失函数</h4>
-            <p>为了训练我们的 RNN ，需要有损失函数，这里选择交叉熵损失函数，它经常和 softmax 函数一起使用，具体介绍查看 <a href="#">4.3.3 交叉熵损失</a> 小节 ，计算规则如下：</p>
+            <p>为了训练我们的 RNN ，需要有损失函数，这里选择交叉熵损失函数，它经常和 softmax 函数一起使用，具体介绍查看 <a href="#">第 4.3.3 小节 交叉熵损失</a> 的内容 ，计算规则如下：</p>
             <p class="highlight-math" style="text-align: center;">\(loss = - \sum_{i=1}^n y_i \ln(p_i)\)</p>
             <ul class="with-bullets">
                 <li>
-                    <p>n 表示类别数量；</p>
+                    <p>\(n\) 表示类别数量；</p>
                 </li>
                 <li>
-                    <p>yi 是目标分布的真实标签，如果属于类别 i ，则 yi=1 ，否则 yi=0 ；</p>
+                    <p>\(y_i\) 是目标分布的真实标签，如果属于类别 \(i\) ，则 \(y_i = 1\) ，否则 \(y_i = 0\) ；</p>
                 </li>
                 <li>
-                    <p>pi 是模型预测属于类别 i 的概率（通过 softmax 得到的概率值）。</p>
+                    <p>\(p_i\) 是模型预测属于类别 \(i\) 的概率（通过 softmax 得到的概率值）。</p>
                 </li>
             </ul>
             <p>在本例中，目标分布有 [0, 1] 和 [1, 0] 两种情况，[0, 1] 表示目标为正向情绪的类别，[1, 0] 表示目标为负向情绪的类别。对于单个样本，如果真实类别为 \(c\) ，只有对应的 \(y_c = 1\) ，其它为 0。因此可以将上面公式进行简化：</p>
@@ -477,22 +477,22 @@ print(porbs)</code></pre>
             <p>对一些变量进行定义：</p>
             <ul class="with-bullets">
                 <li>
-                    <p>y 表示 RNN 神经网络的输出；</p>
+                    <p>\(y\) 表示 RNN 神经网络的输出；</p>
                 </li>
                 <li>
-                    <p>p 表示最后的概率：p=softmax(y) ；</p>
+                    <p>\(p\) 表示最后的概率：\(p = softmax(y)\) ；</p>
                 </li>
                 <li>
-                    <p>c 表示文本的正确标签；</p>
+                    <p>\(c\) 表示文本的正确标签；</p>
                 </li>
                 <li>
-                    <p>l 表示交叉熵损失：l=-ln(pc) ，pc 是预测正确类别的概率；</p>
+                    <p>\(l\) 表示交叉熵损失：\(l = -\ln(p_c)\) ，\(p_c\) 是预测正确类别的概率；</p>
                 </li>
                 <li>
-                    <p>Wxh ，Whh  和 Why 表示 RNN 的 3 个权重矩阵；</p>
+                    <p>\(W_{xh}\) ，\(W_{hh}\)  和 \(W_{hy}\) 表示 RNN 的 3 个权重矩阵；</p>
                 </li>
                 <li>
-                    <p>bh 和 by 表示 RNN 的 2 个偏置向量。</p>
+                    <p>\(b_h\) 和 \(b_y\) 表示 RNN 的 2 个偏置向量。</p>
                 </li>
             </ul>
             
@@ -522,13 +522,13 @@ print(porbs)</code></pre>
             <p>接下来是数学时间！梯度分为三个阶段进行计算：</p>
             <ul class="with-bullets">
                 <li>
-                    <p>第一阶段计算损失 l 相对于输出 y 的梯度；</p>
+                    <p>第一阶段计算损失 \(l\) 相对于输出 \(y\) 的梯度；</p>
                 </li>
                 <li>
-                    <p>第二个阶段计算输出 y 相对于最后一个节点的隐藏状态 hn 的梯度 ，同时更新参数 Why 和 by ；</p>
+                    <p>第二个阶段计算输出 \(y\) 相对于最后一个节点的隐藏状态 \(h_n\) 的梯度 ，同时更新参数 \(W_{hy}\) 和 \(b_y\) ；</p>
                 </li>
                 <li>
-                    <p>第三个阶段是计算最后一个隐藏状态 hn 相对于输入 x 的梯度，同时更新参数 Wxh 、Whh 和 bh 。</p>
+                    <p>第三个阶段是计算最后一个隐藏状态 \(h_n\) 相对于输入 \(x\) 的梯度，同时更新参数 \(W_{xh}\) 、\(W_{hh}\) 和 \(b_h\) 。</p>
                 </li>
             </ul>
 
@@ -546,9 +546,9 @@ print(porbs)</code></pre>
                 </li>
                 <li>
                     <p>2. 当 \(i \ne c\) （非目标类别）</p>
-                    <p>Lyi=(-ln(pc))yi 同样利用链式法则 Lyi=lpcpcyc</p>
-                    <p>softmax 的导数公式为：pcyi=-pcpi</p>
-                    <p>代入得到 Lyi=-1pc(-pcpi)=pi</p>
+                    <p>\(\frac{\partial l}{\partial y_c} = \frac{\partial (-ln(p_c))}{\partial y_c}\) ，同样利用链式法则：\(\frac{\partial l}{\partial y_c} = \frac{\partial l}{\partial p_c} \cdot \frac{\partial p_c}{\partial y_c}\)</p>
+                    <p>\(\frac{\partial p_c}{\partial y_i} = -p_c \cdot p_i\)</p>
+                    <p>代入得到 \(\frac{\partial l}{\partial y_i} = -\frac{1}{p_c} \cdot p_c \cdot p_i\)</p>
                 </li>
             </ul>
             <div class="comment">注：分类别讨论主要是 softmax 函数引起的。</div>
@@ -589,7 +589,7 @@ print(porbs)</code></pre>
 <span class="added">            # backward</span>
 <span class="added">            rnn.backprop(dl_dy)</span></code></pre>
 
-            <p>第二阶段需要计算 \(W_{hy}\) 和 \(b_y\) 的梯度，他们是唯一将隐藏状态转换为输出的节点：</p>
+            <p>第二阶段需要计算 \(W_{hy}\) 和 \(b_y\) 的梯度，它们是唯一将隐藏状态转换为输出的节点：</p>
             <p>\(\frac{\partial l}{\partial W_{hy}} = \frac{\partial l}{\partial y} \cdot \frac{\partial y}{\partial W_{hy}}\)</p>
             <p>根据公式 \(y = W_{hy} \cdot h_n + b_y\)</p>
             <p> \(\frac{\partial y}{\partial W_{hy}} = h_n\)，其中 \(h_n\) 是最后的隐藏状态，因此可以得到：</p>
@@ -607,7 +607,7 @@ print(porbs)</code></pre>
             <p>第三阶段需要计算每一步的 Whh ，Wxh 和 bh 的梯度，我们有下面公式：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{xh}} = \frac{\partial l}{\partial y} \sum_{t=0}^{n} (\frac{\partial y}{\partial h_t} \cdot \frac{\partial h_t}{\partial W_{xh}}) \)</p>
             <p>因为改变 \(W_{xh}\) 会影响每个 \(h_t\) ，通过影响 \(y\) 值，最终影响损失 \(l\) 。为了计算 \(W_{xh}\) 的梯度，我们需要对所有的 \(t\) 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
-            <p>上述公式需要分别计算 \(y_{ht}\) 和 \(\frac{\partial h_t}{\partial W_{xh}}\) 的梯度。</p>
+            <p>上述公式需要分别计算 \(\frac{\partial y}{\partial h_t}\) 和 \(\frac{\partial h_t}{\partial W_{xh}}\) 的梯度。</p>
             <p>\(W_{xh}\) 在所有的 \(x_t\) -> \(h_t\) 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 \(t\) ，我们需要计算 \(\frac{\partial h_t}{\partial W_{xh}}\) ：</p>
             <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
             <p>其中，我们知道 \(\frac{d \tanh(x)}{dx} = 1 - \tanh^2(x)\) ，因此</p>
@@ -616,10 +616,10 @@ print(porbs)</code></pre>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial W_{hh}} = (1 - h_t)^2h_{t-1}\)</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial b_h} = (1 - h_t)^2\)</p>
             <p>最后需要 \(\frac{\partial y}{\partial h_t}\) ，我们可以使用循环计算：</p>
-            <p>yht=yht+1ht+1ht=yht+1(1-ht2)Whh</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial y}{\partial h_t} = \frac{\partial y}{\partial h_{t+1}} \cdot \frac{\partial h_{t+1}}{\partial h_t} = \frac{\partial y}{\partial h_{t+1}} \cdot (1 - h_t)^2 \cdot W_{hh}\)</p>
             <p>BPTT 的实现从最后一个隐藏状态开始，然后反向传递。因此当我们想要计算 \(\frac{\partial y}{\partial h_t}\) 时，已经计算出 \(\frac{\partial y}{\partial h_{t+1}}\) 的值，除了最后一个状态 \(h_n\) ：</p>
-            <p>\(\frac{\partial y}{\partial h_n} = W_{hy}\)</p>
-            <p>现在我们已经有了实施 BPTT 需要的一切参数，文件 1_7_rnn_backward.py 用代码实现 RNN 的反向传播：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial y}{\partial h_n} = W_{hy}\)</p>
+            <p>现在我们已经有了实施 BPTT 需要的一切参数，文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/1_7_rnn_backward.py">1_7_rnn_backward.py</a> 用代码实现 RNN 的反向传播：</p>
             <pre><code>class RNN:
     # ...
     def backprop(self, dy, learn_rate=2e-2):
@@ -665,16 +665,16 @@ print(porbs)</code></pre>
             <p>有几点需要注意的是：</p>
             <ul class="with-bullets">
                 <li>
-                    <p>为了方便，使用 \(\frac{\partial l}{\partial h}\) 直接代替 \(\frac{\partial l}{\partial y}\) \cdot \(\frac{\partial y}{\partial h}\) 。</p>
+                    <p>为了方便，使用 \(\frac{\partial l}{\partial h}\) 直接代替 \(\frac{\partial l}{\partial y} \cdot \frac{\partial y}{\partial h}\) 。</p>
                 </li>
                 <li>
-                    <p>为了计算 \(\frac{\partial l}{\partial h_t}\) ，不停地更新 dh 的值，它存储最新计算出来的 \(\frac{\partial l}{\partial h_{t+1}}\) 的值。</p>
+                    <p>为了计算 \(\frac{\partial l}{\partial h_t}\) ，不停地更新 <code>dh</code> 的值，它存储最新计算出来的 \(\frac{\partial l}{\partial h_{t+1}}\) 的值。</p>
                 </li>
                 <li>
-                    <p>第结束 BPTT 后，使用 numpy.clip() 去掉梯度在 -1 以下，或者 1 以上的值。这有助于缓解梯度爆炸问题，即由于存在大量乘项导致梯度变得非常大。梯度爆炸或消失对于普通 RNN 来说是个问题 - 更复杂的 RNN （如 LSTM）通常更有能力处理它们。</p>
+                    <p>结束 BPTT 后，使用 <code>numpy.clip()</code> 去掉梯度在 -1 以下，或者 1 以上的值。这有助于缓解梯度爆炸问题，即由于存在大量乘项导致梯度变得非常大。梯度爆炸或消失对于普通 RNN 来说是个问题 - 更复杂的 RNN （如 LSTM）通常更有能力处理它们。</p>
                 </li>
                 <li>
-                    <p>一旦计算出所有梯度，我们就使用梯度下降来更新权重和偏差。</p>
+                    <p>一旦计算出所有梯度，就使用梯度下降来更新权重和偏差。</p>
                 </li>
             </ul>
             <p>我们已经成功完成 RNN 的反向传播！</p>
