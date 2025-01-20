@@ -45,6 +45,17 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        /* 移动端样式（只在屏幕宽度 < 1024 px 时生效 */
+        @media screen and (max-width: 1024px) {
+            .sidebar, .right-sidebar {
+                display: none; /* 隐藏侧边栏 */
+            }
+            .content {
+                margin: 0;
+                padding: 10px;
+                width: 100%;
+            }
+        }
         .content h2 {
             width: 100%;
             font-size: 3rem;
