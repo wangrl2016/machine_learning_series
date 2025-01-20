@@ -604,7 +604,7 @@ print(porbs)</code></pre>
     # calculate dl/dwhy and dl/dby
 <span class="added">    dwhy = dy @ self.last_hs[n].T</span>
 <span class="added">    dby = dy</span></code></pre>
-            <p>第三阶段需要计算每一步的 Whh ，Wxh 和 bh 的梯度，我们有下面公式：</p>
+            <p>第三阶段需要计算每一步的 \(W_{hh}\) ，\(W_{xh}\) 和 \(b_h\) 的梯度，我们有下面公式：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{xh}} = \frac{\partial l}{\partial y} \sum_{t=0}^{n} (\frac{\partial y}{\partial h_t} \cdot \frac{\partial h_t}{\partial W_{xh}}) \)</p>
             <p>因为改变 \(W_{xh}\) 会影响每个 \(h_t\) ，通过影响 \(y\) 值，最终影响损失 \(l\) 。为了计算 \(W_{xh}\) 的梯度，我们需要对所有的 \(t\) 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
             <img src="rnn_backward.svg" alt="时间上反向传播">
