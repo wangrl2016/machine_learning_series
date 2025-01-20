@@ -356,13 +356,13 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
 
             <h3 id="plan">8.1.4 计划</h3>
 
-            <p>由于这是一个分类问题，我们将使用“多对一”的 RNN 。这与我们之前讨论的“多对多“的 RNN 类似，但它仅使用最后的隐藏状态产生一个输出 y ：</p>
+            <p>由于这是一个分类问题，我们将使用“多对一”的 RNN 。这与我们之前讨论的“多对多“的 RNN 类似，但它仅使用最后的隐藏状态产生一个输出 \(y\) ：</p>
             <img src="many_to_one.svg" alt="多对一网络">
             <p>每个 \(x_i\) 都是个向量，表示文本中的单词。输出 \(y\) 是一个包含两个数字的向量，一个代表正向情绪，另一个代表负向情绪。我们将应用 softmax 函数将这些值转换为概率，并最终在 正向 / 负向 之间做出判断。</p>
             <p>让我们开始构建 RNN 模型！</p>
 
             <h3 id="pre-process">8.1.5 预处理</h3>
-            <p>之前提到的数据集包含两个 Python 字典结构：train_data 和 test_data 。我们需要对数据进行预处理，将它转换为可用的形式。对数据集里面存在的单词，构建一个单词表 vocab ，使用单词表中的下标表示单词。</p>
+            <p>之前提到的数据集包含两个 Python 字典结构：<code>train_data</code> 和 <code>test_data</code> 。我们需要对数据进行预处理，将它转换为可用的形式。对数据集里面存在的单词，构建一个单词表 vocab ，使用单词表中的下标表示单词。</p>
             <pre><code># Create the vocabulary
 vocab = list(set([w for text in pos_peg.train_data.keys() for w in text.split(' ')]))
 vocab_size = len(vocab)
@@ -681,7 +681,7 @@ print(porbs)</code></pre>
             
             <h3 id="test">8.1.8 测试</h3>
 
-            <p>终于到了激动人心的时刻，接下来就需要对 RNN 网络进行测试，编写一个辅助函数来处理在 RNN 网络中的数据：</p>
+            <p>终于到了激动人心的时刻，接下来就需要对 RNN 网络进行测试，编写一个辅助函数：</p>
             <pre><code>def process(data, backprop=True):
 items = list(data.items())
 random.shuffle(items)
@@ -744,8 +744,8 @@ Epoch 100
 Train: loss 0.689 | accuracy: 0.534
 Test: loss 0.697 | accuracy: 0.500</code></pre>
             <p>绘制训练过程的损失和精确度变化：</p>
-            <img src="">
-            
+            <img src="simple_rnn_train_loss.png" alt="RNN 训练损失">
+            <p>可以看到训练损失逐渐降低，训练精度逐渐提高，最终达到平衡，训练结束。</p>
             <p>训练完成后，使用新的用例进行预测:</p>
             <pre><code>(predict, _) = rnn.forward(create_inputs('i am good'))
 print('Predict text "i am good":', softmax(predict))</code></pre>
@@ -760,16 +760,58 @@ print('Predict text "i am good":', softmax(predict))</code></pre>
                     <p>使用机器学习库，（如 TensorFlow 、PyTorch 、JAX ）实验更大/更好的数据。</p>
                 </li>
                 <li>
-                    <p>阅读有关 双向 RNNs 的信息，它可以处理正向的和反向序列，以便为输出层提供更多的信息。</p>
+                    <p>阅读有关 <a href="#">双向 RNNs</a> 的信息，它可以处理正向的和反向序列，以便为输出层提供更多的信息。</p>
                 </li>
                 <li>
-                    <p>尝试使用 词嵌入 (Word Embedding) ，比如 GloVe 或 Word2Vec ，它可以将语句转换为更有用的向量表示。</p>
+                    <p>尝试使用 <a href="#">词嵌入 (Word Embedding)</a> ，比如 GloVe 或 Word2Vec ，它可以将语句转换为更有用的向量表示。</p>
                 </li>
             </ul>
             
             <h3 id="torch_impl">8.1.9 PyTorch 实现</h3>
-        
-
+            <p>文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/1_9_rnn_torch.py">1_9_rnn_torch.py</a> 使用 PyTorch 实现 RNN 架构，对文本进行正向和负向分类的完整示例，其中核心代码为：</p>
+            <pre><code># 定义模型
+class RNNClassifier(torch.nn.Module):
+    def __init__(self, vocab_size, embedding_dim, hidden_dim, output_dim):
+        super(RNNClassifier, self).__init__()
+        self.embedding = torch.nn.Embedding(vocab_size, embedding_dim)
+        self.rnn = torch.nn.RNN(embedding_dim, hidden_dim, batch_first=True)
+        self.dense = torch.nn.Linear(hidden_dim, output_dim)
+    
+    def forward(self, x):
+        embedded = self.embedding(x)
+        _, hidden = self.rnn(embedded)
+        # 取最后一个隐藏状态
+        hidden = hidden[-1]
+        out = self.dense(hidden)
+        return out</code></pre>
+            
+            <p>代码说明：</p>
+            <ul>
+                <li>
+                    <p>1. 数据预处理：文本被编码为词索引，并填充到固定长度 (max_len) 。</p>
+                </li>
+                <li>
+                    <p>2. RNN 模型使用嵌入层 (nn.Embedding) 将词索引映射为向量，使用 nn.RNN 构建循环神经网络。用全连接层 (nn.Linear) 将隐藏状态映射为分类结果。</p>
+                </li>
+                <li>
+                    <p>3. 训练与测试：通过 DataLoader 迭代数据，使用交叉熵损失函数优化模型。</p>
+                </li>
+            </ul>
+            <p>和手写 RNN 的逻辑基本一致。</p>
+            <p>运行代码：</p>
+            <pre><code>Epoch 1/100, loss: 0.6992
+Epoch 11/100, loss: 0.6679
+Epoch 21/100, loss: 0.4506
+Epoch 31/100, loss: 0.2457
+Epoch 41/100, loss: 0.0999
+Epoch 51/100, loss: 0.0307
+Epoch 61/100, loss: 0.0142
+Epoch 71/100, loss: 0.0086
+Epoch 81/100, loss: 0.0059
+Epoch 91/100, loss: 0.0041</code></pre>
+            <p>损失逐渐降低，最终接近 0 ，非常好的结果。下图是绘制的损失变化图像：</p>
+            <img src="simple_rnn_train_torch.png" alt="RNN 损失变化">
+            
         </main>
 
             <!-- 右侧小标题导航 -->

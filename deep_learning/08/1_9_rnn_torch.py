@@ -1,4 +1,6 @@
 import torch
+from matplotlib import pyplot
+import numpy
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -61,6 +63,7 @@ if __name__ == '__main__':
     loss = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
+    losses = []
     for epoch in range(num_epochs):
         model.train()
         total_loss = 0
@@ -71,7 +74,9 @@ if __name__ == '__main__':
             l.backward()
             optimizer.step()
             total_loss += l.item()
-        print(f'Epoch {epoch + 1}/{num_epochs}, loss: {total_loss / len(train_loader):.4f}')
+        losses.append(total_loss / len(train_loader))
+        if epoch % 10 == 0:
+            print(f'Epoch {epoch + 1}/{num_epochs}, loss: {total_loss / len(train_loader):.4f}')
 
     model.eval()
     correct, total = 0, 0
@@ -83,3 +88,10 @@ if __name__ == '__main__':
             correct += (predicted == y_batch).sum().item()
     
     print(f'Test accuracy: {correct / total:.4f}')
+    
+    pyplot.plot(numpy.array(range(len(losses))) * 50, losses, label='Loss')
+    pyplot.grid(True)
+    pyplot.legend()
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
+    pyplot.show()
+
