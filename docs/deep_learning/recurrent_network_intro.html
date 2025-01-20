@@ -607,6 +607,7 @@ print(porbs)</code></pre>
             <p>第三阶段需要计算每一步的 Whh ，Wxh 和 bh 的梯度，我们有下面公式：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{xh}} = \frac{\partial l}{\partial y} \sum_{t=0}^{n} (\frac{\partial y}{\partial h_t} \cdot \frac{\partial h_t}{\partial W_{xh}}) \)</p>
             <p>因为改变 \(W_{xh}\) 会影响每个 \(h_t\) ，通过影响 \(y\) 值，最终影响损失 \(l\) 。为了计算 \(W_{xh}\) 的梯度，我们需要对所有的 \(t\) 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
+            <img src="rnn_backward.svg" alt="时间上反向传播">
             <p>上述公式需要分别计算 \(\frac{\partial y}{\partial h_t}\) 和 \(\frac{\partial h_t}{\partial W_{xh}}\) 的梯度。</p>
             <p>\(W_{xh}\) 在所有的 \(x_t\) -> \(h_t\) 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 \(t\) ，我们需要计算 \(\frac{\partial h_t}{\partial W_{xh}}\) ：</p>
             <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>

@@ -103,6 +103,30 @@
             font-weight: bold;
             color: #007bff;
         }
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        .with-bullets {
+            list-style: disc;
+            padding-left: 10px;
+            margin: 10px 0 10px 20px;
+        }
+        ul li {
+            margin: 4px 0;
+            color: #34495e;;
+        }
+        li .title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+        li p {
+            color: #34495e;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -236,19 +260,15 @@
                     <h3 id="section8-sub1" class="content-section-sub">
                         <a href="recurrent_network_intro.html" style="text-decoration: none; color: inherit;">8.1 循环神经网络入门</a>
                     </h3>
-                    <p>循环神经网络 (Recurrent Neural Network, RNN) 是一种专门处理序列的神经网络。由于其在处理文本方面非常有效，因此经常用于 自然语言处理 (Natural Language Processing)  任务中。</p>
-                    <p>在本小节中，我们将探索 RNN 是什么，了解其工作原理，并使用 Python 从头开始构建一个真正的 RNN 网络（仅使用 NumPy 库） 。</p>
-                    <p>
-                        序列数据是指具有顺序性的结构化数据，通常以特定的时间或逻辑顺序排列。它在自然语言处理、时间序列分析、信号处理等领域中广泛使用。以下是序列数据的特点：
-                    </p>
-                    <ol>
+                    <p>翻译文章 <a href="https://victorzhou.com/blog/intro-to-rnns/">An Introduction to Recurrent Neural Networks for Beginners</a>，主要有以下几点区别：</p>
+                    <ul>
                         <li>
-                            <strong>顺序性：</strong>数据点之间的顺序至关重要，打乱顺序可能会丢失信息或改变数据的意义。比如股票价格：100, 102, 105, 101，顺序决定价格变化的趋势；句子中单词的顺序：“I am happy”和“Happy am I”的意思不同。
+                            <p>1. 在梯度计算阶段增加更加详细解释，推导 softmax 函数的导数。</p>
                         </li>
                         <li>
-                            <strong>依赖性：</strong>前后数据点之间可能存在依赖关系，比如当前数据点只依赖于临近的点，或者当前数据依赖较远的历史数据。比如文本序列“The cat is on the …”，预测最后一个单词，通常只需要考虑最近的几个单词“is on the”。
+                            <p>2. 增加 8.1.9 小节 使用 PyTorch 实现这个简单的示例。</p>
                         </li>
-                    </ol>
+                    </ul>
                     
 
                     <h4 id="section8-sub1-sub1">8.1.1 为什么</h4>
