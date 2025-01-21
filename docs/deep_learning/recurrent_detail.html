@@ -232,15 +232,15 @@
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
             <h2 class="custom-title">8.2 RNN 详解</h2>
-            <p class="title-subtext">使用 PyTorch 构建语言生成模型，实现 GRU/LSTM RNN 网络！</p>
+            <p class="title-subtext">从头构建 RNN 语言生成模型，实现 GRU/LSTM RNN 网络！</p>
             <p style="color: #a0a0a0;">创建日期: 2025-01-20</p>
-            <p>循环神经网络（RNN）是一种流行的模型，在许多 NLP 任务中都表现出了巨大的潜力。但尽管它们最近很受欢迎，但我只找到了有限数量的资源来彻底解释 RNN 的工作原理以及如何实现它们。这就是本教程的内容，它由多个部分组成的系列，我计划在其中介绍以下内容：</p>
+            <p>循环神经网络（RNN）是一种流行的模型，在许多 NLP 任务中都表现出了巨大的潜力。尽管它们最近很受欢迎，但我只找到了有限数量的资源来彻底解释 RNN 的工作原理以及如何实现它们。这就是本教程的内容，它由多个部分组成的系列，我计划在其中介绍以下内容：</p>
             <ul>
                 <li>
                     <p>1. RNN 介绍</p>
                 </li>
                 <li>
-                    <p>2. 使用 Python 和 PyTorch 实现 RNN</p>
+                    <p>2. 使用 NumPy 实现 RNN</p>
                 </li>
                 <li>
                     <p>3. 理解时间反向传播 (BPTT) 算法和梯度消失问题</p>
@@ -250,12 +250,12 @@
                 </li>
             </ul>
 
-            <p>作为本教程的一部分，我们将实现一个基于循环神经网络的语言模型。语言模型的应用有两个方面：首先，它允许我们根据句子在现实世界中出现的可能性对任意句子进行评分。这为我们提供了语法和语义正确性的衡量标准。此类模型通常用作机器翻译系统的一部分。其次，语言模型允许我们生成新文本（我认为这是更酷的应用）。在莎士比亚数据集上训练语言模型使我们能够生成类似莎士比亚的文本。</p>
+            <p>作为本教程的一部分，我们将实现一个基于循环神经网络的语言模型。语言模型的应用有两个方面：首先，它允许我们根据句子在现实世界中出现的可能性对任意句子进行评分。这为我们提供了语法和语义正确性的衡量标准，此类模型通常用作机器翻译系统的一部分。其次，语言模型允许我们生成新文本（我认为这是更酷的应用）。在莎士比亚数据集上训练语言模型使我们能够生成类似莎士比亚的文本。</p>
             <p>我假设你对基础神经网络有所了解。如果不熟悉，可以去阅读 <a href="index.html#section2">第 02 章 深度学习原理</a> 的内容，它将指导我们了解非循环网络背后的思想和实现。</p>
         
-            <h3>8.2.1 RNN 介绍</h3>
+            <h3 id="rnn_intro">8.2.1 RNN 介绍</h3>
 
-            <p>简单地介绍 RNN 是什么，常见的 RNN 结构，以及有哪些用途。</p>
+            <p>本小节简单地介绍 RNN 是什么，常见的 RNN 结构，以及有哪些用途。</p>
 
             <h4>8.2.1.1 什么是 RNN</h4>
             <p>RNN 背后的想法是利用顺序信息，在传统的神经网络中，我们假设所有的输入（和输出）都是相互独立的。但对于许多任务来说，这是一个坏主意，如果你想预测句子中的下一个单词，你最好知道它之前有哪些单词。</p>
@@ -292,6 +292,7 @@
             <p>给定一个单词序列，我们想要根据之前已经给定的单词预测每个单词的概率。语言模型是我们能够衡量句子的相似度，这是机器翻译的重要输入（高相似度的句子通常是正确的）。能够预测下一个单词的副作用是我们得到了一个生成模型，它使我们能够通过从输出概率中采样，来生成新文本。并且根据我们的训练数据，可以生成各种各样的东西。在语言建模中，我们的输入通常是单词序列（例如编码为独热向量），我们的输出是预测单词的序列。在训练网络时，设置 \(o_t = x_{t+1}\) ，因为我们想 \(t\) 时刻的输出将是下个单词。</p>
             <p><strong>机器翻译</strong></p>
             <p>机器翻译与语言建模类似，因为我们的输入是源语言（例如德语）中的单词序列。我们希望输出是目标语言（例如英语）中的单词序列。一个关键的区别是，我们的输出只有在我们看到完整的输入后才开始，因为我们翻译的句子的第一个单词可能需要从完整的输入序列中捕获信息。</p>
+            <img src="res/rnn_translate.svg" alt="机器翻译模型">
             <p>以下是关于机器翻译的研究论文：</p>
             <ul class="with-bullets">
                 <li>
@@ -307,7 +308,7 @@
             <p>RNN 与卷积神经网络一起被用作模型的一部分，用于生成未标记图像的描述。这种方法的效果非常惊人。组合模型甚至将生成的单词与图像中的特征进行对齐。</p>
 
             <h4>8.2.1.3 训练 RNN</h4>
-            <p>训练 RNN 与训练传统神经网络类似。我们也使用反向传播算法，但略有不同。由于网络中的所有时间步骤共享参数，因此每个输出处的梯度不仅取决于当前时间步骤的计算，还取决于先前的时间步骤。例如想要计算时刻 \(t = 4\) 的梯度，我们需要反向传播 3 个时刻，并将这些梯度加起来。这叫做 时间上的反向传播 (BPTT) 。如果这还不太清除，别担心，我么后续会介绍细节。现在，只需注意这样一个试试：使用 BPTT 训练的普通 RNN 难以学习长期依赖关系（例如相聚很远的步骤之间的依赖关系），这是由于所谓的梯度消失或爆炸引起的。存在一些机制来处理这些问题，某些类型的 RNN（如 LSTM）是专门为解决该问题而设计的。</p>
+            <p>训练 RNN 与训练传统神经网络类似。我们也使用反向传播算法，但略有不同。由于网络中的所有时间步骤共享参数，因此每个输出处的梯度不仅取决于当前时间步骤的计算，还取决于先前的时间步骤。例如想要计算时刻 \(t = 4\) 的梯度，我们需要反向传播 3 个时刻，并将这些梯度加起来。这叫做 时间上的反向传播 (BPTT) 。如果这还不太清楚，别担心，我们后续会介绍细节。现在，只需注意这样一个事实：使用 BPTT 训练的普通 RNN 难以学习长期依赖关系（例如相距很远的步骤之间的依赖关系），这是由于所谓的梯度消失或爆炸引起的。存在一些机制来处理这些问题，某些类型的 RNN（如 LSTM）是专门为解决该问题而设计的。</p>
 
             <h4>8.2.1.4 RNN 拓展</h4>
             <p>多年来，研究人员开发了更复杂的 RNN 类型来处理普通 RNN 模型的一些缺点。我们将在后续文章中更详细地介绍它们，但我希望本节作为简要概述，以便您熟悉模型的分类。</p>
@@ -315,24 +316,141 @@
             <p>基于以下的思想：时刻 \(t\) 的输出可能不仅取决于序列中的前一个元素，还取决于未来的元素。例如，要预测序列中缺失的单词，您需要同时查看左侧和右侧上下文。双向 RNN 非常简单。它们只是两个堆叠在一起的 RNN。然后根据两个 RNN 的隐藏状态计算输出。</p>
             <img src="brnn_arch.svg" alt="BRNN 架构">
             <p><strong>LSTM 网络</strong></p>
-            <p>如今非常流行，我们在上面简要介绍了它们。LSTM 的架构与 RNN 并无根本区别，但它们使用不同的函数来计算隐藏状态。LSTM 中的记忆称为单元，我们可以将它想象成为一个黑盒子，将之前的状态 \(h_{t-1}\) 和当前的输入 \(x_t\) 作为输入。单元内部决定哪些记忆被保留，哪些被擦除。它们然后结合之前的状态、当前的记忆、和输入产生输出。这些单元在在捕获长期依赖关系方面非常有效。</p>
+            <p>如今非常流行，我们在上面简要介绍了它们。LSTM 的架构与 RNN 并无根本区别，但它们使用不同的函数来计算隐藏状态。LSTM 中的记忆称为单元，我们可以将它想象成为一个黑盒子，将之前的状态 \(h_{t-1}\) 和当前的输入 \(x_t\) 作为输入。单元内部决定哪些记忆被保留，哪些被擦除。然后结合之前的状态、当前的记忆和输入产生输出。这些单元在在捕获长期依赖关系方面非常有效。</p>
         
 
             <h3>8.2.2 实现 RNN</h3>
-            <p>这个小节我们将使用 Python  从头开始实现一个完整的循环神经网络，并使用 PyTorch 优化我们的实现。会跳过一些对于理解循环神经网络来说并非必不可少的样板代码，但所有的代码也在 Github 上。</p>
+            <p>这个小节我们将使用 Python  从头开始实现一个完整的循环神经网络。会跳过一些对于理解循环神经网络来说并非必不可少的样板代码，但所有的代码也在 Github 上。</p>
             
             <h4>8.2.2.1 语言建模</h4>
             <p>我们的目标是使用循环神经网络构建语言模型，这意味着如果我们有 m 个单词的句子，语言模型使我们能够预测观察句子（在给定数据集中）的概率，如下所示：</p>
             <p>\(P(w_1, ... , w_m) = \prod_{i=1}^mP(w_i|w_1, ..., w_{i-1})\)</p>
             <p>用文字来说，一个句子的概率是每个单词在给定前面的单词情况下的概率的乘积。因此，句子“He went to buy some chocolate” 中 “chocolate” 的概率由 “He went to buy some” 中 “some” 乘以 “He went to buy” 的概率得到，以此类推。</p>
             <p>这有什么用呢？为什么我们要为观察一个句子分配的概率呢？</p>
-            
+            <p>首先，这种模型可以用作评分机制。例如，机器翻译系统通常会为输入的句子生成多个候选句子。你可以使用语言模型来挑选最可能的句子。直观地看，最可能的句子很可能是语法正确的。语音识别系统也会发生类似的评分。</p>
+            <p>但解决语言建模还有一个很酷的副作用。因为我们可以根据前面的单词预测单词的概率，所以我们能够生成新的文本，这是一个生成模型。给定一个现有的单词序列，我们从预测的概率中抽取下一个单词，并重复该过程，直到我们得到一个完整的句子。</p>
+            <p>请注意，在上面的等式中，每个单词的概率取决于所有先前的单词。实际上，由于计算或内存限制，许多模型很难表示这种长期依赖关系。他们通过常仅限于查看前面几个单词。RNN 理论上可以捕捉这种长依赖关系，但实际上它有点复杂，我们将在后续探讨这一点。</p>
             
             <h4>8.2.2.2 数据与预处理</h4>
-            <h4>8.2.2.3 构建 RNN</h4>
-            <h4>8.2.2.4 前向传播</h4>
-            <h4>8.2.2.5 BPTT 梯度</h4>
-            <h4>8.2.2.6 文本生成</h4>
+            <p>为了训练我们的语言模型，需要文本来学习。幸运的是，我们不需要任何标签来训练语言模型，只需要原始文本。数据集收集了 15000 条较长的 reddit 评论，我们的模型生成的文本看起来像 reddit 评论者（希望如此）。与大多数机器学习项目一样， 首先需要进行一些预处理，以使我们的数据变成正确的格式。</p>
+            <ol class="no-numbers"><li><strong>1. 标记文本</strong></li></ol>
+            <p>我们有原始文本，但我们希望基于每个单词的预测，这意味着我们必须将评论转变为句子，句子转变为单词。可以用空格分割每个评论，但这样无法正确处理标点符号。句子 “He left!” 应该有 3 个标记：“He”，“left”，“!” 。使用 NLTK 库的 <code>sent_tokenize</code> 和 <code>word_tokenize</code> 方法，它会为我们做很多工作。</p>
+            <ol class="no-numbers"><li><strong>2. 删除低频单词</strong></li></ol>
+            <p>我们文本中的大多数单词只会出现一两次。删除这些不常见的单词是个好主意。词汇量过大会使我们的模型训练速度变慢（稍后会讨论为什么会这样），而且由于我们没有很多此类单词的上下文示例，无论如何都无法学习如何正确使用它们。这与人类的学习方式非常相似。要真正理解如何恰当地使用一个单词，你需要在不同的上下文中看到它。</p>
+            <p>在代码中，我们会通过 vocabulary_size 限制单词表的词汇量（这里设置为 8000，可以任意地修改它）。没有包含在词汇表中的单词使用 UNKNOWN_TOKEN 表示。比如单词 “nonlinearities” 不在我们的词汇表中，那么句子 “nonlineraties are important in neural networks” 就会变成 “UNKNOWN_TOKEN are important in Neural Networks” 。单词 UNKNOWN_TOKEN 会进入词汇表，就像我们预测其它单词一样。当我们生成新文本时，可以将 UNKNOWN_TOKEN 替换掉，比如从随机选取一个不在单词表里的单词，或者我们生成的句子到出现 “UNKNOWN_TOKEN” 为止。</p>
+            <ol class="no-numbers"><li><strong>3. 开始和结束标记</strong></li></ol>
+            <p>我们还想了解哪些单词往往是句子的开头和结尾。为此在前面添加一个特殊的 SENTENCE_START 标记，在句子的末尾添加一个 SENTENCE_END 标记。这使我们能够提出以下问题：假设第一个标记是 “SENTENCE_START” ，那么下一个可能的单词是什么，即句子实际的第一个单词。</p>
+            <ol class="no-numbers"><li><strong>4. 构建数据矩阵</strong></li></ol>
+            <p>循环神经网络的输入是向量，而不是字符串。因此我们在单词和索引之间创建映射，定义 index_to_word 和 word_to_index 变量。比如单词 “friendly” 的索引可能为 2001 。一个训练样本 x 可能像 [0, 179, 341, 416] 这样，其中 0 对应的是 SENTENCE_START 。对应的标签 y 为 [179, 341, 416, 1] 。请记住，我们的目标是预测下一个单词，因此 y 只是 x 向量向前移动一个为止，最后一个元素是标记 SENTENCE_END 。换句话说，对于单词 179 正确的预测是 341 ，表示下一个单词。</p>
+            <pre><code>vocabulary_size = 8000
+unknown_token = 'UNKNOWN_TOKEN'
+sentence_start_token = 'SENTENCE_START'
+sentence_end_token = 'SENTENCE_END'
+nltk.download('punkt_tab')
+# Read the data and append SENTENCE_START and SENTENCE_END tokens.
+print('Reading CSV files...')
+with open('temp/reddit-comments-2015-08.csv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f, skipinitialspace=True)
+    # Split full comments into sentences.
+    sentences = itertools.chain(*[nltk.sent_tokenize(x[0].lower()) for x in reader])
+    # Append SENTENCE_START and SENTENCE_END.
+    sentences = ['%s %s %s' % (sentence_start_token, x, sentence_end_token) for x in sentences]
+print('Parsed', len(sentences), 'sentences')
+
+# Tokenize the sentences into words.
+tokenized_sentences = [nltk.word_tokenize(sent) for sent in sentences]
+# Count the word frequencies.
+word_freq = nltk.FreqDist(itertools.chain(*tokenized_sentences))
+print('Found', len(word_freq.items()), 'unique words tokens')
+
+# Get the most common words and build index_to_word and word_to_index vectors.
+vocab = word_freq.most_common(vocabulary_size - 1)
+index_to_word = [x[0] for x in vocab]
+index_to_word.append(unknown_token)
+word_to_index = dict([(w, i) for i, w in enumerate(index_to_word)])
+print('Using vocabulary size', vocabulary_size)
+print('The least frequent word in our vocabulary is', vocab[-1][0], 'and appeared', vocab[-1][1], 'times')
+
+# Replace all words in our vocabulary with the unkown token.
+for i, sent in enumerate(tokenized_sentences):
+    tokenized_sentences[i] = [w if w in word_to_index else unknown_token for w in sent]
+
+print('Example sentence 10:', sentences[10])
+print('Example sentence 10 after pre-processing:', tokenized_sentences[10])
+
+# Create the training data.
+x_train = numpy.asarray([[word_to_index[w] for w in sent[:-1]] for sent in tokenized_sentences], dtype=object)
+y_train = numpy.asarray([[word_to_index[w] for w in sent[1:]] for sent in tokenized_sentences], dtype=object)
+print('Sentence 10 source:', x_train[10])
+print('Sentence 10 target:', y_train[10])</code></pre>
+            <p>上述代码主要是实现上面 4 个步骤，可以查看输出结果：</p>
+
+
+            <h4>8.2.2.3 理解公式</h4>
+            <p><a href="#rnn_intro">第 8.2.1 小节 RNN 介绍</a> 中描述了 RNN 网络的总体架构。接下来具体一点，看看我们的语言模型是什么样子的。输入 x 是一系列的单词（像之前打印的示例那样），每个 xt 是一个单词。但注意有一点：由于矩阵乘法的工作原理，我们不能简单地使用单词索引（如 36）作为输入。相反将每个单词表示大小为 vocabulary_size 的独热向量。我们在神经网络代码中执行此转换，而不是预处理中。网络输出 o 有类似的格式，每个 ot 是一个 vocabulary_size 大小的向量，每个元素表示该词成为句子中下一个词的概率。</p>
+            <p>让我么回顾一下上一个小节 RNN 的方程：</p>
+            <p class="highlight-math" style="text-align: center;">\(s_t = tanh(U \cdot x_t + W \cdot s_{t-1})\)</p>
+            <p class="highlight-math" style="text-align: center;"> \(o_t = softmax(V \cdot s_t)\)</p>
+            <p>我发现记录矩阵和向量的维度很有用，假设我们选择的词汇量大小 C=8000 ，隐藏层的大小 H=100 ，可以将隐藏层看作是网络的记忆。让隐藏层更大可以学习到更复杂的模式，但是也增加了额外的计算。那么有下面的记号：</p>
+            <p class="highlight-math" style="text-align: center;"> \(x_t \in \mathbb{R}^{8000}\)</p>
+            <p class="highlight-math" style="text-align: center;"> \(o_t \in \mathbb{R}^{8000}\)</p>
+            <p class="highlight-math" style="text-align: center;"> \(s_t \in \mathbb{R}^{100}\)</p>
+            <p class="highlight-math" style="text-align: center;"> \(U \in \mathbb{R}^{100 \times 8000}\)</p>
+            <p class="highlight-math" style="text-align: center;"> \(V \in \mathbb{R}^{8000 \times 100}\)</p>
+            <p class="highlight-math" style="text-align: center;"> \(W \in \mathbb{R}^{100 \times 100}\)</p>
+            <p>它们是很重要的信息，记住 U 、V 和 W 是我们网络想要从数据中进行学习的参数。因为我们总共需要学习 2HC+H2 个参数，在  C=8000 和 H=100 时那就是 1610000 个。维度也告诉我们模型的瓶颈。注意因为 xt 是独热向量，和 U 进行相乘，需要 U 的列数和它是相同的。网络中最大的矩阵是 Vst ，这就是我们为什么将词汇量设置得比较小的原因。</p>
+            <p>有了这些，我们就可以开始代码实现！</p>
+            
+            <h4>8.2.2.4 初始化</h4>
+            <p>首先声明一个 RNN 类并初始化我们的参数。参数 U、V 和 W 的初始化有点儿棘手。我们不能直接将它们初始化为 0，因为这会导致我们所有层的结果都是零。必须随机初始化它们，由于适当的初始化似乎对训练结果有影响，因此在这方面已经有很多研究。事实证明，最佳初始化取决于激活函数（我们的例子使用 tanh 函数），将初始值设置在如下区间：</p>
+            <p class="highlight-math" style="text-align: center;"> \(-\frac{1}{\sqrt{n}}, \frac{1}{\sqrt{n}}\)</p>
+            <p>其中 n 是前一层的连接数量，这听起来有点麻烦。但别担心，初始化一个随机很小的值也是可以的。</p>
+            <pre><code>class RNNNumpy:
+    def __init__(self, word_dim, hidden_dim=100, bptt_truncate=4):
+        # Assign instance variables.
+        self.word_dim = word_dim
+        self.hidden_dim = hidden_dim
+        self.bptt_truncate = bptt_truncate
+        # Randomly initialize the network parameters.
+        rng = numpy.random.default_rng(0)
+        self.U = rng.uniform(-numpy.sqrt(1./word_dim), numpy.sqrt(1./word_dim),
+                                (hidden_dim, word_dim))
+        self.V = rng.uniform(-numpy.sqrt(1./hidden_dim), numpy.sqrt(1./hidden_dim),
+                                (word_dim, hidden_dim))
+        self.W = rng.uniform(-numpy.sqrt(1./hidden_dim), numpy.sqrt(1./hidden_dim),
+                                (hidden_dim, hidden_dim))</code></pre>
+            <p>上面 word_dim 是我们词汇表的大小，hidden_dim 是隐藏层的数量。现在不用担心 bptt_truncate 参数，稍后会详细解释它。</p>
+            
+            
+            <h4>8.2.2.5 前向传播</h4>
+            <p>接下来是前向传播，通过上面定义的公式，预测单词的概率：</p>
+            <pre><code>def forward_propagation(self, x):
+    # The total number of time steps.
+    T = len(x)
+    # During forward propagation we save all hidden states in s because need them later.
+    # We add one additional element for the initial hidden, which we set to 0.
+    s = numpy.zeros((T + 1, self.hidden_dim))
+    # The outputs at each time step. Again, we save them for later.
+    o = numpy.zeros((T, self.word_dim))
+
+    # For each time step...
+    for t in numpy.arange(T):
+        # Note that we are indexing U by x[t].
+        # This is the same as multiplying U with a one-hot vector.
+        s[t] = numpy.tanh(self.U[:, x[t]] + self.W.dot(s[t-1]))
+        o[t] = softmax(self.V.dot(s[t]))
+    return (o, s)</code></pre>
+
+            <p>不仅返回计算的输出，还返回隐藏状态。我们稍后会使用它们来计算梯度，通过在这里返回，我们可以避免重复计算。每个 ot 是一个表示词汇表中单词的概率向量，但有时，例如在评估模型时，我们想要的只是下一个概率最高的单词。我们称此为 predict 函数：</p>
+            <pre><code>def predict(self, x):
+    # Perform forward propagation and return index of the highest score.
+    o, s = self.forward_propagation(x)
+    return numpy.argmax(o, axis=1)</code></pre>
+            <p>让我们尝试一下我们新实现的方法并查看示例输出：</p>
+            <p>对于句子中的每个单词（上面的 45 个），我们的模型做出了 8000 个预测，代表下一个单词的概率。请注意，因为我们初始化了 W, U 和 V 随机值，这些预测现在完全是随机的。以下给出了每个单词最高概率预测的索引：</p>
+            
+            <h4>8.2.2.6 计算损失</h4>
+            
 
         </main>
 
