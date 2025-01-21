@@ -157,8 +157,27 @@
                             <li><a class="nav-link" heaf="#section1-sub5">1.5 机器学习求解</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#section2">02 深度学习原理</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#section3">03 分类问题：Keras 求解</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section2" onclick="toggleChildChapters(event, 'chapter2')">02 深度学习原理</a>
+                        <ul id="chapter2" class="child-chapters" style="display: none;">
+                            <li><a class="nav-link" href="#section2-sub1">2.1 什么是机器学习</a></li>
+                            <li><a class="nav-link" href="#section2-sub2">2.2 人工神经网络</a></li>
+                            <li><a class="nav-link" href="#section2-sub3">2.3 线性代数</a></li>
+                            <li><a class="nav-link" heaf="#section2-sub4">2.4 数据表示</a></li>
+                            <li><a class="nav-link" heaf="#section2-sub5">2.5 数据操作</a></li>
+                            <li><a class="nav-link" heaf="#section2-sub6">2.6 常见微型数据集</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section3" onclick="toggleChildChapters(event, 'chapter3')">03 分类问题：Keras 求解</a>
+                        <ul id="chapter3" class="child-chapters" style="display: none;">
+                            <li><a class="nav-link" href="#section3-sub1">3.1 统计学入门</a></li>
+                            <li><a class="nav-link" href="#section3-sub2">3.2 二分类问题</a></li>
+                            <li><a class="nav-link" href="#section3-sub3">3.3 Keras 快速入门</a></li>
+                            <li><a class="nav-link" heaf="#section3-sub4">3.4 图片分类</a></li>
+                            <li><a class="nav-link" heaf="#section3-sub5">3.5 其它分类问题</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#section4">04 详解反向传播算法</a></li>
                     <li class="nav-item"><a class="nav-link" href="#section5">05 张量与自动微分</a></li>
                     <li class="nav-item"><a class="nav-link" href="#section6">06 训练神经网络</a></li>
@@ -168,6 +187,11 @@
                         <ul id="chapter8" class="child-chapters" style="display: none;">
                             <li><a class="nav-link" href="#section8-sub1">8.1 循环神经网络入门</a></li>
                             <li><a class="nav-link" href="#section8-sub2">8.2 RNN 详解</a></li>
+                            <li><a class="nav-link" href="#section8-sub3">8.3 长短期记忆网络</a></li>
+                            <li><a class="nav-link" href="#section8-sub4">8.4 GRU 网络</a></li>
+                            <li><a class="nav-link" href="#section8-sub5">8.5 序列到序列</a></li>
+                            <li><a class="nav-link" href="#section8-sub6">8.6 Seq2Seq</a></li>
+                            <li><a class="nav-link" href="#section8-sub7">8.7 Word2Vec</a></li>
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#section9">09 Transformer 架构</a></li>
@@ -257,6 +281,11 @@
                 <section id="section4" class="content-section">
                     <h2>章节 4</h2>
                     <p>这是章节 4 的内容。欢迎补充更多章节。</p>
+
+                    <h3 id="section4-sub5" class="content-section-sub">
+                        <a href="dense_network_scratch.html" style="text-decoration: none; color: inherit;">4.5 手写神经网络</a>
+                    </h3>
+
                 </section>
                 <section id="section5" class="content-section">
                     <h2>章节 5</h2>
@@ -302,7 +331,23 @@
                     </h3>
 
                     <h3 id="section8-sub3" class="content-section-sub">
-                        <a href="recurrent_detail.html" style="text-decoration: none; color: inherit;">8.3 长短期记忆网络</a>
+                        <a href="#" style="text-decoration: none; color: inherit;">8.3 长短期记忆网络</a>
+                    </h3>
+
+                    <h3 id="section8-sub4" class="content-section-sub">
+                        <a href="#" style="text-decoration: none; color: inherit;">8.4 GRU 网络</a>
+                    </h3>
+
+                    <h3 id="section8-sub5" class="content-section-sub">
+                        <a href="#" style="text-decoration: none; color: inherit;">8.5 序列到序列</a>
+                    </h3>
+
+                    <h3 id="section8-sub6" class="content-section-sub">
+                        <a href="#" style="text-decoration: none; color: inherit;">8.6 Seq2Seq</a>
+                    </h3>
+
+                    <h3 id="section8-sub7" class="content-section-sub">
+                        <a href="#" style="text-decoration: none; color: inherit;">8.7 Word2Vec</a>
                     </h3>
 
                 </section>
