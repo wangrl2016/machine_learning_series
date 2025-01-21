@@ -217,6 +217,13 @@
             color: red;
             font-weight: bold;
         }
+        .scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body>
@@ -445,8 +452,10 @@ print('Input data shape', numpy.array(inputs).shape)</code></pre>
     return y, h</code></pre>
             <p>看上去非常简单？注意第一步我们将 \(h\) 初始化为零向量，因为在那之前没有隐藏状态。</p>
             <p>例如当我们的第一个输入单词为 \(x \in \mathbb{R}^{18 \times 1}\) 时，下述公式可以看到网络的维度变化：</p>
-            <p>\(h \in \mathbb{R}^{64 \times 1} = tanh(W_{xh} \in \mathbb{R}^{64 \times 18} \cdot x \in \mathbb{R}^{18 \times 1} + W_{hh} \in \mathbb{R}^{64 \times 64} \cdot h \in \mathbb{R}^{64 \times 1} + b_h \in \mathbb{R}^{64 \times 1})\)</p>
-            <p>\(y \in \mathbb{R}^{2 \times 1} = W_{hy} \in \mathbb{R}^{2 \times 64} \cdot h \in \mathbb{R}^{64 \times 1} + b_y \in \mathbb{R}^{2 \times 1}\)</p>
+            <div class="scroll-container">
+                <p>\(h \in \mathbb{R}^{64 \times 1} = tanh(W_{xh} \in \mathbb{R}^{64 \times 18} \cdot x \in \mathbb{R}^{18 \times 1} + W_{hh} \in \mathbb{R}^{64 \times 64} \cdot h \in \mathbb{R}^{64 \times 1} + b_h \in \mathbb{R}^{64 \times 1})\)</p>
+                <p>\(y \in \mathbb{R}^{2 \times 1} = W_{hy} \in \mathbb{R}^{2 \times 64} \cdot h \in \mathbb{R}^{64 \times 1} + b_y \in \mathbb{R}^{2 \times 1}\)</p>
+            </div>
             <p>以此类推，直到最后一个单词，经过 softmax 函数转换为概率值，完成网络的前向传播过程：</p>
             <pre><code>rnn = RNN(vocab_size, 2)
 inputs = create_inputs('i am very good')

@@ -127,6 +127,17 @@
             color: #34495e;
             font-size: 16px;
         }
+        /* 移动端样式（只在屏幕宽度 < 1024 px 时生效 */
+        @media screen and (max-width: 1024px) {
+            .sidebar, .right-sidebar {
+                display: none;
+            }
+            .content {
+                margin: 0;
+                padding: 10px;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -288,6 +299,10 @@
 
                     <h3 id="section8-sub2" class="content-section-sub">
                         <a href="recurrent_detail.html" style="text-decoration: none; color: inherit;">8.2 RNN 详解</a>
+                    </h3>
+
+                    <h3 id="section8-sub3" class="content-section-sub">
+                        <a href="recurrent_detail.html" style="text-decoration: none; color: inherit;">8.3 长短期记忆网络</a>
                     </h3>
 
                 </section>
