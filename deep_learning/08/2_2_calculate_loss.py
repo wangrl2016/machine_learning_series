@@ -43,6 +43,26 @@ class RNNNumpy:
         # Perform forward propagation and return index of the highest score.
         o, s = self.forward_propagation(x)
         return numpy.argmax(o, axis=1)
+    
+    # 同时传递多个句子
+    def calculate_total_loss(self, x, y):
+        loss = 0
+        # For each sentence...
+        for i in numpy.arange(len(y)):
+            (o, s) = self.forward_propagation(x[i])
+            # We only care about our prediction of the 'correct' words.
+            correct_word_predictions = o[numpy.arange(len(y[i])), y[i]]
+            # Add to the loss based on how off we are.
+            loss += -1 * numpy.sum(numpy.log(correct_word_predictions))
+        return loss
+    
+    def calculate_loss(self, x, y):
+        # Divide the total loss by the number of training examples.
+        N = 0
+        for y_i in y:
+            N += len(y_i)
+        return self.calculate_total_loss(x, y) / N
+            
 
 vocabulary_size = 8000
 unknown_token = 'UNKNOWN_TOKEN'
@@ -95,3 +115,7 @@ if __name__ == '__main__':
     predictions = model.predict(x_train[10])
     print('Prediction shape:', predictions.shape)
     print('Prediction', predictions)
+
+    print('Expect loss:', numpy.log(vocabulary_size))
+    loss = model.calculate_loss(x_train[:1000], y_train[:1000])
+    print('Actual loss:', loss)
