@@ -235,25 +235,25 @@
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
             <h2 class="custom-title">8.2 RNN 详解</h2>
-            <p class="title-subtext">从头构建 RNN 语言生成模型，实现 GRU/LSTM RNN 网络！</p>
+            <p class="title-subtext">从头构建 RNN 语言生成模型，理解时间反向传播 (BPTT) ，实现 GRU/LSTM 网络！</p>
             <p style="color: #a0a0a0;">创建日期: 2025-01-20</p>
             <p>循环神经网络（RNN）是一种流行的模型，在许多 NLP 任务中都表现出了巨大的潜力。尽管它们最近很受欢迎，但我只找到了有限数量的资源来彻底解释 RNN 的工作原理以及如何实现它们。这就是本教程的内容，它由多个部分组成的系列，我计划在其中介绍以下内容：</p>
             <ul>
                 <li>
-                    <p>1. RNN 介绍</p>
+                    <p>1. RNN 介绍；</p>
                 </li>
                 <li>
-                    <p>2. 使用 NumPy 实现 RNN</p>
+                    <p>2. 使用 NumPy 实现 RNN；</p>
                 </li>
                 <li>
-                    <p>3. 理解时间反向传播 (BPTT) 算法和梯度消失问题</p>
+                    <p>3. 理解时间反向传播 (BPTT) 算法和梯度消失问题；</p>
                 </li>
                 <li>
-                    <p>4. 实现 GRU/LSTM RNN 网络</p>
+                    <p>4. 实现 GRU/LSTM RNN 网络。</p>
                 </li>
             </ul>
 
-            <p>作为本教程的一部分，我们将实现一个基于循环神经网络的语言模型。语言模型的应用有两个方面：首先，它允许我们根据句子在现实世界中出现的可能性对任意句子进行评分。这为我们提供了语法和语义正确性的衡量标准，此类模型通常用作机器翻译系统的一部分。其次，语言模型允许我们生成新文本（我认为这是更酷的应用）。在莎士比亚数据集上训练语言模型使我们能够生成类似莎士比亚的文本。</p>
+            <p>作为本教程的一部分，我们将实现一个基于循环神经网络的语言模型。语言模型的应用有两个方面：首先，它允许我们根据句子在现实世界中出现的可能性对任意句子进行评分。这为我们提供了语法和语义正确性的衡量标准，此类模型通常用作机器翻译系统的一部分。其次，语言模型允许我们生成新文本（我认为这是更酷的应用）。在莎士比亚数据集上训练的语言模型使我们能够生成类似莎士比亚的文本。</p>
             <p>我假设你对基础神经网络有所了解。如果不熟悉，可以去阅读 <a href="index.html#section2">第 02 章 深度学习原理</a> 的内容，它将指导我们了解非循环网络背后的思想和实现。</p>
         
             <h3 id="rnn_intro">8.2.1 RNN 介绍</h3>
@@ -264,13 +264,13 @@
             <p>RNN 背后的想法是利用顺序信息，在传统的神经网络中，我们假设所有的输入（和输出）都是相互独立的。但对于许多任务来说，这是一个坏主意，如果你想预测句子中的下一个单词，你最好知道它之前有哪些单词。</p>
             <p>RNN 之所以被称为“循环”，是因为它们对序列的每个元素执行相同的任务，而输出取决于之前的计算。另一种思考 RNN 的方式是，它们有一个“记忆”，可以捕获已经被计算的信息。理论上，RNN 可以利用任意长度序列中的信息，但实际上它们仅限于回顾固定的数量（稍后会详细解释）。典型的 RNN 如下所示：</p>
             <img src="rnn_unfold.jpg" alt="RNN 展开">
-            <p>上图显示了一个正在被展开的 RNN 网络。展开的意思是我们将整个序列的网络写出来。假设我们关心的序列是一个包含 5 个单词的句子，则网络将展开为 5 层，每个单词一层。控制 RNN 中发生计算的公式如下：</p>
+            <p>上图显示了一个正在被展开的 RNN 网络。展开的意思是我们将整个网络的序列写出来。假设我们关心的序列是一个包含 5 个单词的句子，则网络将展开为 5 层，每个单词一层。控制 RNN 中发生计算的公式如下：</p>
             <ul class="with-bullets">
                 <li>
                     <p>\(x_t\) 是在步骤 \(t\) 时刻的输入。比如，\(x_1\) 是句子中第二个单词的独热向量。</p>
                 </li>
                 <li>
-                    <p>\(s_t\) 是在步骤 \(t\) 时刻的隐藏状态，相当于网络的记忆。\(s_t\) 的计算基于之前的隐藏状态和当前步骤的输入：\(s_t = f(U \cdot x_t + W \cdot s_{t-1})\) 。函数 \(f\) 通常是非线性的 tanh 或者 ReLU 激活函数。\(s_{-1}\) 用于计算第一个隐藏状态，通常所有数值初始化为零。</p>
+                    <p>\(s_t\) 是在步骤 \(t\) 时刻的隐藏状态，相当于网络的记忆。\(s_t\) 的计算基于之前的隐藏状态和当前步骤的输入：\(s_t = f(U \cdot x_t + W \cdot s_{t-1})\) 。函数 \(f\) 通常是非线性的 tanh 或者 ReLU 激活函数。\(s_{-1}\) 用于计算第一个隐藏状态，所有数值初始化为零。</p>
                 </li>
                 <li>
                     <p>\(o_t\) 对应步骤 \(t\) 时刻的输出，比如我们想要预测句子中的下一个单词，它将是我们词汇表中的概率向量，\(o_t = softmax(V \cdot s_t)\) 。</p>
@@ -285,14 +285,14 @@
                     <p>与在每一层使用不同的参数的传统深度神经网络不同，在所有步骤中，RNN 共享相同的参数 \((U, V, W)\) 。这反映了我们在每个步骤中执行的相同的任务，只是输入不同。这大大减少我们需要学习的参数总量。</p>
                 </li>
                 <li>
-                    <p>上图在每个时间步骤都有输出，但根据任务的不同，这可能不是必需的。例如在预测句子的情绪时，我们可能只关心最终输出，而不是每个单词后的情绪。同样，我们可能不需要每个时间步骤的输入。RNN 的主要特征是其隐藏状态，它捕获序列的一些信息。</p>
+                    <p>上图在每个时间步骤都有输出，但根据任务的不同，这可能不是必需的。例如在预测句子的情绪时，只关心最终输出，而不是每个单词后的情绪。同样，我们可能不需要每个时间步骤的输入。RNN 的主要特征是其隐藏状态，它捕获序列的一些信息。</p>
                 </li>
             </ul>
 
             <h4>8.2.1.2 能做什么</h4>
             <p>RNN 在许多 NLP 任务中都取得了巨大成功，现在我应该提到，最常用的 RNN 类型是 LSTM ，它在捕获长期依赖性方面比普通 RNN 好得多。但别担心，LSTM 本质上与我们将在本教程中开发的 RNN 相同，只是它们计算隐藏状态的方式不同。我们将在后面的小节中更详细地介绍 LSTM。以下是 RNN 在 NLP 领域的一些示例应用，这绝不是一份详尽的清单。</p>
             <p><strong>语言建模和生成文本</strong></p>
-            <p>给定一个单词序列，我们想要根据之前已经给定的单词预测每个单词的概率。语言模型是我们能够衡量句子的相似度，这是机器翻译的重要输入（高相似度的句子通常是正确的）。能够预测下一个单词的副作用是我们得到了一个生成模型，它使我们能够通过从输出概率中采样，来生成新文本。并且根据我们的训练数据，可以生成各种各样的东西。在语言建模中，我们的输入通常是单词序列（例如编码为独热向量），我们的输出是预测单词的序列。在训练网络时，设置 \(o_t = x_{t+1}\) ，因为我们想 \(t\) 时刻的输出将是下个单词。</p>
+            <p>给定一个单词序列，我们想要根据之前已经给定的单词预测每个单词的概率。语言模型使我们能够衡量句子的相似度，这是机器翻译的重要输入（高相似度的句子通常是正确的）。能够预测下一个单词的副作用是我们得到了一个生成模型，它使我们能够通过从输出概率中采样，来生成新文本。并且根据我们的训练数据，可以生成各种各样的东西。在语言建模中，我们的输入通常是单词序列（例如编码为独热向量），我们的输出是预测单词的序列。在训练网络时，设置 \(o_t = x_{t+1}\) ，因为我们想 \(t\) 时刻的输出将是下个单词。</p>
             <p><strong>机器翻译</strong></p>
             <p>机器翻译与语言建模类似，因为我们的输入是源语言（例如德语）中的单词序列。我们希望输出是目标语言（例如英语）中的单词序列。一个关键的区别是，我们的输出只有在我们看到完整的输入后才开始，因为我们翻译的句子的第一个单词可能需要从完整的输入序列中捕获信息。</p>
             <img src="res/rnn_translate.svg" alt="机器翻译模型">
@@ -311,7 +311,7 @@
             <p>RNN 与卷积神经网络一起被用作模型的一部分，用于生成未标记图像的描述。这种方法的效果非常惊人。组合模型甚至将生成的单词与图像中的特征进行对齐。</p>
 
             <h4>8.2.1.3 训练 RNN</h4>
-            <p>训练 RNN 与训练传统神经网络类似。我们也使用反向传播算法，但略有不同。由于网络中的所有时间步骤共享参数，因此每个输出处的梯度不仅取决于当前时间步骤的计算，还取决于先前的时间步骤。例如想要计算时刻 \(t = 4\) 的梯度，我们需要反向传播 3 个时刻，并将这些梯度加起来。这叫做 时间上的反向传播 (BPTT) 。如果这还不太清楚，别担心，我们后续会介绍细节。现在，只需注意这样一个事实：使用 BPTT 训练的普通 RNN 难以学习长期依赖关系（例如相距很远的步骤之间的依赖关系），这是由于所谓的梯度消失或爆炸引起的。存在一些机制来处理这些问题，某些类型的 RNN（如 LSTM）是专门为解决该问题而设计的。</p>
+            <p>训练 RNN 与训练传统神经网络类似。我们也使用反向传播算法，但略有不同。由于网络中的所有时间步骤共享参数，因此每个输出处的梯度不仅取决于当前时间步骤的计算，还取决于先前的时间步骤。例如想要计算时刻 \(t = 4\) 的梯度，我们需要反向传播 3 个时刻，并将这些梯度加起来。这叫做 <strong>时间反向传播 (BPTT)</strong> 。如果这还不太清楚，别担心，我们后续会介绍细节。现在，只需注意这样一个事实：使用 BPTT 训练的普通 RNN 难以学习长期依赖关系（例如相距很远的步骤之间的依赖关系），这是由于所谓的梯度消失或爆炸引起的。存在一些机制来处理这些问题，某些类型的 RNN（如 LSTM）是专门为解决该问题而设计的。</p>
 
             <h4>8.2.1.4 RNN 拓展</h4>
             <p>多年来，研究人员开发了更复杂的 RNN 类型来处理普通 RNN 模型的一些缺点。我们将在后续文章中更详细地介绍它们，但我希望本节作为简要概述，以便您熟悉模型的分类。</p>
@@ -323,11 +323,11 @@
         
 
             <h3>8.2.2 实现 RNN</h3>
-            <p>这个小节我们将使用 Python  从头开始实现一个完整的循环神经网络。会跳过一些对于理解循环神经网络来说并非必不可少的样板代码，但所有的代码也在 Github 上。</p>
+            <p>这个小节我们将使用 Python  从头开始实现一个完整的循环神经网络。会跳过一些对于理解循环神经网络来说并非必不可少的样板代码，但所有的代码都在 <a href="https://github.com/artinte/machine-learning-series/tree/develop/deep_learning/08">Github 仓库</a> 上。</p>
             
             <h4>8.2.2.1 语言建模</h4>
             <p>我们的目标是使用循环神经网络构建语言模型，这意味着如果我们有 m 个单词的句子，语言模型使我们能够预测观察句子（在给定数据集中）的概率，如下所示：</p>
-            <p>\(P(w_1, ... , w_m) = \prod_{i=1}^mP(w_i|w_1, ..., w_{i-1})\)</p>
+            <p class="highlight-math" style="text-align: center;">\(P(w_1, ... , w_m) = \prod_{i=1}^mP(w_i|w_1, ..., w_{i-1})\)</p>
             <p>用文字来说，一个句子的概率是每个单词在给定前面的单词情况下的概率的乘积。因此，句子“He went to buy some chocolate” 中 “chocolate” 的概率由 “He went to buy some” 中 “some” 乘以 “He went to buy” 的概率得到，以此类推。</p>
             <p>这有什么用呢？为什么我们要为观察一个句子分配的概率呢？</p>
             <p>首先，这种模型可以用作评分机制。例如，机器翻译系统通常会为输入的句子生成多个候选句子。你可以使用语言模型来挑选最可能的句子。直观地看，最可能的句子很可能是语法正确的。语音识别系统也会发生类似的评分。</p>
@@ -335,16 +335,16 @@
             <p>请注意，在上面的等式中，每个单词的概率取决于所有先前的单词。实际上，由于计算或内存限制，许多模型很难表示这种长期依赖关系。他们通过常仅限于查看前面几个单词。RNN 理论上可以捕捉这种长依赖关系，但实际上它有点复杂，我们将在后续探讨这一点。</p>
             
             <h4>8.2.2.2 数据与预处理</h4>
-            <p>为了训练我们的语言模型，需要文本来学习。幸运的是，我们不需要任何标签来训练语言模型，只需要原始文本。数据集收集了 15000 条较长的 reddit 评论，我们的模型生成的文本看起来像 reddit 评论者（希望如此）。与大多数机器学习项目一样， 首先需要进行一些预处理，以使我们的数据变成正确的格式。</p>
+            <p>为了训练我们的语言模型，需要文本来学习。幸运的是，我们不需要任何标签来训练语言模型，只需要原始文本。<a href="https://github.com/artinte/tiny-datasets">数据集 REDDIT</a> 收集了 15000 条较长的 reddit 评论，我们的模型生成的文本看起来像 reddit 评论者（希望如此）。与大多数机器学习项目一样， 首先需要进行一些预处理，以使我们的数据变成正确的格式。</p>
             <ol class="no-numbers"><li><strong>1. 标记文本</strong></li></ol>
             <p>我们有原始文本，但我们希望基于每个单词的预测，这意味着我们必须将评论转变为句子，句子转变为单词。可以用空格分割每个评论，但这样无法正确处理标点符号。句子 “He left!” 应该有 3 个标记：“He”，“left”，“!” 。使用 NLTK 库的 <code>sent_tokenize</code> 和 <code>word_tokenize</code> 方法，它会为我们做很多工作。</p>
             <ol class="no-numbers"><li><strong>2. 删除低频单词</strong></li></ol>
             <p>我们文本中的大多数单词只会出现一两次。删除这些不常见的单词是个好主意。词汇量过大会使我们的模型训练速度变慢（稍后会讨论为什么会这样），而且由于我们没有很多此类单词的上下文示例，无论如何都无法学习如何正确使用它们。这与人类的学习方式非常相似。要真正理解如何恰当地使用一个单词，你需要在不同的上下文中看到它。</p>
-            <p>在代码中，我们会通过 <code>vocabulary_size</code> 限制单词表的词汇量（这里设置为 8000，可以任意地修改它）。没有包含在词汇表中的单词使用 UNKNOWN_TOKEN 表示。比如单词 “nonlinearities” 不在我们的词汇表中，那么句子 “nonlineraties are important in neural networks” 就会变成 “UNKNOWN_TOKEN are important in Neural Networks” 。单词 UNKNOWN_TOKEN 会进入词汇表，就像我们预测其它单词一样。当我们生成新文本时，可以将 UNKNOWN_TOKEN 替换掉，比如从随机选取一个不在单词表里的单词，或者我们生成的句子到出现 “UNKNOWN_TOKEN” 为止。</p>
+            <p>在代码中，我们会通过 <code>vocabulary_size</code> 限制单词表的词汇量（这里设置为 8000，可以任意地修改它）。没有包含在词汇表中的单词使用 <code>UNKNOWN_TOKEN</code> 表示。比如单词 “nonlinearities” 不在我们的词汇表中，那么句子 “nonlineraties are important in neural networks” 就会变成 “UNKNOWN_TOKEN are important in Neural Networks” 。单词 <code>UNKNOWN_TOKEN</code> 会进入词汇表，就像我们预测其它单词一样。当我们生成新文本时，可以将 <code>UNKNOWN_TOKEN</code> 替换掉，比如随机选取一个不在单词表里的单词，或者我们生成的句子到出现 <code>UNKNOWN_TOKEN</code> 为止。</p>
             <ol class="no-numbers"><li><strong>3. 开始和结束标记</strong></li></ol>
-            <p>我们还想了解哪些单词往往是句子的开头和结尾。为此在前面添加一个特殊的 SENTENCE_START 标记，在句子的末尾添加一个 SENTENCE_END 标记。这使我们能够提出以下问题：假设第一个标记是 “SENTENCE_START” ，那么下一个可能的单词是什么，即句子实际的第一个单词。</p>
+            <p>我们还想了解哪些单词往往是句子的开头和结尾。为此在前面添加一个特殊的 <code>SENTENCE_START</code> 标记，在句子的末尾添加一个 <code>SENTENCE_END</code> 标记。这使我们能够提出以下问题：假设第一个标记是 <code>SENTENCE_START</code> ，那么下一个可能的单词是什么，即句子实际的第一个单词。</p>
             <ol class="no-numbers"><li><strong>4. 构建数据矩阵</strong></li></ol>
-            <p>循环神经网络的输入是向量，而不是字符串。因此我们在单词和索引之间创建映射，定义 index_to_word 和 word_to_index 变量。比如单词 “friendly” 的索引可能为 2001 。一个训练样本 x 可能像 [0, 179, 341, 416] 这样，其中 0 对应的是 SENTENCE_START 。对应的标签 y 为 [179, 341, 416, 1] 。请记住，我们的目标是预测下一个单词，因此 y 只是 x 向量向前移动一个为止，最后一个元素是标记 SENTENCE_END 。换句话说，对于单词 179 正确的预测是 341 ，表示下一个单词。</p>
+            <p>循环神经网络的输入是向量，而不是字符串。因此我们在单词和索引之间创建映射，定义 <code>index_to_word</code> 和 <code>word_to_index</code> 变量。比如单词 “friendly” 的索引可能为 2001 。一个训练样本 \(x\) 可能像 [0, 179, 341, 416] 这样，其中 0 对应的是 <code>SENTENCE_START</code> 。对应的标签 \(y\) 为 [179, 341, 416, 1] 。请记住，我们的目标是预测下一个单词，因此 \(y\) 只是 \(x\) 向量向前移动一个为止，最后一个元素是标记 <code>SENTENCE_END</code> 。换句话说，对于单词 179 正确的预测是 341 ，表示下一个单词。</p>
             <pre><code>vocabulary_size = 8000
 unknown_token = 'UNKNOWN_TOKEN'
 sentence_start_token = 'SENTENCE_START'
@@ -397,11 +397,11 @@ Sentence 10 source: [0, 7, 7510, 3415, 13, 17, 126, 5, 327, 3, 329, 14, 3, 132, 
 Sentence 10 target: [7, 7510, 3415, 13, 17, 126, 5, 327, 3, 329, 14, 3, 132, 269, 2, 1]</code></pre>
 
             <h4>8.2.2.3 理解公式</h4>
-            <p><a href="#rnn_intro">第 8.2.1 小节 RNN 介绍</a> 中描述了 RNN 网络的总体架构。接下来具体一点，看看我们的语言模型是什么样子的。输入 \(x\) 是一系列的单词（像之前打印的示例那样），每个 \(x_t\) 是一个单词。但注意有一点：由于矩阵乘法的工作原理，我们不能简单地使用单词索引（如 36）作为输入。相反将每个单词表示大小为 \(vocabulary_size\) 的独热向量。我们在神经网络代码中执行此转换，而不是预处理中。网络输出 \(o\) 有类似的格式，每个 \(o_t\) 是一个 \(vocabulary_size\) 大小的向量，每个元素表示该词成为句子中下一个词的概率。</p>
+            <p>上一个小节中描述了 RNN 网络的总体架构。接下来具体一点，看看我们的语言模型是什么样子的。输入 \(x\) 是一系列的单词（像之前打印的示例那样），每个 \(x_t\) 是一个单词。但注意有一点：由于矩阵乘法的工作原理，我们不能简单地使用单词索引（如 36）作为输入。相反将每个单词表示大小为 <code>vocabulary_size</code> 的独热向量。我们在神经网络代码中执行此转换，而不是预处理中。网络输出 \(o\) 有类似的格式，每个 \(o_t\) 是一个 <code>vocabulary_size</code> 大小的向量，每个元素表示该词成为句子中下一个词的概率。</p>
             <p>让我么回顾一下上一个小节 RNN 的方程：</p>
             <p class="highlight-math" style="text-align: center;">\(s_t = tanh(U \cdot x_t + W \cdot s_{t-1})\)</p>
             <p class="highlight-math" style="text-align: center;"> \(o_t = softmax(V \cdot s_t)\)</p>
-            <p>我发现记录矩阵和向量的维度很有用，假设我们选择的词汇量大小 C=8000 ，隐藏层的大小 H=100 ，可以将隐藏层看作是网络的记忆。让隐藏层更大可以学习到更复杂的模式，但是也增加了额外的计算。那么有下面的记号：</p>
+            <p>我发现记录矩阵和向量的维度很有用，假设我们选择的词汇量大小 \(C = 8000\) ，隐藏层的大小 \(H = 100\) ，可以将隐藏层看作是网络的记忆。让隐藏层更大可以学习到更复杂的模式，但是也增加了额外的计算。那么有下面的记号：</p>
             <p class="highlight-math" style="text-align: center;"> \(x_t \in \mathbb{R}^{8000}\)</p>
             <p class="highlight-math" style="text-align: center;"> \(o_t \in \mathbb{R}^{8000}\)</p>
             <p class="highlight-math" style="text-align: center;"> \(s_t \in \mathbb{R}^{100}\)</p>
@@ -451,12 +451,12 @@ Sentence 10 target: [7, 7510, 3415, 13, 17, 126, 5, 327, 3, 329, 14, 3, 132, 269
         o[t] = softmax(self.V.dot(s[t]))
     return (o, s)</code></pre>
 
-            <p>不仅返回计算的输出，还返回隐藏状态。我们稍后会使用它们来计算梯度，通过在这里返回，我们可以避免重复计算。每个 \(o_t\) 是一个表示词汇表中单词的概率向量，但有时，例如在评估模型时，我们想要的只是下一个概率最高的单词。我们称此为 <code>predict</code> 函数：</p>
+            <p>不仅返回计算的输出，还返回隐藏状态。我们稍后会使用它们来计算梯度，通过在这里返回，我们可以避免重复计算。每个 \(o_t\) 是一个表示词汇表中单词的概率向量，但有时，例如在评估模型时，我们想要的只是下一个概率最高的单词，称此为 <code>predict</code> 函数：</p>
             <pre><code>def predict(self, x):
     # Perform forward propagation and return index of the highest score.
     o, s = self.forward_propagation(x)
     return numpy.argmax(o, axis=1)</code></pre>
-            <p>让我们尝试一下新实现的方法，运行文件：</p>
+            <p>让我们尝试一下新实现的方法，运行 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/2_2_rnn_forward.py">2_2_rnn_forward.py</a> 文件：</p>
             <pre><code>model = RNNNumpy(vocabulary_size)
 (o, s) = model.forward_propagation(x_train[10])
 print('Output shape:', o.shape)
@@ -474,9 +474,9 @@ Prediction [6703 1153 4245  857 3803 1813 6387 2065 7020 4074  140  877 4765 191
             <p>对于句子中的每个单词（上面的 16 个），我们的模型做出了 8000 个预测，代表下一个单词的概率。请注意，因为我们初始化了 \(W\), \(U\) 和 \(V\) 随机值，这些预测现在完全是随机的， <code>numpy.argmax</code> 函数给出每个单词最高概率预测的索引。</p>
             
             <h4>8.2.2.6 计算损失</h4>
-            <p>为了训练我们的网络，我们需要一种方法来衡量它所犯的错误，称之为损失函数。我们的目标是从训练数据中找到参数 U 、V 和 W 使得损失函数最小。损失函数一个常用的选择是交叉熵损失。如果我们有 N 个训练样本（句子数量）和 C 个分类（词汇表的大小），那么我们的预测的输出 o 和真实标签 y 的损失，通过下面公式计算：</p>
+            <p>为了训练我们的网络，我们需要一种方法来衡量它所犯的错误，称之为损失函数。我们的目标是从训练数据中找到参数 \(U\) 、\(V\) 和 \(W\) 使得损失函数最小。损失函数一个常用的选择是交叉熵损失。如果我们有 \(N\) 个训练样本（句子数量）和 \(C\) 个分类（词汇表的大小），那么我们的预测的输出 \(o\) 和真实标签 \(y\) 的损失，通过下面公式计算：</p>
             <p class="highlight-math" style="text-align: center;">\(l(y, o) = - \frac{1}{n} \sum_{i=1}^n y_i \log(o_i)\)</p>
-            <p>这个公式看起来有点复杂，但它实际上做的就是对我们的训练样本求和，并根据我们的预测的偏差程度增加损失。真实标签 y 和 预测 o 离得越远，那么损失就越大，下面实现 calculate_loss 函数：</p>
+            <p>这个公式看起来有点复杂，但它实际上做的就是对我们的训练样本求和，并根据我们的预测的偏差程度增加损失。真实标签 \(y\) 和 预测 \(o\) 离得越远，那么损失就越大，下面实现 <code>calculate_loss</code> 函数：</p>
             <pre><code># 同时传递多个句子
     def calculate_total_loss(self, x, y):
         loss = 0
@@ -495,7 +495,7 @@ Prediction [6703 1153 4245  857 3803 1813 6387 2065 7020 4074  140  877 4765 191
         for y_i in y:
             N += len(y_i)
         return self.calculate_total_loss(x, y) / N</code></pre>
-            <p>让我们退一步思考一下随机预测的损失应该是多少。这将为我们提供一个基准，并确保我们的实现是正确的。我们的词汇表中有 C = 8000 个单词，那么平均每个单词的预测概率为 1/8000 ，那么它将会产生损失 \(l = -\frac{1}{N}Nlog(\frac{1}{c}) = log(c)\)</p>
+            <p>让我们退一步思考一下随机预测的损失应该是多少。这将为我们提供一个基准，并确保我们的实现是正确的。我们的词汇表中有 、\(C = 8000\) 个单词，那么平均每个单词的预测概率为 1/8000 ，那么它将会产生损失 \(l = -\frac{1}{N}Nlog(\frac{1}{c}) = log(c)\) 。</p>
             <pre><code>print('Expect loss:', numpy.log(vocabulary_size))
 loss = model.calculate_loss(x_train[:1000], y_train[:1000])
 print('Actual loss:', loss)</code></pre>
@@ -505,34 +505,197 @@ Actual loss: 8.9871760879241</code></pre>
             <p>非常接近！请记住，评估整个数据集的损失是一项昂贵的操作，如果您有大量数据，则可能需要几个小时！</p>
 
             <h4>8.2.2.7 BPTT 梯度</h4>
-            <p>记住我们要在训练集上找到参数 U 、V 和 W 使损失值最小，最常见的方法是随机梯度下降法 (SGD)。SGD 背后的想法非常简单，我们迭代所有训练示例，在每次迭代中，将参数推向减少误差的方向。这些方向由损失的梯度给出：</p>
-            <p class="highlight-math" style="text-align: center;">(\\frac{\partial l}{\partial U} , \frac{\partial l}{\partial V} , \frac{\partial l}{\partial W}\)</p>
-            <p>SGD 还需要一个学习率，它定义了我们在每个迭代步骤中想要迈出多大的步长。SGD 是不仅适用于神经网络，也适用于许多其他机器学习算法。因此，已经有很多关于如何使用批处理、并行和自适应学习率来优化 SGD 的研究。尽管基本思想很简单，但以真正有效的方式实现 SGD 可能会变得非常复杂。我不想在这里重复它们。我将实现一个简单版本的 SGD，即使没有优化背景也应该可以理解。</p>
+            <p>记住我们要在训练集上找到参数 \(U\) 、\(V\) 和 \(W\) 使损失值最小，最常见的方法是随机梯度下降法 (SGD) 。SGD 背后的想法非常简单，我们迭代所有训练示例，在每次迭代中，将参数推向减少误差的方向。这些方向由损失的梯度给出：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial U} , \frac{\partial l}{\partial V} , \frac{\partial l}{\partial W}\)</p>
+            <p>SGD 还需要一个学习率，它定义了我们在每个迭代步骤中想要迈出多大的步长。SGD 是不仅适用于神经网络，也适用于许多其他机器学习算法。因此，已经有很多关于如何使用批处理、并行和自适应学习率来优化 SGD 的研究。尽管基本思想很简单，但以真正有效的方式实现 SGD 可能会变得非常复杂。我将实现一个简单版本的 SGD，即使没有优化背景也应该可以理解。</p>
             <p>但是我们如何计算上面提到的梯度呢？在传统的神经网络中，我们通过反向传播算法来实现这一点。在 RNN 中，我们使用这个算法的一个稍微修改过的版本，称为时间反向传播 (BPTT)。因为参数由网络中的所有时间步骤共享，所以每个输出的梯度不仅取决于当前时间步骤的计算，还取决于之前的时间步骤。如果你懂微积分，那其实就是应用链式法则。本教程的下一部分将全部关于 BPTT，所以我就不在这里详细推导了。上一个小节已经推导过，过程基本一致。</p>
-            <p>现在你可以把 BPTT 当作一个黑匣子。它将训练示例作为输入 , 并返回</p>
-            <p>每当你实现反向传播时，最好也实现梯度检查，这是一种验证你的实现是否正确的方法。梯度检查背后的想法是，参数的导数等于该点的斜率，我们可以通过稍微改变参数然后除以变化来近似：</p>
+            <p>现在你可以把 BPTT 当作一个黑匣子。它将训练示例 \((x, y)\) 作为输入 , 并返回梯度 \(\frac{\partial l}{\partial U}\) ，\(\frac{\partial l}{\partial V}\) ，\(\frac{\partial l}{\partial W}\) 。 </p>
+            <pre><code>def bptt(self, x, y):
+    T = len(y)
+    # Perform forward propagation.
+    (o, s) = self.forward_propagation(x)
+    # We accumulate the gradients in these variables.
+    dldU = numpy.zeros(self.U.shape)
+    dldV = numpy.zeros(self.V.shape)
+    dldW = numpy.zeros(self.W.shape)
+    delta_o = o
+    delta_o[numpy.arange(len(y)), y] -= 1.0
+    # For each output backwards.
+    for t in numpy.arange(T)[::-1]:
+        dldV += numpy.outer(delta_o[t], s[t].T)
+        # Initial delta calculation.
+        delta_t = self.V.T.dot(delta_o[t]) * (1 - (s[t]**2))
+        # Backpropagation through time (for at most self.bptt_trancate steps)
+        for bptt_step in numpy.arange(max(0, t - self.bptt_truncate), t+1)[::-1]:
+            dldW += numpy.outer(delta_t, s[bptt_step-1])
+            dldU[:, x[bptt_step]] += delta_t
+            # Update delta for next step.
+            delta_t = self.W.T.dot(delta_t) * (1 - s[bptt_step-1] ** 2)
+    return (dldU, dldV, dldW)</code></pre>
+            <p class="comment">注：和上一个小节中 <code>backprop</code> 函数非常相似，只不过这个会有多个输出。</p>
+            <strong>梯度检查</strong>
+            <p>每当你实现反向传播时，最好也实现梯度检查，这是一种验证你的实现是否正确的方法。梯度检查背后的想法是：参数的导数等于该点的斜率，我们可以通过稍微改变参数然后除以变化来近似：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial θ} \approx \lim_{h \to 0}\frac{J(θ + h - J(θ - h))}{2h}\) </p>
             <p>然后，我们将使用反向传播计算出的梯度与使用上述方法估计出的梯度进行比较。如果没有太大差异，那就没问题了。近似需要计算每个参数的总损失，因此梯度检查非常昂贵（请记住，在上面的例子中我们有超过一百万个参数）。因此，最好在词汇量较小的模型上执行它。</p>
-            <p>现在我们能够计算参数的梯度，我们可以实现 SGD 了。我喜欢分两步来做：1. 一个函数sdg_step，计算梯度并执行一批更新。2. 一个外循环，迭代训练集并调整学习率。</p>
+            <pre><code>def gradient_check(self, x, y, h=0.001, error_threshold=0.01):
+    # Calculate the gradients using backpropagation. We want to checker if these are correct.
+    bptt_gradients = self.bptt(x, y)
+    # List of all parameters we want to check.
+    model_parameters = ['U', 'V', 'W']
+    # Gradient check for each parameter
+    for pidx, pname in enumerate(model_parameters):
+        # Get the actual parameter value from the mode, e.g. model.W
+        parameter = operator.attrgetter(pname)(self)
+        # Iterate over each element of the parameter matrix, e.g. (0,0), (0,1), ...
+        it = numpy.nditer(parameter, flags=['multi_index'])
+        while not it.finished:
+            ix = it.multi_index
+            # Save the original value so we can reset it later
+            original_value = parameter[ix]
+            # Estimate the gradient using (f(x+h) - f(x-h))/(2*h)
+            parameter[ix] = original_value + h
+            gradplus = self.calculate_total_loss([x],[y])
+            parameter[ix] = original_value - h
+            gradminus = self.calculate_total_loss([x],[y])
+            estimated_gradient = (gradplus - gradminus)/(2*h)
+            # Reset parameter to original value
+            parameter[ix] = original_value
+                # The gradient for this parameter calculated using backpropagation
+            backprop_gradient = bptt_gradients[pidx][ix]
+            # calculate The relative error: (|x - y|/(|x| + |y|))
+            relative_error = numpy.abs(backprop_gradient - estimated_gradient) 
+            # If the error is to large fail the gradient check.
+            if relative_error > error_threshold * (numpy.abs(backprop_gradient) + numpy.abs(estimated_gradient)):
+                print('Gradient check error: parameter = ' + pname + ', ix = ' + str(ix))
+                print('+h loss:', gradplus)
+                print('-h loss:', gradplus)
+                print('Estimated_gradient:', estimated_gradient)
+                print('Backpropagation gradient:', backprop_gradient)
+                print('Relative error:', relative_error)
+                return
+            it.iternext()
+        print('Gradient check for parameter ' + pname + ' passed')</code></pre>
+            <p>将词汇量设置为 100 ，检查梯度计算是否正确：</p>
+            <pre><code>grad_check_vocab_size = 100
+model = RNNNumpy(grad_check_vocab_size, 10, bptt_truncate=1000)
+model.gradient_check([1, 2, 3, 5], [2, 3, 4, 5])</code></pre>
+            <p>三个参数全部通过：</p>
+            <pre><code>Gradient check for parameter U passed
+Gradient check for parameter V passed
+Gradient check for parameter W passed</code></pre>
+
+            <strong>SGD 实现</strong>
+            <p>现在我们能够计算参数的梯度，可以实现 SGD 了。分两步来做：1. 一个函数 <code>sgd_step</code>，计算梯度并执行一批更新。2. 一个外循环，迭代训练集并调整学习率。</p>
+            <pre><code>def sgd_step(self, x, y, learning_rate):
+    # Calculate the gradients
+    dldU, dldV, dldW = self.bptt(x, y)
+        # Change parameters according to gradients and learning rate
+    self.U -= learning_rate * dldU
+    self.V -= learning_rate * dldV
+    self.W -= learning_rate * dldW</code></pre>
+            <pre><code>def train_with_sgd(model, x_train, y_train, learning_rate=0.005, epochs=100, evaluate_loss_after=5):
+    losses = []
+    num_examples_seen = 0
+    for epoch in range(epochs):
+        # Optionally evaluate the loss
+        if epoch % evaluate_loss_after == 0:
+            loss = model.calculate_loss(x_train, y_train)
+            losses.append((num_examples_seen, loss))
+            print('Loss after num_example_seen=' + str(num_examples_seen) + ' epoch=' + str(epoch) + ' - ' + str(loss))
+            # Adjust the learning rate if loss increases.
+            if len(losses) > 1 and losses[-1][1] > losses[-2][1]:
+                learning_rate = learning_rate * 0.5
+        # For each training example...
+        for i in range(len(y_train)):
+            model.sgd_step(x_train[i], y_train[i], learning_rate)
+            num_examples_seen += 1</code></pre>
             <p>完成了！让我们试着了解一下训练网络需要多长时间：</p>
+            <pre><code>model = RNNNumpy(vocabulary_size)
+start = time.time()
+model.sgd_step(x_train[10], y_train[10], 0.005)
+duration = time.time() - start
+print('Train 10 samples duration:', duration)</code></pre>
 
-            <p>哦，坏消息。在我的笔记本电脑上，SGD 的一步大约需要 350 毫秒。我们的训练数据中有大约 80,000 个示例，因此一个 epoch（对整个数据集的迭代）需要几个小时。多个 epoch 需要几天甚至几周的时间！而且，与许多公司和研究人员使用的数据集相比，我们仍在使用一个小数据集。现在怎么办？</p>
+            <p>哦，坏消息。在我的笔记本电脑上，SGD 的一步大约需要 0.1165556 毫秒。我们的训练数据中有大约 80,000 个示例，因此一个 epoch（对整个数据集的迭代）需要几个小时。多个 epoch 需要几天甚至几周的时间！而且，与许多公司和研究人员使用的数据集相比，我们仍在使用一个小数据集。现在怎么办？</p>
+            <pre><code>Train sample 10 duration: 0.077613592</code></pre>
             <p>幸运的是，有很多方法可以加快我们的代码。我们可以坚持使用相同的模型并让我们的代码运行得更快，或者我们可以修改我们的模型以降低计算成本，或者两者兼而有之。研究人员已经发现了许多降低模型计算成本的方法，例如使用分层 softmax 或添加投影层以避免大型矩阵乘法。</p>
-
+            <p>查看下模型在小型数据集上的运行过程，这里只选取 100 个样本：</p>
+            <pre><code># Train on a small subset of the data to see what happen
+model = RNNNumpy(vocabulary_size)
+losses = train_with_sgd(model, x_train[:100], y_train[:100], epochs=10, evaluate_loss_after=1)</code></pre>
+            <p>下面的训练结果可以看到损失在逐步降低：</p>
+            <pre><code>Loss after num_example_seen=0 epoch=0 - 8.98699959020797
+Loss after num_example_seen=100 epoch=1 - 8.97546552759948
+Loss after num_example_seen=200 epoch=2 - 8.95878875276646
+Loss after num_example_seen=300 epoch=3 - 8.927849164429205
+Loss after num_example_seen=400 epoch=4 - 8.854070798624434
+Loss after num_example_seen=500 epoch=5 - 6.851557379210689
+Loss after num_example_seen=600 epoch=6 - 6.259403789928947
+Loss after num_example_seen=700 epoch=7 - 5.974928366514176
+Loss after num_example_seen=800 epoch=8 - 5.7997245132120785
+Loss after num_example_seen=900 epoch=9 - 5.680167565188178</code></pre>
+    
             <h4>8.2.2.8 文本生成</h4>
 
             <p>现在我们有了模型，我们可以让它为我们生成新文本！让我们实现一个辅助函数来生成新句子：</p>
-            <p>看看生成的句子，有几件有趣的事情值得注意。该模型成功地学习了语法。它正确地放置了逗号并用标点符号结束句子。有时它会模仿互联网语音，例如多个感叹号或笑脸</p>
-            <p>然而，生成的句子中绝大多数都没有意义或有语法错误（我确实在上面挑选了最好的句子）。一个原因可能是我们没有训练网络足够长的时间或没有使用足够的训练数据。这可能是真的，但很可能不是主要原因。我们的原始 RNN 无法生成有意义的文本，因为它无法学习相隔几步的单词之间的依赖关系。这也是为什么 RNN 在刚发明时未能流行的原因。它们在理论上很漂亮，但在实践中效果不佳，我们并没有立即明白原因。</p>
-            <p>幸运的是，现在人们对训练 RNN 的困难有了更好的了解。在本教程的下一部分中，我们将更详细地探讨时间反向传播 (BPTT) 算法，并演示所谓的消失梯度问题。这将促使我们转向更复杂的 RNN 模型，例如 LSTM，它是 NLP 中许多任务的最新技术（并且可以生成更好的 reddit 评论！）。您在本教程中学到的所有内容也适用于 LSTM 和其他 RNN 模型，因此如果原始 RNN 的结果比您预期的更差，请不要灰心。</p>
+            <pre><code>def generate_sentence(model):
+    # We start the sentence with the start token.
+    new_sentence = [int(word_to_index[sentence_start_token])]
+    # Repeat until we get an end token.
+    while not new_sentence[-1] == word_to_index[sentence_end_token]:
+        (next_word_probs, _) = model.forward_propagation(new_sentence)
+        sampled_word = word_to_index[unknown_token]
+        # We don't want to sample unknown words.
+        while sampled_word == word_to_index[unknown_token]:
+            samples = numpy.random.multinomial(1, next_word_probs[-1])
+            sampled_word = int(numpy.argmax(samples))
+        new_sentence.append(sampled_word)
+    sentence_str = [index_to_word[x] for x in new_sentence[1:-1]]
+    return sentence_str
+
+# predict words
+num_sentences = 10
+sentence_min_length = 7
+for i in range(num_sentences):
+    sent = []
+    while len(sent) < sentence_min_length:
+        sent = generate_sentence(model)
+    print(' '.join(sent))</code></pre>
+
+            <p>看看生成的句子，有几件有趣的事情值得注意。该模型成功地学习了语法。它正确地放置了逗号并用标点符号结束句子。有时它会模仿互联网语音，例如多个感叹号或笑脸。</p>
+            <pre><code>Anyway, to the city scene you’re an idiot teenager.
+What ? ! ! ! ! ignore!
+Screw fitness, you’re saying: https
+Thanks for the advice to keep my thoughts around girls.
+Yep, please disappear with the terrible generation.</code></pre>
+
+            <p>然而，生成的句子中绝大多数都没有意义或有语法错误（我确实在上面挑选了最好的句子）。一个原因可能是我们没有训练网络足够长的时间或没有使用足够的训练数据。这可能是真的，但很可能不是主要原因。我们的原始 RNN 无法生成有意义的文本，因为它无法学习相隔几步的单词之间的依赖关系。这也是为什么 RNN 在刚发明时未能流行的原因。它们在理论上很漂亮，但在实践中效果不佳。</p>
+            <p>幸运的是，现在人们对训练 RNN 的困难有了更好的了解。在下一部分中，我们将更详细地探讨时间反向传播 (BPTT) 算法，并演示所谓的梯度消失问题。这将促使我们转向更复杂的 RNN 模型，例如 LSTM，它是 NLP 中许多任务的最新技术（并且可以生成更好的 reddit 评论！）。您在本教程中学到的所有内容也适用于 LSTM 和其它 RNN 模型，因此如果原始 RNN 的结果比您预期的更差，请不要灰心。</p>
 
             <h3>8.2.3 理解 BPTT 算法</h3>
             <p>在上一个小节中，我们从头开始实现了 RNN，但没有详细介绍时间反向传播 (BPTT) 算法如何计算梯度。在本部分中，我们将简要概述 BPTT，并解释它与传统反向传播的不同之处。然后，我们将尝试理解消失梯度问题，该问题导致了 LSTM 和 GRU 的发展，这两个模型是目前在 NLP（和其他领域）中使用的最流行和最强大的模型。</p>
-            <p>为了充分理解本教程的这一部分，我建议熟悉偏微分和基本反向传播的工作原理。如果你不熟悉，你可以 在这里、这里 和这里找到优秀的教程，难度依次递增。</p>
+            <p>为了充分理解本教程的这一部分，我建议熟悉偏微分和基本反向传播的工作原理。</p>
+
             <h4>8.2.3.1 BPTT 算法</h4>
-            <p>让我们快速回顾一下 RNN 的基本方程。请注意</p>
+            <p>让我们快速回顾一下 RNN 的基本方程。请注意有个小改变就是将 \(o\) 换成 \(\hat{y}\)，和一些常见的文献保持一致：</p>
+            <p class="highlight-math" style="text-align: center;">\(s_t = tanh(U \cdot x_t + W \cdot s_{t-1})\)</p>
+            <p class="highlight-math" style="text-align: center;">\(\hat{y_t} = softmax(V \cdot s_t)\)</p>
             <p>我们还将损失（或误差）定义为交叉熵损失，其公式如下：</p>
-            <p>请记住，我们的目标是计算误差相对于参数的梯</p>
-            <p>为了计算这些梯度，我们使用链式微分法则。这是从误差开始向后</p>
+            <p class="highlight-math" style="text-align: center;">\(E_t(y_t, \hat{y_t}) = -y_tlog\hat{y_t}\)</p>
+            <p class="highlight-math" style="text-align: center;">\(E(y, \hat{y}) = \sum_{t=1}^nE_t(y_t, \hat{y_t}) = -\sum_{t=1}^ny_tlog\hat{y_t}\)</p>
+            <p>这里，\(y_t\) 是时间步骤 t 时刻正确的单词，\(\hat{y_t}\) 是我么你的预测。通常将整个序列（句子）当作一个训练样本，因此总的错误是每一个时间步骤（单词）的错误相加得到的。</p>
+            <p>请记住，我们的目标是计算误差相对于参数 U 、V 和 W 的梯度，使用SGD 进行学习。就像我们在每个时间步骤将错误相加一样，在每个训练样本上，我们也将梯度相加：\(\frac{\partial E}{\partial W} = \sum_{t=1}^n\frac{\partial E_t}{\partial W}\) 。</p>
+
+            <p>为了计算这些梯度，我们使用链式微分法则。这是从误差开始向前传播。接下来使用 \(E_3\) 作为示例，这样有具体的数字可以参考：</p>
+            <p>\(\frac{\partial E_3}{\partial V} = \frac{\partial E_3}{\partial \hat{y_3}} \cdot \frac{\partial \hat{y_3}}{\partial V}\)</p>
+            <p>\(= \frac{\partial E_3}{\partial ŷ} \cdot \frac{\partial ŷ_3}{\partial z_3} \cdot \frac{\partial z_3}{\partial V} = (ŷ_3 - y_3) ⊗ s_3\)</p>
+            <p>上面 \(z_3 = V \cdot s_3\) ，⊗ 表示两个向量的外积。如果你不动上面的也不要担心，我跳过了几个步骤，你可以似乎用微分计算它们（非常好的练习）。这里我想表达的是 \(\frac{\partial E_3}{\partial V}\) 只和当前时间步骤的 \(ŷ_3)，\(y_3\) 和 \(s_3\) 相关。如果你有这些值，俺么计算相对于 \(V\) 的梯度就是一个简单的矩阵。</p>
+            <p>求解对 (\W\) 和 (\U\) 的梯度有些不同，我们可以像上面一下写下链式规则：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial E_3}{\partial W} = \frac{\partial E_3}{\partial ŷ_3} \cdot \frac{\partial ŷ_3}{\partial s_3} \cdot \frac{\partial s_3}{\partial W}\)</p>
+            <p>从公式 \(s_3 = tanh(U \cdot x_t + W \cdot s_2)\) 可以看到上述梯度计算还取决于 \(s_2\) ，\(s_2\) 又取决于 \(W\) 和 \(s_1\) ，以此类推。如果我们考虑 \(W\) 的梯度就不能将 \(s_2\) 看作是一个常量。我们需要继续使用链式跪着，看它到底发生了什么：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial E_3}{\partial W} = \sum_{k=0}^3\frac{\partial E_3}{\partial ŷ_3} \cdot \frac{\partial ŷ_3}{\partial s_3} \cdot \frac{\partial s_3}{\partial s_k} \cdot \frac{\partial s_k}{\partial W}\)</p>
+            <p>我们将每个时刻对梯度的贡献加起来，换句话说，因为 \(W\) 在我们计算每一步输出前都会用到，我们需要计算从 \(t = 3\) 的梯度到 \(t = 0\) 的反向梯度。</p>
+            <p>请注意，这与我们在深度前馈神经网络中使用的标准反向传播算法完全相同。关键区别在于，我们将相对于 \(W\) 的梯度在每个时间步骤相加。在传统的 NN 中，我们不跨层共享参数，因此我们不需要求和。</p>
 
             <p>这应该也能让你明白为什么标准 RNN 很难训练：序列（句子）可能很长，可能有 20 个单词或更多，因此你需要通过多层进行反向传播。实际上，许多人将反向传播截断为几个步骤。</p>
 

@@ -205,12 +205,16 @@ if __name__ == '__main__':
     start = time.time()
     model.sgd_step(x_train[10], y_train[10], 0.005)
     duration = time.time() - start
-    print('Train 10 samples duration:', duration)
+    print('Train sample 10 duration:', duration)
 
     # Train on a small subset of the data to see what happen
     model = RNNNumpy(vocabulary_size)
     losses = train_with_sgd(model, x_train[:100], y_train[:100], epochs=10, evaluate_loss_after=1)
 
+    # Train on a middle subset of the data
+    losses = train_with_sgd(model, x_train[:5000], y_train[:5000], epochs=10, evaluate_loss_after=1)
+
+    # predict words
     num_sentences = 10
     sentence_min_length = 7
     for i in range(num_sentences):
