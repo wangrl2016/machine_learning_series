@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>循环神经网络入门</title>
+    <title>RNN 详解</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -683,29 +683,65 @@ Yep, please disappear with the terrible generation.</code></pre>
             <p>我们还将损失（或误差）定义为交叉熵损失，其公式如下：</p>
             <p class="highlight-math" style="text-align: center;">\(E_t(y_t, \hat{y_t}) = -y_tlog\hat{y_t}\)</p>
             <p class="highlight-math" style="text-align: center;">\(E(y, \hat{y}) = \sum_{t=1}^nE_t(y_t, \hat{y_t}) = -\sum_{t=1}^ny_tlog\hat{y_t}\)</p>
-            <p>这里，\(y_t\) 是时间步骤 t 时刻正确的单词，\(\hat{y_t}\) 是我么你的预测。通常将整个序列（句子）当作一个训练样本，因此总的错误是每一个时间步骤（单词）的错误相加得到的。</p>
-            <p>请记住，我们的目标是计算误差相对于参数 U 、V 和 W 的梯度，使用SGD 进行学习。就像我们在每个时间步骤将错误相加一样，在每个训练样本上，我们也将梯度相加：\(\frac{\partial E}{\partial W} = \sum_{t=1}^n\frac{\partial E_t}{\partial W}\) 。</p>
+            <p>这里，\(y_t\) 是时间步骤 \(t\) 时刻正确的单词，\(\hat{y_t}\) 是我么你的预测。通常将整个序列（句子）当作一个训练样本，因此总的错误是每一个时间步骤（单词）的错误相加得到的。</p>
+            <p>请记住，我们的目标是计算误差相对于参数 \(U\) 、\(V\) 和 \(W\) 的梯度，使用SGD 进行学习。就像我们在每个时间步骤将错误相加一样，在每个训练样本上，我们也将梯度相加：\(\frac{\partial E}{\partial W} = \sum_{t=1}^n\frac{\partial E_t}{\partial W}\) 。</p>
 
             <p>为了计算这些梯度，我们使用链式微分法则。这是从误差开始向前传播。接下来使用 \(E_3\) 作为示例，这样有具体的数字可以参考：</p>
             <p>\(\frac{\partial E_3}{\partial V} = \frac{\partial E_3}{\partial \hat{y_3}} \cdot \frac{\partial \hat{y_3}}{\partial V}\)</p>
             <p>\(= \frac{\partial E_3}{\partial ŷ} \cdot \frac{\partial ŷ_3}{\partial z_3} \cdot \frac{\partial z_3}{\partial V} = (ŷ_3 - y_3) ⊗ s_3\)</p>
             <p>上面 \(z_3 = V \cdot s_3\) ，⊗ 表示两个向量的外积。如果你不动上面的也不要担心，我跳过了几个步骤，你可以似乎用微分计算它们（非常好的练习）。这里我想表达的是 \(\frac{\partial E_3}{\partial V}\) 只和当前时间步骤的 \(ŷ_3)，\(y_3\) 和 \(s_3\) 相关。如果你有这些值，俺么计算相对于 \(V\) 的梯度就是一个简单的矩阵。</p>
-            <p>求解对 (\W\) 和 (\U\) 的梯度有些不同，我们可以像上面一下写下链式规则：</p>
+            <p>求解对 \(W\) 和 \(U\) 的梯度有些不同，我们可以像上面一下写下链式规则：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial E_3}{\partial W} = \frac{\partial E_3}{\partial ŷ_3} \cdot \frac{\partial ŷ_3}{\partial s_3} \cdot \frac{\partial s_3}{\partial W}\)</p>
-            <p>从公式 \(s_3 = tanh(U \cdot x_t + W \cdot s_2)\) 可以看到上述梯度计算还取决于 \(s_2\) ，\(s_2\) 又取决于 \(W\) 和 \(s_1\) ，以此类推。如果我们考虑 \(W\) 的梯度就不能将 \(s_2\) 看作是一个常量。我们需要继续使用链式跪着，看它到底发生了什么：</p>
+            <p>从公式 \(s_3 = tanh(U \cdot x_t + W \cdot s_2)\) 可以看到上述梯度计算还取决于 \(s_2\) ，\(s_2\) 又取决于 \(W\) 和 \(s_1\) ，以此类推。如果我们考虑 \(W\) 的梯度就不能将 \(s_2\) 看作是一个常量。我们需要继续使用链式法则，看它到底发生了什么：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial E_3}{\partial W} = \sum_{k=0}^3\frac{\partial E_3}{\partial ŷ_3} \cdot \frac{\partial ŷ_3}{\partial s_3} \cdot \frac{\partial s_3}{\partial s_k} \cdot \frac{\partial s_k}{\partial W}\)</p>
             <p>我们将每个时刻对梯度的贡献加起来，换句话说，因为 \(W\) 在我们计算每一步输出前都会用到，我们需要计算从 \(t = 3\) 的梯度到 \(t = 0\) 的反向梯度。</p>
-            <p>请注意，这与我们在深度前馈神经网络中使用的标准反向传播算法完全相同。关键区别在于，我们将相对于 \(W\) 的梯度在每个时间步骤相加。在传统的 NN 中，我们不跨层共享参数，因此我们不需要求和。</p>
+            <p>请注意，这与我们在深度前馈神经网络中使用的标准反向传播算法完全相同。关键区别在于，我们将相对于 \(W\) 的梯度在每个时间步骤相加。在传统的 NN 中，我们不跨层共享参数，因此我们不需要求和。但这也意味着 BPTT 只是展开的 RNN 上的标准反向传播的花哨名称。就像反向传播一样，你可以定义反向的增量，比如：\(δ_2^3 = \frac{\partial E_3}{\partial z_2} = \frac{\partial E_3}{\partial s_3} \cdot \frac{\partial s_3}{\partial s_2} \cdot \frac{\partial s_2}{\partial z_2}\) ，其中 \(z_2 = U \cdot x_2 + W \cdot s_1\) ，然后应用相同的等式。</p>
+            <p>一个 BPTT 的简单实现会像下面这个样子：</p>
+            <pre><code>def bptt(self, x, y):
+    T = len(y)
+    # Perform forward propagation.
+    (o, s) = self.forward_propagation(x)
+    # We accumulate the gradients in these variables.
+    dldU = numpy.zeros(self.U.shape)
+    dldV = numpy.zeros(self.V.shape)
+    dldW = numpy.zeros(self.W.shape)
+    delta_o = o
+    delta_o[numpy.arange(len(y)), y] -= 1.0
+    # For each output backwards.
+    for t in numpy.arange(T)[::-1]:
+        dldV += numpy.outer(delta_o[t], s[t].T)
+        # Initial delta calculation.
+        delta_t = self.V.T.dot(delta_o[t]) * (1 - (s[t]**2))
+        # Backpropagation through time (for at most self.bptt_trancate steps)
+        for bptt_step in numpy.arange(max(0, t - self.bptt_truncate), t+1)[::-1]:
+            dldW += numpy.outer(delta_t, s[bptt_step-1])
+            dldU[:, x[bptt_step]] += delta_t
+            # Update delta for next step.
+            delta_t = self.W.T.dot(delta_t) * (1 - s[bptt_step-1] ** 2)
+    return (dldU, dldV, dldW)</code></pre>
 
             <p>这应该也能让你明白为什么标准 RNN 很难训练：序列（句子）可能很长，可能有 20 个单词或更多，因此你需要通过多层进行反向传播。实际上，许多人将反向传播截断为几个步骤。</p>
 
             <h4>8.2.3.2 梯度消失问题</h4>
-            <p>之前提到 RNN 很难学习长距离依赖关系——相隔几步的单词之间的交互。这是有问题的，因为一个英文句子的含义通常由不太接近的单词决定：“头上戴着假发的男人走进了屋子”。这句话实际上是关于一个男人走进屋子，而不是关于假发。但普通的 RNN 不太可能捕捉到这样的信息。为了理解原因，让我们仔细看看上面计算的梯度：</p>
-            <p>很容易想象，如果雅可比矩阵的值很大，那么根据我们的激活函数和网络参数，我们可能会得到梯度爆炸而不是梯度消失。事实上，这就是所谓的梯度爆炸问题。梯度消失比梯度爆炸更受关注的原因有两个。首先，梯度爆炸是显而易见的。</p>
-            <p>幸运的是，有几种方法可以解决梯度消失问题。这两种 RNN 架构都是专门为处理梯度消失和有效学习长程依赖关系而设计的。我们将在本教程的下一部分中介绍它们。</p>
+            <p>之前提到 RNN 很难学习长距离依赖关系——相隔几步的单词之间的交互。这是有问题的，因为一个英文句子的含义通常由不太接近的单词决定：“The man who wore a wig on his head went inside”。这句话实际上是关于一个男人走进屋子，而不是关于假发。但普通的 RNN 不太可能捕捉到这样的信息。为了理解原因，让我们仔细看看上面计算的梯度：</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial E_3}{\partial W} = \sum_{k=0}^3\frac{\partial E_3}{\partial ŷ_3} \cdot \frac{\partial ŷ_3}{\partial s_3} \cdot \frac{\partial s_3}{\partial s_k} \cdot \frac{\partial s_k}{\partial W}\)</p>
+            <p>记住\(\frac{\partial s_3}{\partial s_k}\) 本身就需要链式法则计算！比如 \(\frac{\partial s_3}{\partial s_1} = \frac{\partial s_3}{\partial s_2} \cdot \frac{\partial s_2}{\partial s_1}\) 。还要注意，因为我们对向量函数求导，所以结果是一个矩阵（称为雅可比矩阵），其元素都是逐点导数。我们可以重写 \(\frac{\partial s_3}{\partial s_k}\) ：</p>
+            <p class="highlight-math" style="text-align: center;">\((\prod_{j=k+1}^3\frac{\partial s_j}{\parial s_{j-1}})\frac{\partial s_k}{\partial W}\)</p>
+            <p>我们的激活函数将所有的值都映射 [-1, 1] 的范围，并且导数的最大值是 1 （sigmoid 激活函数是 1/4 ）。</p>
+            <p>tanh 和 sigmoid 函数在两端的导数都是 0 ，它们接近一条水平线。当这发生时，我们说相应的神经元已经饱和。它们具有零梯度，并将前几层中的其它梯度推向 0 。在矩阵乘法中如果值较小，那么梯度值就会快速表小，最终在几个步骤中消失，然后那些状态就不再对学习起作用：结果就是无法学习长依赖。梯度消失并不是 RNN 独有的，它也发生在其它前馈网络中。只是 RNN 往往非常深（在我们的例子中，深度与句子长度相当），这使得这个问题很常见。</p>
+            <p>很容易想象，如果雅可比矩阵的值很大，那么根据我们的激活函数和网络参数，我们可能会得到梯度爆炸而不是梯度消失。事实上，这就是所谓的梯度爆炸问题。梯度消失比梯度爆炸更受关注的原因有两个。首先，梯度爆炸是显而易见的。你的梯度将变成 NaN （不是数字），你的程序会崩溃。其次，在预定义的阈值处剪切梯度是解决梯度爆炸的一个简单有效的做法。梯度消失更成问题，因为他们何时发生或如何处理并不明显。</p>
 
+            <p>幸运的是，有几种方法可以解决梯度消失问题。正确初始化 \(W\) 矩阵可以减少梯度消失。正则化也可以。一种更好的方法是使用 ReLU 而不是 tanh 和 sigmoid 激活函数。ReLU 激活函数的梯度是 0 或者是 1 ，因此它不容易有梯度消失问题。</p>
+            <p>一种更常用的做法是使用 LSTM 或者 GRU 架构。LSTM 在 1997 年就发表了，它可能是今天（2015年） NLP 领域用得最多的。GRU 发表于 2014 年，是 LSTM 的简化版。这两种 RNN 架构都是专门为处理梯度消失和有效学习长程依赖关系而设计的，将在本教程的下一部分中介绍它们。</p>
+            
             <h3>8.2.4 实现 GRU/LSTM</h3>
+            本小节我们会学习 LSTM 和 GRU 网络，LSTM 发表于 1997 年，是当今 NLP 深度学习中最广泛使用的模型之一。GRU 于 2014年首次使用，是 LSTM 的更简单版本，具有很多相同的属性。让我们先了解一下 LSTM，再了解 GRU 的不同之处。
+            
             <h4>8.2.4.1 LSTM 网络</h4>
+            <p>上个小节中，我们研究了梯度消失问题如何阻止基础的 RNN 学习长期依赖关系。LSTM 旨在通过门控机制对抗梯度消失。为了理解这意味着什么。让我们看看 LSTM 如何计算隐藏状态 s_t （使用空心 ∘ 表示逐元素乘法）：</p>
+            
+            
+
             <h4>8.2.4.2 GRU 网络</h4>
             <h4>8.2.4.3 实现</h4>
         </main>

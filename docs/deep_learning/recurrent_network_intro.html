@@ -632,12 +632,12 @@ print(porbs)</code></pre>
             <p>\(W_{xh}\) 在所有的 \(x_t\) -> \(h_t\) 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 \(t\) ，我们需要计算 \(\frac{\partial h_t}{\partial W_{xh}}\) ：</p>
             <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
             <p>其中，我们知道 \(\frac{d \tanh(x)}{dx} = 1 - \tanh^2(x)\) ，因此</p>
-            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial W_{xh}} = (1 - h_t)^2x(t)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial W_{xh}} = (1 - h_t^2)x_t\)</p>
             <p>同样根据上述公式对其它两个参数进行求导得到：</p>
-            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial W_{hh}} = (1 - h_t)^2h_{t-1}\)</p>
-            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial b_h} = (1 - h_t)^2\)</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial W_{hh}} = (1 - h_t^2)h_{t-1}\)</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial h_t}{\partial b_h} = (1 - h_t^2)\)</p>
             <p>最后需要 \(\frac{\partial y}{\partial h_t}\) ，我们可以使用循环计算：</p>
-            <p class="highlight-math" style="text-align: center;">\(\frac{\partial y}{\partial h_t} = \frac{\partial y}{\partial h_{t+1}} \cdot \frac{\partial h_{t+1}}{\partial h_t} = \frac{\partial y}{\partial h_{t+1}} \cdot (1 - h_t)^2 \cdot W_{hh}\)</p>
+            <p class="highlight-math" style="text-align: center;">\(\frac{\partial y}{\partial h_t} = \frac{\partial y}{\partial h_{t+1}} \cdot \frac{\partial h_{t+1}}{\partial h_t} = \frac{\partial y}{\partial h_{t+1}} \cdot (1 - h_t^2) \cdot W_{hh}\)</p>
             <p>BPTT 的实现从最后一个隐藏状态开始，然后反向传递。因此当我们想要计算 \(\frac{\partial y}{\partial h_t}\) 时，已经计算出 \(\frac{\partial y}{\partial h_{t+1}}\) 的值，除了最后一个状态 \(h_n\) ：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial y}{\partial h_n} = W_{hy}\)</p>
             <p>现在我们已经有了实施 BPTT 需要的一切参数，文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/1_7_rnn_backward.py">1_7_rnn_backward.py</a> 用代码实现 RNN 的反向传播：</p>
