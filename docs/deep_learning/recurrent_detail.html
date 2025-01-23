@@ -739,14 +739,48 @@ Yep, please disappear with the terrible generation.</code></pre>
             
             <h4>8.2.4.1 LSTM 网络</h4>
             <p>上个小节中，我们研究了梯度消失问题如何阻止基础的 RNN 学习长期依赖关系。LSTM 旨在通过门控机制对抗梯度消失。为了理解这意味着什么。让我们看看 LSTM 如何计算隐藏状态 \(s_t\) （使用空心圆 ∘ 表示逐元素乘法）：</p>
-            <p class="highlight-math" style="text-align: center;">\( i = σ(x_t \cdot U^i + s_{t-1} \cdot W^i)\)</p>
-            <p class="highlight-math" style="text-align: center;">\( f = σ(x_t \cdot U^f + s_{t-1} \cdot W^f)\)</p>
-            
+            <p class="highlight-math" style="text-align: center;">\(i = σ(x_t \cdot U^i + s_{t-1} \cdot W^i)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(f = σ(x_t \cdot U^f + s_{t-1} \cdot W^f)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(o = σ(x_t \cdot U^o + s_{t-1} \cdot W^o)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(g = tanh(x_t \cdot U^g + s_{t-1} \cdot W^g)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(c_t = c_{t-1} ∘ f + g ∘ i\)</p>
+            <p class="highlight-math" style="text-align: center;">\(s_t = tanh(c_t) ∘ o\)</p>
+            <p>这些等式看起来复杂，但是如果花几分钟观察它们就不难理解。第一，LSTM 层只是另一种计算隐藏状态的方式，之前我们是通过 \(s_t = tanh(U \cdot x_t + W \cdot s_{t-1}\) 计算隐藏状态的。</p>
+            <p>对于这个单元来说输入是 t 时刻的输入 \(x_t\) 和之前的隐藏状态 \(s_{t-1}\) ，输出是新的隐藏状态 \(s_t\) 。LSTM 只是用不同的方式做相同的事情，这是理解模型的关键。</p>
+            <p>你可以将 LSTM 和 GRU 当作一个黑盒单元，给定当前的输入和之前的隐藏状态，它们以某种方式计算新的隐藏状态。</p>
 
-            
-            
+            <p>有了上面的直观的信息后，看看 LSTM 单元具体是怎么计算隐藏状态的。我这里只给出简单的解释，你可以阅读 这篇文章 获取更深的视角。总结如下：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p>i , f , o 分别叫做输入、遗忘和输出门。注意它们有完全相同的等式，只是不同的参数矩阵。它们被称为门是因为 sigmoid 函数将向量值映射到 [0, 1] 的区间，通过和其它向量逐元素相乘，你可以定义其它向量通过多少比例。</p>
+                    <p>输入门定义要让多少当前的新计算通过，遗忘门定义让多少之前的状态通过，输出们定义要暴露多少内部状态给下一步。这些门有相同的维度 \(d_s\) ，隐藏状态的大小。</p>
+                </li>
+                <li>
+                    <p>g 是基于当前输入和前一个隐藏状态计算的“候选”隐藏状态，它与我们之前在普通 RNN 计算的方程完全相同，只是将参数 U 和 W 重新命名为 \(U^g\) 和 \(W^g\) 。然而并不是将 g 像之前一样作为新的隐藏状态，而是使用输入门来挑选一些。</p>
+                </li>
+                <li>
+                    <p>\(c_t\) 是单元的内部记忆，它是之前的记忆 \(c_{t-1}\) 和遗忘门进行相乘，然后再和计算出来的 g 相乘的结果。因此，直观地说，它是我们想要如何结合先前的记忆和新的输入的组合。我们可以完全忽略旧记忆（遗忘门全为 0) 或完全忽略新计算的状态 （输入门全为 0 ），但最有可能的是，我们希望在这两个极端之间找到某种东西。</p>
+                </li>
+                <li>
+                    <p>对于记忆 \(c_t\) ，通过将记忆和输出门进行相乘，我们计算最终的隐藏状态 \(s_t\) 。并不是所有的内部记忆都会被网络中下一个隐藏状态使用。</p>
+                </li>
+            </ul>
+            <p>直观地看，普通 RNN 可以被视为 LSTM 的一个特例。如果你将输入门固定为全 1，将遗忘门固定为全 0（你总是忘记之前的记忆），将输出门固定为全 1（你暴露整个记忆），你几乎就得到了标准的 RNN。只是多了一点 tanh 这会压缩输出。门控机制允许 LSTM 明确地模拟长期依赖关系。通过学习门控的参数，网络可以了解其内存应如何运行。</p>       
+            <p>值得注意的是，基本 LSTM 架构存在几种变体。一种常见的变体是创建窥孔连接，使门不仅依赖于先前的隐藏状态 \(s_{t-1}\) ，而且还取决于先前的内部状态 \(c_{t-1}\) ，在门方程中添加一个附加项。</p>
 
             <h4>8.2.4.2 GRU 网络</h4>
+            <p>GRU 层背后的思想与 LSTM 层非常相似，方程式也是如此：</p>
+            <p class="highlight-math" style="text-align: center;">\(z = σ(x_t \cdot U^z + s_{t-1} \cdot W^z)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(r = σ(x_t \cdot U^r + s_{t-1} \cdot W^r)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(h = tanh(x_t \cdot U^h + (s_{t-1} ∘ r) \cdot W^h)\)</p>
+            <p class="highlight-math" style="text-align: center;">\(s_t = (1 - z) ∘ h + z ∘ s_{t-1}\)</p>
+            <p>GRU 网络有两个门，一个重置门 r ，一个更新门 z 。重置门决定如何将新输入与先前的记忆相结合，而更新门则定义要保留多少先前的记忆。如果我们将重置设置为全 1，将更新门设置为全 0，我们就会再次得到普通的 RNN 模型。使用门控机制来学习长期依赖关系的基本思想与 LSTM 相同，但有几个关键区别：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p></p>
+                </li>
+            </ul>
+            
             <h4>8.2.4.3 实现</h4>
         </main>
             <!-- 右侧小标题导航 -->
