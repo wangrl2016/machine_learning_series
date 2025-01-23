@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>循环神经网络入门</title>
+    <title>Seq2Seq 论文</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -236,13 +236,14 @@
 
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
-            <h2 class="custom-title">9.3 Transformer 论文</h2>
-            <p class="title-subtext">你只需要 <strong style="color: red;">注意力 (Attention)</strong> ！</p>
+            <h2 class="custom-title">9.3 Seq2Seq 论文</h2>
+            <p class="title-subtext">利用神经网络进行序列到序列学习！</p>
             <p style="color: #a0a0a0;">创建日期: 2025-01-23</p>
-            <p>主要的序列传导模型基于复杂的循环或者卷积神经网络，它们包含一个编码器和一个解码器。性能最佳的模型还通过注意力机制连接编码器和解码器。我们提出一种新的简单的网络架构 "Transformer" ，它只基于注意力机制，完全省去了循环和卷积操作。</p>
-            <p>在两个机器翻译任务上的实验表明，模型质量优越，并行性更高，并且训练时间明显减少。在 2014 WMT 英语翻译成德语的任务中，获得 28.4 BLEU ，比现有最佳结果至少提高 2 BLEU 。在 2014 WMT 英语翻译成法语的任务中，获得当前最领先的 41.8 BLEU ，它只用 8 个 GPU 训练了 3.5 天，使用很小的训练代价获得最佳的模型。</p>
-            <p>我们通过将 Transformer 成功应用于英语句法分析（无论是大量训练数据还是有限训练数据的情况下），证明了 Transformer 在其它任务中的良好泛化能力。</p>
-
+            <p>深度神经网络 (DNN) 是一种功能强大的模型，在困难的学习任务上取得了出色的表现。尽管 DNN 在有大型标记训练集时效果很好，但它们不能用于将序列映射到序列。</p>
+            <p>在本文中，我们提出了一种通用的端到端序列学习方法，该方法对序列结构做出最少的假设。我们的方法使用多层长短期记忆 (LSTM) 将输入序列映射到固定维数的向量，然后使用另一个深度 LSTM 从向量中解码目标序列。</p>
+            <p>我们的主要结果是，在 WMT’14 数据集的英语到法语的翻译任务中，LSTM 生成的翻译在整个测试集上获得了 34.8 的 BLEU 分数，其中 LSTM 的 BLEU 分数因词汇表以外的单词而受到惩罚。</p>
+            <p>此外，LSTM 在处理长句时没有遇到困难。相比之下，基于短语的 SMT 系统在同一数据集上实现了 33.3 的 BLEU 分数。当我们使用 LSTM 对上述 SMT 系统产生的 1000 个假设进行重新排序时，其 BLEU 分数增加到 36.5，这接近该任务之前的最佳结果。</p>
+            <p>LSTM 还学习了合理的短语和句子表示，这些表示对词序敏感，并且对主动语态和被动语态相对不变。最后，我们发现，反转所有源句子（但不是目标句子）中的单词顺序可以显著提高 LSTM 的性能，因为这样做会在源句子和目标句子之间引入许多短期依赖关系，从而使优化问题变得更容易。</p>
             <h3>9.1 介绍</h3>
             
         </main>
