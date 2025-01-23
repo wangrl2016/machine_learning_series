@@ -735,10 +735,14 @@ Yep, please disappear with the terrible generation.</code></pre>
             <p>一种更常用的做法是使用 LSTM 或者 GRU 架构。LSTM 在 1997 年就发表了，它可能是今天（2015年） NLP 领域用得最多的。GRU 发表于 2014 年，是 LSTM 的简化版。这两种 RNN 架构都是专门为处理梯度消失和有效学习长程依赖关系而设计的，将在本教程的下一部分中介绍它们。</p>
             
             <h3>8.2.4 实现 GRU/LSTM</h3>
-            本小节我们会学习 LSTM 和 GRU 网络，LSTM 发表于 1997 年，是当今 NLP 深度学习中最广泛使用的模型之一。GRU 于 2014年首次使用，是 LSTM 的更简单版本，具有很多相同的属性。让我们先了解一下 LSTM，再了解 GRU 的不同之处。
+            <p>本小节我们会学习 LSTM 和 GRU 网络，LSTM 发表于 1997 年，是当今 NLP 深度学习中最广泛使用的模型之一。GRU 于 2014年首次使用，是 LSTM 的更简单版本，具有很多相同的属性。让我们先了解一下 LSTM，再了解 GRU 的不同之处。</p>
             
             <h4>8.2.4.1 LSTM 网络</h4>
-            <p>上个小节中，我们研究了梯度消失问题如何阻止基础的 RNN 学习长期依赖关系。LSTM 旨在通过门控机制对抗梯度消失。为了理解这意味着什么。让我们看看 LSTM 如何计算隐藏状态 s_t （使用空心 ∘ 表示逐元素乘法）：</p>
+            <p>上个小节中，我们研究了梯度消失问题如何阻止基础的 RNN 学习长期依赖关系。LSTM 旨在通过门控机制对抗梯度消失。为了理解这意味着什么。让我们看看 LSTM 如何计算隐藏状态 \(s_t\) （使用空心圆 ∘ 表示逐元素乘法）：</p>
+            <p class="highlight-math" style="text-align: center;">\( i = σ(x_t \cdot U^i + s_{t-1} \cdot W^i)\)</p>
+            <p class="highlight-math" style="text-align: center;">\( f = σ(x_t \cdot U^f + s_{t-1} \cdot W^f)\)</p>
+            
+
             
             
 
