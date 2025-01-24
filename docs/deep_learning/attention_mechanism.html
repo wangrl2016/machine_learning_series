@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>技术博客 - 小节内容</title>
+    <title>注意力机制</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -12,7 +12,7 @@
             top: 0;
             height: 100vh;
             overflow-y: auto;
-            background-color: #fff;
+            background-color: #f8f9fa;
             color: #000;
             border-right: 1px solid #ddd;
         }
@@ -22,6 +22,7 @@
             font-weight: 700;
             color: #4caf50;
             text-align: center;
+            margin-bottom: 20px;
             border-bottom: 3px solid #4caf50; /* 标题下边框 */
         }
 
@@ -29,7 +30,6 @@
             font-size: 1.2rem;
             color: #6c757d; /* Bootstrap 灰色 */
             text-align: center;
-            margin-top: -10px;
         }
         body {
             font-family: 'Arial', sans-serif;
@@ -45,24 +45,71 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        /* 移动端样式（只在屏幕宽度 < 1024 px 时生效 */
+        @media screen and (max-width: 1024px) {
+            .sidebar, .right-sidebar {
+                display: none; /* 隐藏侧边栏 */
+            }
+            .content {
+                margin: 0;
+                padding: 10px;
+                width: 100%;
+            }
+        }
         .content h2 {
+            width: 100%;
+            font-size: 3rem;
+            line-height: 1.6;
             color: #4caf50;
             text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #4caf50;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #4caf50;
             display: inline-block;
-            padding-bottom: 5px;
+            padding-bottom: 10px;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .added {
+            color: #10e6e2;
+            display: inline-block;
+            width: 100%;
+        }
+        code {
+            font-family: "Courier New", Courier, monospace;
+        }
+        .content h3 {
+            margin-top: 60px;
+            color: #8e44ad;
+        }
+        .content h4 {
+            margin-top: 40px;
+            color: #8e44ad;
         }
         .content p {
             font-size: 1.1em;
             margin: 20px 0;
         }
+        .highlight-math {
+            background-color: #FFCC99;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .highlight-link {
+            color: #f39c12;
+            font-weight: bold;
+        }
         .highlight {
-            background: #e8f5e9;
-            border-left: 5px solid #4caf50;
-            padding: 10px 15px;
-            margin: 20px 0;
-            color: #2e7d32;
+            background-color: #f1c40f;
+            font-weight: bold;
         }
         pre {
             background: #263238;
@@ -74,13 +121,28 @@
             font-size: 0.9em;
         }
         ul {
-            list-style: disc;
+            list-style: none;
             padding-left: 20px;
             margin: 10px 0;
         }
+        .with-bullets {
+            list-style: disc;
+            padding-left: 10px;
+            margin: 10px 0 10px 20px;
+        }
         ul li {
-            margin: 8px 0;
-            color: #4caf50;
+            margin: 4px 0;
+            color: #34495e;;
+        }
+        li .title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+        li p {
+            color: #34495e;
+            font-size: 16px;
         }
         .right-sidebar {
             position: sticky;
@@ -102,6 +164,66 @@
             font-weight: bold;
             color: #007bff;
         }
+        #dynamic-sidebar ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        #dynamic-sidebar ul ul {
+            padding-left: 20px;
+        }
+        a {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            color: #3498db;
+        }
+        a:hover {
+            color: #2c3e50;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 -2px 6px rgba(0, 0, 0, 0.1);;
+        }
+        .comment {
+            color: #6c757d;
+            font-size: 0.9em;
+            font-style: italic;
+            margin: 20px 0;
+            border-left: 3px solid #d6d8db;
+            padding-left: 10px;
+        }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .positive {
+            color: green;
+            font-weight: bold;
+        }
+        .negative {
+            color: red;
+            font-weight: bold;
+        }
+        .scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body>
@@ -109,53 +231,111 @@
         <div class="row">
         <!-- 左侧小节列表 -->
         <nav class="col-md-2 sidebar">
-            <h4>第1章：基础知识</h4>
-            <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link text-dark" href="subsection1-1.html">1.1 子章节</a></li>
-            <li class="nav-item"><a class="nav-link text-dark" href="subsection1-2.html">1.2 子章节</a></li>
-            <li class="nav-item"><a class="nav-link text-dark" href="subsection1-3.html">1.3 子章节</a></li>
-            </ul>
+
         </nav>
 
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
             <h2 class="custom-title">9.1 注意力机制</h2>
-            <p class="title-subtext">探索深度学习中的核心概念</p>
-            <p><strong>注意力机制 (Attention Mechanism)</strong> 是一种机器学习技术，它指导深度学习模型优先考虑（或关注）输入数据中最相关的部分。注意力机制的创新促成了 Transformer 架构的诞生，该架构催生了现代大语言模型 (LLM) ，为 ChatGPT 等热门应用程序提供支持。</p>
-        
-            <h3 id="history">9.1.1 历史发展</h3>
-            <h4>9.1.1.1 什么是注意力机制</h4>
-            <h4>9.1.1.2 为什么注意力机制很重要？</h4>
-            <h4>9.1.1.3 如何发挥作用</h4>
-            <h4>9.1.1.4 自注意力</h4>
-            <p>创建漂亮的段落可以通过以下几点实现：</p>
-            <ul>
-                <li>合理的字体大小和行高，提升可读性。</li>
-                <li>添加背景色、边框或阴影，让段落显得更有层次感。</li>
-                <li>使用突出部分的高亮样式，吸引读者注意。</li>
-            </ul>
-    
-            <div class="highlight">
-                小贴士：保持段落内容清晰，并适当地使用空白区域，有助于提升阅读体验。
-            </div>
+            <p class="title-subtext">注意力机制 (Attention Mechanism) ！</p>
+            <p style="color: #a0a0a0;">创建日期: 2025-01-18</p>
 
-            
-            <p>效果如上所示。可以尝试调整样式，使其更适合具体需求。</p>
+            <p><strong>注意力机制 (Attention Mechanism)</strong> 是一种机器学习技术，它指导深度学习模型优先考虑（或关注）输入数据中最相关的部分。注意力机制的创新促成了 Transformer 架构的诞生，该架构催生了 现代大型语言模型 (Large Language Model, LLM)，为 ChatGPT 等热门应用程序提供支持。</p>
+
+            <h3>9.1.1 历史发展</h3>
+
+            <p>顾名思义，注意力机制的灵感来源于人类（和其他动物）选择性地关注突出细节并忽略当前不太重要的细节的能力。获取所有信息但只关注最相关的信息有助于确保不会丢失任何有意义的细节，同时还能有效利用有限的内存和时间。</p>
+
+            <p>在心理学中，注意力（Attention）是指人类大脑对特定信息的优先选择和处理的能力，是认知心理学的核心研究领域之一。注意力不仅影响我们的感知、记忆和决策，还涉及多种行为任务的完成。</p>
+
+            <p>从数学上讲，注意力机制计算注意力权重，该权重反映了输入序列的每个部分对当前任务的相对重要性。然后，它根据输入序列每个部分的重要性，应用这些注意力权重来增加（或减少）输入序列每个部分的影响。注意力模型（即采用注意力机制的人工智能模型）通过对大量示例进行监督学习或自我监督学习来训练，以分配准确的注意力权重。</p>
+            <p>注意力机制最初由 Bahdanau等人于 2014 年提出，作为一种技术来解决当时用于机器翻译的最先进的循环神经网络 (RNN)模型的缺点。后续研究将注意力机制整合到用于图像字幕和视觉问答等任务的卷积神经网络 (CNN)中。</p>
+            <p>2017 年，开创性的论文《注意力就是一切》引入了Transformer 模型，该模型完全摒弃了循环和卷积，只采用注意力层和标准前馈层。从那时起，Transformer 架构就成为了推动生成式 AI时代发展的尖端模型的支柱。</p>
+            <p>虽然注意力机制主要与用于自然语言处理 (NLP)任务（例如摘要、问答、文本生成和情感分析）的 LLM 相关，但基于注意力的模型也广泛应用于其他领域。用于图像生成的领先扩散模型通常包含注意力机制。在计算机视觉领域，视觉转换器 (ViT) 在包括对象检测1 、图像分割2和视觉问答3在内的任务上取得了优异的成绩。</p>
         </main>
 
-        <!-- 右侧内容概括 -->
-        <aside class="col-md-2 summary">
-            <h4>内容概括</h4>
-            <ul>
-            <li><a href="#section-overview">概述</a></li>
-            <li><a href="#section-example">示例</a></li>
-            <li><a href="#section-summary">总结</a></li>
-            </ul>
-        </aside>
+            <!-- 右侧小标题导航 -->
+            <aside class="col-md-2 right-sidebar">
+                <h5>标题</h5>
+                <ul id="dynamic-sidebar" class="nav flex-column">
+                    <!-- 动态内容 -->
+                </ul>
+            </aside>
         </div>
     </div>
 
         <!-- 引入 Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script>
+            // 获取所有的 h3 和 h4 元素
+            const sidebar = document.getElementById('dynamic-sidebar');
+            const elements = Array.from(document.querySelectorAll('h3, h4')); // 获取所有 h3 和 h4 元素
+
+            // 动态生成目录项
+            elements.forEach(element => {
+                // 如果没有 id，则为该元素生成一个 id
+                if (!element.id) {
+                    element.id = `${element.tagName.toLowerCase()}-${Math.random().toString(36).substr(2, 9)}`;
+                }
+
+                const link = document.createElement('a');
+                link.href = `#${element.id}`;
+                link.textContent = element.textContent;
+
+                const listItem = document.createElement('li');
+                // 如果是 h4 元素，添加缩进
+                if (element.tagName.toLowerCase() === 'h4') {
+                    listItem.style.marginLeft = '20px'; // 控制缩进
+                }
+                listItem.appendChild(link);
+
+                sidebar.appendChild(listItem);
+            });
+
+            // 高亮当前目录项
+            function highlightCurrentLink(targetId) {
+                const links = sidebar.querySelectorAll('a');
+                links.forEach(link => {
+                    if (link.getAttribute('href') === `#${targetId}`) {
+                        link.classList.add('highlight-link');
+                    } else {
+                        link.classList.remove('highlight-link');
+                    }
+                });
+            }
+
+            // 页面滚动时更新高亮
+            window.addEventListener('scroll', () => {
+                let found = false;
+                elements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
+                        if (!found) {
+                            highlightCurrentLink(el.id);
+                            found = true;
+                        }
+                    }
+                });
+            });
+
+            // 为每个目录链接添加点击事件
+            const links = sidebar.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                        highlightCurrentLink(targetId);
+                    }
+                });
+            });
+        </script>
 </body>
 </html>

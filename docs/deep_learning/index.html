@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>教程页面模板</title>
+    <title>深度学习综合指南</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -42,7 +42,7 @@
         }
         h1 {
             color: #2c3e50;
-            font-size: 3.5em;
+            font-size: 3em;
             text-align: center;
             margin-top: 20px;
             margin-bottom: 40px;
@@ -57,14 +57,14 @@
         }
         .content-section > h2 {
             color: #2980b9; /* 深蓝色 */
-            font-size: 2.5em;
+            font-size: 2em;
             border-bottom: 4px solid #2980b9;
             padding-bottom: 15px;
             margin-bottom: 50px;
         }
         .content-section h3 {
             color: #e74c3c; /* 红色 */
-            font-size: 2em;
+            font-size: 1.5em;
             border-left: 6px solid #e74c3c;
             padding-left: 15px;
             margin-top: 40px;
@@ -72,7 +72,7 @@
         }
         .content-section h4 {
             color: #8e44ad; /* 紫色 */
-            font-size: 1.5em;
+            font-size: 1em;
             margin-top: 20px;
             margin-bottom: 12px;
             border-left: 5px solid #8e44ad;
@@ -129,7 +129,7 @@
         }
         a {
             text-decoration: underline;
-            text-underline-offset: 4px;
+            text-underline-offset: 8px;
             color: #3498db;
         }
         /* 移动端样式（只在屏幕宽度 < 1024 px 时生效 */
@@ -288,7 +288,7 @@
                     <p>这是章节 4 的内容。欢迎补充更多章节。</p>
 
                     <h3 id="section4-sub5" class="content-section-sub">
-                        <a href="dense_network_scratch.html" style="text-decoration: none; color: inherit;">4.5 手写神经网络</a>
+                        <a href="dense_network_scratch.html" style="color: inherit;">4.5 手写神经网络</a>
                     </h3>
 
                 </section>
@@ -309,7 +309,7 @@
                     <p>这是章节 7 的内容。布局整洁易用。</p>
 
                     <h3 id="section8-sub1" class="content-section-sub">
-                        <a href="recurrent_network_intro.html" style="text-decoration: none; color: inherit;">8.1 循环神经网络入门</a>
+                        <a href="recurrent_network_intro.html" style="color: inherit;">8.1 循环神经网络入门</a>
                     </h3>
                     <p>翻译文章 <a href="https://victorzhou.com/blog/intro-to-rnns/">An Introduction to Recurrent Neural Networks for Beginners</a>，主要有以下几点区别：</p>
                     <ul>
@@ -321,45 +321,50 @@
                         </li>
                     </ul>
 
-                    <h4 id="section8-sub1-sub1">8.1.1 为什么</h4>
-                    <h4 id="section8-sub1-sub2">8.1.2 如何实现</h4>
-                    <h4 id="section8-sub1-sub3">8.1.3 问题</h4>
-                    <h4 id="section8-sub1-sub4">8.1.4 计划</h4>
-                    <h4 id="section8-sub1-sub5">8.1.5 预处理</h4>
-                    <h4 id="section8-sub1-sub6">8.1.6 前向传播</h4>
-                    <h4 id="section8-sub1-sub7">8.1.7 为什么</h4>
-                    <h4 id="section8-sub1-sub8">8.1.8 如何实现</h4>
-
                     <h3 id="section8-sub2" class="content-section-sub">
-                        <a href="recurrent_detail.html" style="text-decoration: none; color: inherit;">8.2 RNN 详解</a>
+                        <a href="recurrent_detail.html" style="color: inherit;">8.2 RNN 详解</a>
                     </h3>
 
                     <p>翻译系列文章：</p>
                     <ul>
-                        <li><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-1/">Recurrent Neural Networks Tutorial, Part 1 – Introduction to RNNs</a></li>
-                        <li><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-2/">Recurrent Neural Networks Tutorial, Part 2 – Implementing a RNN with Python, Numpy and Theano</a></li>
-                        <li><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-3/">Recurrent Neural Networks Tutorial, Part 3 – Backpropagation Through Time and Vanishing Gradients</a></li>
-                        <li><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-4/">Recurrent Neural Networks Tutorial, Part 4 – Implementing a GRU and LSTM RNN with Python and Theano</a></li>
+                        <li>
+                            <p><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-1/">Recurrent Neural Networks Tutorial, Part 1 – Introduction to RNNs</a></p>
+                        </li>
+                        <li>
+                            <p><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-2/">Recurrent Neural Networks Tutorial, Part 2 – Implementing a RNN with Python, Numpy and Theano</a></p>
+                        </li>
+                        <li>
+                            <p><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-3/">Recurrent Neural Networks Tutorial, Part 3 – Backpropagation Through Time and Vanishing Gradients</a></p>
+                        </li>
+                        <li>
+                            <p><a href="https://dennybritz.com/posts/wildml/recurrent-neural-networks-tutorial-part-4/">Recurrent Neural Networks Tutorial, Part 4 – Implementing a GRU and LSTM RNN with Python and Theano</a></p>
+                        </li>
+                    </ul>
+                    <p>主要有如下区别：</p>
+                    <ul>
+                        <li>
+                            <p>删除过时的 Theano 机器学习库部分，采用流行的 PyTorch 实现。</p>
+                        </li>
                     </ul>
 
                     <h3 id="section8-sub3" class="content-section-sub">
-                        <a href="#" style="text-decoration: none; color: inherit;">8.3 长短期记忆网络</a>
+                        <a href="#" style="color: inherit;">8.3 长短期记忆网络</a>
                     </h3>
 
                     <h3 id="section8-sub4" class="content-section-sub">
-                        <a href="#" style="text-decoration: none; color: inherit;">8.4 GRU 网络</a>
+                        <a href="#" style="color: inherit;">8.4 GRU 网络</a>
                     </h3>
 
                     <h3 id="section8-sub5" class="content-section-sub">
-                        <a href="#" style="text-decoration: none; color: inherit;">8.5 序列到序列</a>
+                        <a href="wmt_dataset.html" style="color: inherit;">8.5 WMT 数据集</a>
                     </h3>
 
                     <h3 id="section8-sub6" class="content-section-sub">
-                        <a href="#" style="text-decoration: none; color: inherit;"></a>
+                        <a href="#" style="text-decoration: none; color: inherit;">8.6 RNN 翻译</a>
                     </h3>
 
                     <h3 id="section8-sub6" class="content-section-sub">
-                        <a href="seq2seq_paper.html" style="text-decoration: none; color: inherit;">8.6 Seq2Seq 论文</a>
+                        <a href="seq2seq_paper.html" style="color: inherit;">8.6 Seq2Seq 论文</a>
                     </h3>
                     <p>翻译论文 <a href="https://arxiv.org/abs/1409.3215">Sequence to Sequence Learning with Neural Networks</a></p>
 
