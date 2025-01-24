@@ -20,7 +20,7 @@
             border-right: 1px solid #ddd;
         }
         .sidebar a {
-            color: #007b0f;
+            color: #007bff;
             text-decoration: none;
         }
         .sidebar a:hover {
@@ -126,6 +126,11 @@
         li p {
             color: #34495e;
             font-size: 16px;
+        }
+        a {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            color: #3498db;
         }
         /* 移动端样式（只在屏幕宽度 < 1024 px 时生效 */
         @media screen and (max-width: 1024px) {
@@ -365,17 +370,10 @@
                 </section>
                 <section id="section9" class="content-section">
                     <h2>09 Transformer 架构</h2>
-                    <p>这是章节 9 的内容。</p>
-                    <h3 id="section9-sub1">9.1 注意力机制</h3>
-                    <p>在计算机科学的注意力机制中，查询 (Query) 、键 (Key) 和值 (value) 的核心思想是模仿人类的注意力机制来动态选择重要信息。主动注意对应的是 Query 的作用，被动注意对应的是 Key 的显著性作用。</p>
-                    
-                    <h4 id="section9-sub1-sub1">
-                        <a href="attention_mechanism.html#history" style="text-decoration: none; color: inherit;">9.1.1 历史发展</a>
-                    </h4>
-                    <h4 id="section9-sub1-sub2">9.1.2 注意力提示</h4>
-                    <h4 id="section9-sub1-sub3">9.1.3 注意力汇聚</h4>
-                    <h4 id="section9-sub1-sub4">9.1.4 注意力评分函数</h4>
-                    <h4 id="section9-sub1-sub5">9.1.5 Bahdanau 注意力</h4>
+
+                    <h3 id="section9-sub1" class="content-section-sub">
+                        <a href="attention_mechanism.html" style="color: inherit;">9.1 注意力机制</a>
+                    </h3>
 
                     <h3 id="section9-sub2">9.2 机器翻译</h3>
                     <p>这是章节 9 的子标题 2 内容。</p>
@@ -409,10 +407,10 @@
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5>标题</h5>
-                <ul id="dynamic-sidebar" class="nav flex-column">
+                <!-- <h5>标题</h5>
+                <ul id="dynamic-sidebar" class="nav flex-column"> -->
                     <!-- 动态内容 -->
-                </ul>
+                <!-- </ul> -->
             </aside>
         </div>
     </div>
