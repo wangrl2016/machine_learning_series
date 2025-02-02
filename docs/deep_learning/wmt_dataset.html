@@ -250,10 +250,85 @@
                 <li><p><a href="https://www.statmt.org/europarl/v7/fr-en.tgz">https://www.statmt.org/europarl/v7/fr-en.tgz</a></p></li>
             </ul>
 
-            <p>在本小节中，我们将使用标准 Python 程序对它进行预处理。</p>
+            <p>在本小节中，我们将使用标准 Python 程序对它进行预处理。将上述的压缩文件下载在本地目录，如 <code>temp</code> 中，文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/08/5_1_wmt_dataset.py">5_1_wmt_dataset.py</a> 使用 <code>tarfile</code> 进行解压缩：</p>
+            <pre><code>def extract_tgz(file_path, output_dir):
+    with tarfile.open(file_path, 'r:gz') as tar:
+        tar.extractall(path=output_dir)</code></pre>
+            <p>会得到两个文件：</p>
+            <ol>
+                <li>
+                    <p>temp\fr-en\europarl-v7.fr-en.en</p>
+                </li>
+                <li>
+                    <p>temp\fr-en\europarl-v7.fr-en.fr</p>
+                </li>
+            </ol>
+            <p>定义 <code>load_doc</code> 函数将文件加载到内存中：</p>
+            <pre><code># Load doc into memory.
+def load_doc(filename):
+    file = open(filename, mode='rt', encoding='utf-8')
+    # read all text
+    text = file.read()
+    # close the file
+    file.close
+    return text</code></pre>
 
-            <h3>8.5.2 BLEU</h3>
-            
+            <p>将文件通过换行符分割成句子：</p>
+            <pre><code># Split a loaded document into sentences.
+def to_sentences(doc):
+    return doc.strip().split('\n')</code></pre>
+
+            <p>获取句子的最小和最大长度：</p>
+            <pre><code># Shortest and longest sentence lengths.
+def sentence_lengths(sentences):
+    lengths = [len(s.split()) for s in sentences]
+    return min(lengths), max(lengths)</code></pre>
+
+            <p>现在需要清理导入的句子行，以避免训练无用且嘈杂的标记。这些行被规范化，在空格上标记，并转换为小写。从每个标记中删除标点符号，删除不可打印的字符，并排除包含数字的标记。清理后的行存储为字符串。程序运行清理函数并返回干净的附加字符串：</p>
+            <pre><code>def clean_lines(lines):
+    cleaned = list()
+    # prepare regex for char filtering.
+    re_print = re.compile('[^%s]' % re.escape(string.printable))
+    # prepare translation table for removing punctutation
+    # 删除所有标点符号
+    table = str.maketrans('', '', string.punctuation)
+    for line in lines:
+        # Café déjà vu résumé naïve
+        # Cafe deja vu resume naive
+        line = unicodedata.normalize('NFD', line).encode('ascii', 'ignore')
+        line = line.decode('utf-8')
+        # tokenize on white space
+        line = line.split()
+        # convert to lower case
+        line = [word.lower() for word in line]
+        # remove punctutation from each token
+        line = [word.translate(table) for word in line]
+        # remove non-printable chars form each token
+        line = [re_print.sub('', w) for w in line]
+        # remove tokens with numbers in them
+        line = [word for word in line if word.isalpha()]
+        # store as string
+        cleaned.append(' '.join(line))
+    return cleaned</code></pre>
+
+            <p>现在我们对法语数据重复相同的过程</p>
+
+            <h3>8.5.2 BLEU 论文</h3>
+
+            <p>机器翻译的人工评估范围广泛但成本高昂。人工评估可能需要数月才能完成，并且不能重复使用。我们提出了一种机器翻译自动评估的方法，该方法快速、廉价、与语言无关，与人工评估高度相关，但是每次运行的边际成本很低。我们将这种方法作为人工评估的一种补充，当需要快速或者频繁评估时，可以使用该方法代替人工。</p>
+
+            <h4>8.5.2.1 介绍</h4>
+
+            <h4>8.5.2.2 基准指标</h4>
+
+            <h4>8.5.2.3 BLEU 评估</h4>
+
+            <h4>8.5.2.4 人工评估</h4>
+
+            <h4>8.5.2.5 评估对比</h4>
+
+            <h4>8.5.2.6 总结</h4>
+
         </main>
 
             <!-- 右侧小标题导航 -->
