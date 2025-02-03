@@ -240,7 +240,7 @@
             <p class="title-subtext">WMT 数据集解析，并使用 BLEU 评价标准！</p>
             <p style="color: #a0a0a0;">创建日期: 2025-01-24</p>
 
-            <p>处理欧洲议会会议记录 (Europarl) 第 7 版中英语-德语、英语-法语翻译数据集，使用 BLEU 方法进行评估。</p>
+            <p>处理欧洲议会会议记录 (Europarl) 第 7 版中英语-德语、英语-法语翻译数据集。翻译 BLEU 论文，并使用 BLEU 方法进行评估。</p>
 
             <h3>8.5.1 WMT 数据集</h3>
             <p>论文 <a href="https://arxiv.org/abs/1706.03762"> Attention Is All Your Need</a> 的作者在 WMT 2014 英语翻译成德语的任务和 WMT 2014 英语翻译成法语的任务上取得优异成绩。<a href="https://machinetranslate.org/">WMT (Workshop on Machine Translation)</a> 是一个专注于机器翻译的国际研讨会，提供标准化的数据集和评估方法，经常组织竞赛，以比较不同翻译模型的性能。</p>
@@ -319,10 +319,45 @@ def sentence_lengths(sentences):
 
             <h4>8.5.2.1 介绍</h4>
 
-            <p>人类对机器翻译 (MT) 的评价衡量了翻译的许多方面，包括翻译的充分性、保真度和流畅度。</p>
-
+            <p>人类对机器翻译 (MT) 的评价衡量了翻译的许多方面，包括翻译的充分性、保真度和流畅度。2001 年 Reeder 给出了 MT 评估技术的综合目录及其丰富的文献。在大多数情况下，这些不同的人工评估方法都非常昂贵。此外，它们可能需要数周或数月才能完成。这是一个大问题，因为机器翻译系统的开发人员需要监控每天系统变化的影响，以便从好主意中剔除坏主意。</p>
+            <p>我们相信，机器翻译的进步源于评估，并且有大量富有成果的研究想法等待着摆脱评估瓶颈。开发人员将受益于一种廉价的自动评估，这种评估快速、独立于语言，并且与人工评估高度相关。我们在本文中提出了这样一种评估方法。</p>
+            <p>如何衡量翻译效果？机器翻译越接近专业人工翻译，效果就越好。这是我们提案背后的核心思想。要判断机器翻译的质量，需要根据数值指标来衡量其与一个或多个参考人工翻译的接近程度。因此，我们的机器翻译评估系统需要两个要素：</p>
+            <ol>
+                <li>
+                    <p>数值“翻译接近度”指标</p>
+                </li>
+                <li>
+                    <p>高质量人工参考翻译的语料库</p>
+                </li>
+            </ol>
+            <p>我们根据语音识别社区使用的非常成功的单词错误率指标制定了我们的接近度指标，并针对多个参考翻译进行了适当修改，并允许单词选择和词序存在合理的差异。主要思想是使用可变长度短语匹配的加权平均值来匹配参考翻译。这种观点产生了一系列使用各种加权方案的指标。我们从这个系列中选择了一个有前途的基线指标。</p>
+            <p>在第 2 节中，我们详细描述了基线指标。在第 3 节中，我们评估了 BLEU 的性能。在第 4 节中，我们描述了一个人工评估实验。在第 5 节中，我们将基线指标性能与人工评估进行了比较。</p>
+            
             <h4>8.5.2.2 基准指标</h4>
 
+            <p>通常，给定的源句子有很多“完美”的翻译。即使使用相同的单词，这些翻译在词汇选择或词序上也可能有所不同。然而，人类可以清楚地区分好的翻译和坏的翻译。例如，考虑一下中文源句子的这两个候选翻译：</p>
+            <ul>
+                <li>
+                    <p>候选句子 1：It is a guide to action which ensures that the military always obeys the commands of the party.</p>
+                </li>
+                <li>
+                    <p>候选句子 2：It is to insure the troops forever hearing the activity guidebook that party direct.</p>
+                </li>
+            </ul>
+            <p>虽然它们看起来是同一主题，但质量却有很大差异。为了进行比较，我们在下面提供了同一句话的三个参考人工翻译。</p>
+            <ul>
+                <li>
+                    <p>参考 1：It is a guide to action that ensures that the military will forever heed Party commands.</p>
+                </li>
+                <li>
+                    <p>参考 2：It is the guiding principle which guarantees the military forces always being under the command of the Party.</p>
+                </li>
+                <li>
+                    <p>参考 3：It is the practical guide for the army always to heed the directions of the party.</p>
+                </li>
+            </ul>
+            <p>很明显，候选句子 1 是好的翻译，它与三个参考翻译句子共享许多相同的单词和短语，而候选句子 2 没有。我们将在第 2.1 节中简要量化共享的概念。</p>
+            <p></p>
             <h4>8.5.2.3 BLEU 评估</h4>
 
             <h4>8.5.2.4 人工评估</h4>
