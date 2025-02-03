@@ -259,9 +259,9 @@
             <pre><code>stock = [100, 102, 105, 101, 109, 114, 108, 100, 105, 108]
 pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <p>结果如下图所示：</p>
-            <img src="stock_data.png" alt="股票趋势">
+            <img src="res/stock_data.png" alt="股票趋势">
             <p>基础神经网络（包括 CNN ）的一个问题是它们只能处理预定大小的样本：使用固定大小的输入，并产生固定大小的输出。RNN 很有用，因为它们允许我们将可变长度的序列作为输入和输出。下图列举 RNN 的几种样式：</p>
-            <img src="rnn_relationship.svg" alt="RNN 网络关系">
+            <img src="res/rnn_relationship.svg" alt="RNN 网络关系">
             <div class="comment">注：红色表示输入，绿色表示 RNN 自己，蓝色表示输出。</div>
             
             <p>这种处理序列的能力使得 RNN 非常有用。例如：</p>
@@ -287,7 +287,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
                     <p>2. 下一个输出 \(y_t\) 可以使用 \(h_t\) 计算。</p>
                 </li>
             </ul>
-            <img src="rnn_arch.svg" alt="RNN 架构">
+            <img src="res/rnn_arch.svg" alt="RNN 架构">
             <p>以上操作让 RNN 具有循环性：它在每个步骤中使用相同的权重。更具体地说，一个典型的基础循环神经网络仅使用 3 组权重来执行计算：</p>
             <ul class="with-bullets">
                 <li>
@@ -375,7 +375,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <h3 id="plan">8.1.4 计划</h3>
 
             <p>由于这是一个分类问题，我们将使用“多对一”的 RNN 。这与我们之前讨论的“多对多“的 RNN 类似，但它仅使用最后的隐藏状态产生一个输出 \(y\) ：</p>
-            <img src="many_to_one.svg" alt="多对一网络">
+            <img src="res/many_to_one.svg" alt="多对一网络">
             <p>每个 \(x_i\) 都是个向量，表示文本中的单词。输出 \(y\) 是一个包含两个数字的向量，一个代表正向情绪，另一个代表负向情绪。我们将应用 softmax 函数将这些值转换为概率，并最终在 正向 / 负向 之间做出判断。</p>
             <p>让我们开始构建 RNN 模型！</p>
 
@@ -627,7 +627,7 @@ print(porbs)</code></pre>
             <p>第三阶段需要计算每一步的 \(W_{hh}\) ，\(W_{xh}\) 和 \(b_h\) 的梯度，我们有下面公式：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{xh}} = \frac{\partial l}{\partial y} \sum_{t=0}^{n} (\frac{\partial y}{\partial h_t} \cdot \frac{\partial h_t}{\partial W_{xh}}) \)</p>
             <p>因为改变 \(W_{xh}\) 会影响每个 \(h_t\) ，通过影响 \(y\) 值，最终影响损失 \(l\) 。为了计算 \(W_{xh}\) 的梯度，我们需要对所有的 \(t\) 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
-            <img src="rnn_backward.svg" alt="时间上反向传播">
+            <img src="res/rnn_backward.svg" alt="时间上反向传播">
             <p>上述公式需要分别计算 \(\frac{\partial y}{\partial h_t}\) 和 \(\frac{\partial h_t}{\partial W_{xh}}\) 的梯度。</p>
             <p>\(W_{xh}\) 在所有的 \(x_t\) -> \(h_t\) 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 \(t\) ，我们需要计算 \(\frac{\partial h_t}{\partial W_{xh}}\) ：</p>
             <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
@@ -765,7 +765,7 @@ Epoch 100
 Train: loss 0.689 | accuracy: 0.534
 Test: loss 0.697 | accuracy: 0.500</code></pre>
             <p>绘制训练过程的损失和精确度变化：</p>
-            <img src="simple_rnn_train_loss.png" alt="RNN 训练损失">
+            <img src="res/simple_rnn_train_loss.png" alt="RNN 训练损失">
             <p>可以看到训练损失逐渐降低，训练精度逐渐提高，最终达到平衡，训练结束。</p>
             <p>训练完成后，使用新的用例进行预测:</p>
             <pre><code>(predict, _) = rnn.forward(create_inputs('i am good'))
@@ -831,7 +831,7 @@ Epoch 71/100, loss: 0.0086
 Epoch 81/100, loss: 0.0059
 Epoch 91/100, loss: 0.0041</code></pre>
             <p>损失逐渐降低，最终接近 0 ，非常好的结果。下图是绘制的损失变化图像：</p>
-            <img src="simple_rnn_train_torch.png" alt="RNN 损失变化">
+            <img src="res/simple_rnn_train_torch.png" alt="RNN 损失变化">
             
         </main>
 
