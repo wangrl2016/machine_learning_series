@@ -120,7 +120,7 @@
         li .title {
             font-weight: bold;
             color: #2c3e50;
-            font-size: 18px;
+            font-size: 16px;
             margin-bottom: 6px;
         }
         li p {
@@ -150,7 +150,7 @@
         <div class="row">
             <!-- 左侧目录 -->
             <nav class="col-md-2 bg-light sidebar">
-                <h5 class="p-3">目录</h5>
+                <h5 class="p-3"><a href="../index.html">主页</a></h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" href="#section1" onclick="toggleChildChapters(event, 'chapter1')">01 认识机器学习：绘制直线</a>
@@ -183,10 +183,31 @@
                             <li><a class="nav-link" heaf="#section3-sub5">3.5 其它分类问题</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#section4">04 详解反向传播算法</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section4" onclick="toggleChildChapters(event, 'chapter4')">04 详解反向传播算法</a>
+                        <ul id="chapter4" class="child-chapters" style="display: none;">
+                            <li><a class="nav-link" href="#section4-sub1">4.1 导数</a></li>
+                            <li><a class="nav-link" href="#section4-sub2">4.2 激活函数</a></li>
+                            <li><a class="nav-link" href="#section4-sub3">4.3 损失函数</a></li>
+                            <li><a class="nav-link" heaf="#section4-sub4">4.4 梯度下降</a></li>
+                            <li><a class="nav-link" heaf="#section4-sub5">4.5 手写神经网络</a></li>
+                            <li><a class="nav-link" heaf="#section4-sub6">4.6 绘制曲线</a></li>
+                            <li><a class="nav-link" heaf="#section4-sub7">4.7 坐标点分类</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#section5">05 张量与自动微分</a></li>
                     <li class="nav-item"><a class="nav-link" href="#section6">06 训练神经网络</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#section7">07 卷积神经网络</a></li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section7" onclick="toggleChildChapters(event, 'chapter7')">07 卷积神经网络</a>
+                        <ul id="chapter7" class="child-chapters" style="display: none;">
+                            <li><a class="nav-link" href="#section7-sub1">7.1 认识卷积网络</a></li>
+                            <li><a class="nav-link" href="#section7-sub2">7.2 手写卷积网络</a></li>
+                            <li><a class="nav-link" href="#section7-sub3">7.3 AlexNet 论文</a></li>
+                            <li><a class="nav-link" href="#section7-sub4">7.4 U-Net 论文</a></li>
+                            <li><a class="nav-link" href="#section7-sub5">7.5 ResNet 论文</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#section8" onclick="toggleChildChapters(event, 'chapter8')">08 循环神经网络</a>
                         <ul id="chapter8" class="child-chapters" style="display: none;">
@@ -194,12 +215,25 @@
                             <li><a class="nav-link" href="#section8-sub2">8.2 RNN 详解</a></li>
                             <li><a class="nav-link" href="#section8-sub3">8.3 长短期记忆网络</a></li>
                             <li><a class="nav-link" href="#section8-sub4">8.4 GRU 网络</a></li>
-                            <li><a class="nav-link" href="#section8-sub5">8.5 序列到序列</a></li>
-                            <li><a class="nav-link" href="#section8-sub6">8.6 Seq2Seq</a></li>
-                            <li><a class="nav-link" href="#section8-sub7">8.7 Word2Vec</a></li>
+                            <li><a class="nav-link" href="#section8-sub5">8.5 WMT 数据集</a></li>
+                            <li><a class="nav-link" href="#section8-sub6">8.6 RNN 翻译</a></li>
+                            <li><a class="nav-link" href="#section8-sub7">8.7 Seq2Seq 论文</a></li>
+                            <li><a class="nav-link" href="#section8-sub8">8.7 Word2Vec</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#section9">09 Transformer 架构</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section9" onclick="toggleChildChapters(event, 'chapter9')">09 Transformer 架构</a>
+                        <ul id="chapter8" class="child-chapters" style="display: none;">
+                            <li><a class="nav-link" href="#section9-sub1">9.1 注意力机制</a></li>
+                            <li><a class="nav-link" href="#section9-sub2">9.2 机器翻译</a></li>
+                            <li><a class="nav-link" href="#section9-sub3">9.3 局部注意力</a></li>
+                            <li><a class="nav-link" href="#section9-sub4">9.4 Transformer 论文</a></li>
+                            <li><a class="nav-link" href="#section9-sub5">9.5 Transformer 实现</a></li>
+                            <li><a class="nav-link" href="#section9-sub6">9.6 Transformer 注释</a></li>
+                            <li><a class="nav-link" href="#section9-sub7">9.7 Keras 示例</a></li>
+                        </ul>
+                    </li>
+                    
                     <li class="nav-item"><a class="nav-link" href="#section10">10 生成式 (Generative)</a></li>
                     <li class="nav-item"><a class="nav-link" href="#section11">11 图片扩散 (Diffusion)</a></li>
                     <li class="nav-item"><a class="nav-link" href="#section12">12 大语言模型 (LLM)</a></li>
@@ -209,9 +243,34 @@
             <!-- 中间内容 -->
             <main class="col-md-8">
                 <h1>深度学习综合指南</h1>
+
+                <p>这是一本面向初学者的深度学习综合指南。编写过程中借鉴了大量的经典教材、论文、文章，包括使用 AI 生成许多代码片段。教程主要分为四个阶段：</p>
+                <ul>
+                    <li>
+                        <div class="title">第 1 - 4 章：数学与深度学习基础</div>
+                        <p>复习数学知识（函数、线性代数、统计学、微积分）。使用 Keras 高级 API 快速实现分类问题，理解什么是深度学习，包括数据、前向传播、反向传播、神经元、神经网络、优化器、损失函数、激活函数、梯度下降等基础概念。</p>
+                    </li>
+                    <li>
+                        <div class="title">第 5 - 6 章： 机器学习框架入门</div>
+                        <p>系统学习主流机器学习框架 TensorFlow、PyTorch 和 JAX，熟练使用张量和自动微分，加载简单数据集并完成训练，理解这些框架的相似性与差异，为后续实践打下扎实基础。</p>
+                    </li>
+                    <li>
+                        <div class="title">第 7 - 9 章： 经典网络与理论提升</div>
+                        <p>通过翻译经典论文的方式，介绍三大深度学习网络：卷积神经网络、循环神经网络、注意力机制。深度学习的发展是循序渐进的，论文可以清晰地看到人们是如何思考，并解决实际问题的。</p>
+                    </li>
+                    <li>
+                        <div class="title">第 10 - 12 章：实际应用与前沿探索</div>
+                        <p>聚焦深度学习在文本、图片和语音生成中的实际应用，介绍稳定扩散、生成对抗网络等技术。探索大模型的简单实现，并详细解析 Llama 模型的运行与关键原理。</p>
+                    </li>
+                </ul>
+                <p>文本以清晰简洁的风格编写，使其成为任何有兴趣学习深度学习的人的理想资源。</p>
+
                 <section id="section1" class="content-section">
                     <h2>01 认识机器学习：绘制直线</h2>
-                    <p>这是章节 1 的内容。</p>
+                    <p>本章将回顾函数的基本概念，包括线性函数、多项式函数、幂函数、指数函数、有理函数、对数函数、三角函数，以及函数组合、函数变换、反函数等基本性质。</p>
+                    <p>详细介绍 NumPy 科学计算库，使用各种方法创建 ndarray 数组，对数组进行索引和切片，并探讨数组之间的计算，例如广播、连接、乘法等运算。</p>
+                    <p>使用传统解法和机器学习解法，求一条通过 100 个随机分布点的最佳拟合直线，即找到一条直线 \(y = m \cdot x + b\) 使得所有的点到直线的垂直距离之和（或平方和）最小。</p>
+
                     <h3 id="section1-sub1" class="content-section-sub">1.1 函数基础</h3>
                     <p>这是章节 1 的子标题 1 内容。</p>
 
@@ -226,39 +285,65 @@
                     <p>这是章节 1 的子标题 4 内容。</p>
 
 
-                    <h3 id="section1-sub5">子标题 5</h3>
+                    <h3 id="section1-sub5">1.5 机器学习求解</h3>
                     <p>这是章节 1 的子标题 5 内容。</p>
-
 
                 </section>
                 <section id="section2" class="content-section">
                     <h2>02 深度学习原理</h2>
-                    <p>这是章节 2 的内容。</p>
+                    
+                    <p>了解机器学习与传统编程的区别，理解深度学习原理，熟悉人工神经网络的训练过程，包括数据预处理、神经元、权重、损失函数、优化器、反向传播等概念。</p>
+                    <p>教材《线性代数介绍》深入浅出地介绍了线性代数的核心概念，包括矩阵运算、向量空间、线性变换、正交性、特征值与特征向量等。</p>
+                    <p>将日常生活中的常见表示（特征数据、文字、图片、视频、声音）转换为神经网络的数据输入，对数据进行一些预处理操作，手动实现常见的数据处理算法。</p>
+
                     <h3 id="section2-sub1">2.1 什么是机器学习</h3>
                     <p>这是章节 2 的子标题 1 内容。</p>
-                    <h3 id="section2-sub2">子标题 2</h3>
+                    
+                    <h3 id="section2-sub2">2.2 人工神经网络</h3>
                     <p>这是章节 2 的子标题 2 内容。</p>
-                    <p>123</p>
-                    <p>123</p>
-                    <p>123</p>
+
+                    <h3 id="section2-sub3">2.3 线性代数</h3>
+                    <h3 id="section2-sub4">2.4 数据表示</h3>
+                    <h3 id="section2-sub5">2.5 数据操作</h3>
+                    <h3 id="section2-sub6">2.6 常见微型数据集</h3>
                 </section>
                 <section id="section3" class="content-section">
                     <h2>03 分类问题：Keras 求解</h2>
-                    <p>这是章节 3 的内容。布局整洁易用。</p>
-                    <h3 id="section3-sub1">子标题 1</h3>
+                    
+                    <p>介绍统计学的基础知识，包括采样、数据统计、概率、正态分布等。使用标准正态函数，生成分类问题的随机分布点。</p>
+                    <p>二分类问题是指在机器学习或统计学中，将数据划分为两个类别的分类任务。常见的二分类问题包括垃圾邮件分类（垃圾邮件与正常邮件）、疾病诊断（有病与无病）、图像分类（有目标与无目标）等。</p>
+                    <p>多分类问题是机器学习中的一个常见任务，其目标是将输入数据分配到多个类别中的一个。例如给定一张图片，模型需要判断图片中的内容是猫、狗还是鸟。</p>
+                    <p>本章主要使用 Keras 高级 API 来解决以上两个问题，进一步熟悉深度学习中常见的模块，包括模型、层、损失函数、优化器等。通过快速上手简单的示例，理解深度学习全流程，为后续详细介绍奠定基础。</p>
+                    
+                    <h3 id="section3-sub1">3.1 统计学入门</h3>
                     <p>这是章节 3 的子标题 1 内容。</p>
-                    <h3 id="section3-sub2">子标题 2</h3>
+                    <h3 id="section3-sub2">3.2 二分类问题</h3>
                     <p>这是章节 3 的子标题 2 内容。</p>
-                    <h3 id="section3-sub3">子标题 3</h3>
+                    <h3 id="section3-sub3">3.3 Keras 快速入门</h3>
                     <p>这是章节 3 的子标题 3 内容。</p>
-                    <p>123</p>
+                    <h3 id="section3-sub4">3.4 图片分类</h3>
+                    <h3 id="section3-sub5">3.5 其它分类问题</h3>
                 </section>
                 <section id="section4" class="content-section">
-                    <h2>章节 4</h2>
-                    <p>这是章节 4 的内容。欢迎补充更多章节。</p>
+                    <h2>04 详解反向传播算法</h2>
+                    
+                    <p>复习导数（求微分）、链式法则、极值、偏导数等数学概念。通过 numpy 实现常见的激活函数和损失函数，并求解它们的导数。使用链式法则求解模型的梯度，理解权重是如何更新的。</p>
+                    <p>手写 全连接神经网络 (Dense Neural Network, DNN) ，理解网络的训练过程，即求复合函数 h(g(f(weights, biases))) 的极值（极大或极小），实现几个简单的模型。</p>
 
-                    <h3 id="section4-sub5" class="content-section-sub">
+                    <h3 id="section4-sub1" class="content-section-sub">
                         <a href="derivative.html" style="color: inherit;">4.1 导数</a>
+                    </h3>
+
+                    <h3 id="section4-sub2" class="content-section-sub">
+                        <a href="#" style="color: inherit;">4.2 激活函数</a>
+                    </h3>
+
+                    <h3 id="section4-sub3" class="content-section-sub">
+                        <a href="#" style="color: inherit;">4.3 损失函数</a>
+                    </h3>
+
+                    <h3 id="section4-sub4" class="content-section-sub">
+                        <a href="#" style="color: inherit;">4.4 梯度下降</a>
                     </h3>
 
                     <h3 id="section4-sub5" class="content-section-sub">
@@ -266,14 +351,75 @@
                     </h3>
                     <p>翻译文章 <a href="https://victorzhou.com/blog/intro-to-neural-networks/">Machine Learning for Beginners: An Introduction to Neural Networks</a> ，没有其它改动。</p>
 
+                    <h3 id="section4-sub6" class="content-section-sub">
+                        <a href="#" style="color: inherit;">4.6 绘制曲线</a>
+                    </h3>
+
+                    <h3 id="section4-sub7" class="content-section-sub">
+                        <a href="#" style="color: inherit;">4.7 坐标点分类</a>
+                    </h3>
                 </section>
                 <section id="section5" class="content-section">
-                    <h2>章节 5</h2>
-                    <p>这是章节 1 的内容。适合放教程的详细内容。</p>
+                    <h2>05 张量和自动微分</h2>
+                    
+                    <h3 id="section5-sub1" class="content-section-sub">
+                        <a href="#" style="color: inherit;">5.1 快速预览</a>
+                    </h3>
+                    <h3 id="section5-sub2" class="content-section-sub">
+                        <a href="#" style="color: inherit;">5.2 张量表示</a>
+                    </h3>
+                    <h3 id="section5-sub3" class="content-section-sub">
+                        <a href="#" style="color: inherit;">5.3 自动微分</a>
+                    </h3>
+                    <h3 id="section5-sub4" class="content-section-sub">
+                        <a href="#" style="color: inherit;">5.4 micrograd</a>
+                    </h3>
+                    <h3 id="section5-sub5" class="content-section-sub">
+                        <a href="#" style="color: inherit;">5.5 tinygrad 分析</a>
+                    </h3>
+                </section>
+
+                <section id="section6" class="content-section">
+                    <h2>06 训练神经网络</h2>
+
+                    <p>使用 TensorFlow / PyTorch / JAX 进行训练，熟练使用主流机器学习库。介绍如何对训练过程进行优化。</p>
+
+                    <h3 id="section6-sub1" class="content-section-sub">
+                        <a href="#" style="color: inherit;">6.1 NumPy</a>
+                    </h3>
+
+                    <h3 id="section6-sub2" class="content-section-sub">
+                        <a href="#" style="color: inherit;">6.2 TensorFlow</a>
+                    </h3>
+
+                    <h3 id="section6-sub3" class="content-section-sub">
+                        <a href="#" style="color: inherit;">6.3 PyTorch</a>
+                    </h3>
+
+                    <h3 id="section6-sub4" class="content-section-sub">
+                        <a href="#" style="color: inherit;">6.4 JAX</a>
+                    </h3>
                 </section>
 
                 <section id="section7" class="content-section">
                     <h2>07 卷积神经网络</h2>
+
+                    <h3 id="section7-sub1" class="content-section-sub">
+                        <a href="#" style="color: inherit;">7.1 认识卷积网络</a>
+                    </h3>
+
+                    <h3 id="section7-sub2" class="content-section-sub">
+                        <a href="#" style="color: inherit;">7.2 手写卷积网络</a>
+                    </h3>
+
+                    <h3 id="section7-sub3" class="content-section-sub">
+                        <a href="#" style="color: inherit;">7.3 AlexNet 论文</a>
+                    </h3>
+
+                    <h3 id="section7-sub4" class="content-section-sub">
+                        <a href="#" style="color: inherit;">7.4 U-Net 论文</a>
+                    </h3>
+                    <p>翻译论文 <a href="https://arxiv.org/abs/1505.04597">U-Net: Convolutional Networks for Biomedical Image Segmentation</a></p>
 
                     <h3 id="section7-sub5" class="content-section-sub">
                         <a href="resnet_paper.html" style="color: inherit;">7.5 ResNet 论文</a>
@@ -345,13 +491,13 @@
                         <a href="#" style="text-decoration: none; color: inherit;">8.6 RNN 翻译</a>
                     </h3>
 
-                    <h3 id="section8-sub6" class="content-section-sub">
-                        <a href="seq2seq_paper.html" style="color: inherit;">8.6 Seq2Seq 论文</a>
+                    <h3 id="section8-sub7" class="content-section-sub">
+                        <a href="seq2seq_paper.html" style="color: inherit;">8.7 Seq2Seq 论文</a>
                     </h3>
                     <p>翻译论文 <a href="https://arxiv.org/abs/1409.3215">Sequence to Sequence Learning with Neural Networks</a></p>
 
-                    <h3 id="section8-sub7" class="content-section-sub">
-                        <a href="#" style="text-decoration: none; color: inherit;">8.7 Word2Vec</a>
+                    <h3 id="section8-sub8" class="content-section-sub">
+                        <a href="#" style="text-decoration: none; color: inherit;">8.8 Word2Vec 论文</a>
                     </h3>
 
                 </section>
@@ -404,6 +550,11 @@
 
     <!-- 引入 Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+
     <script>
         function toggleChildChapters(event, chapterId) {
             event.preventDefault();
