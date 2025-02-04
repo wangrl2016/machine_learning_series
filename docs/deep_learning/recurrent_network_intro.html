@@ -224,7 +224,6 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-
         .navigation {
             margin-top: 30px;
             background-color: #f0f0f0;
@@ -399,7 +398,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <h3 id="plan">8.1.4 计划</h3>
 
             <p>由于这是一个分类问题，我们将使用“多对一”的 RNN 。这与我们之前讨论的“多对多”的 RNN 类似，但它仅使用最后的隐藏状态产生一个输出 \(y\) ：</p>
-            <a href="">
+            <a href="https://drive.google.com/file/d/13w6DURS6colIrnrxaT1G4mGngZXG1MEG/view?usp=sharing">
                 <img src="res/many_to_one.svg" alt="多对一网络">
             </a>
             <p>每个 \(x_i\) 都是个向量，表示文本中的单词。输出 \(y\) 是一个包含两个数字的向量，一个代表正向情绪，另一个代表负向情绪。我们将应用 softmax 函数将这些值转换为概率，并最终在 正向 / 负向 之间做出判断。</p>
@@ -497,7 +496,7 @@ print(porbs)</code></pre>
             <p>以下部分假设你具有微积分的基本知识，如果不想看，可以跳过它，但是我建议你不要跳过。如果你没有这部分背景，可以阅读 <a href="index.html#section4-sub1">第 4.1 节 导数</a> 的内容。即使只是大概地浏览计算过程，对于理解循环神经网络也是有帮助的。</p>
 
             <h4 id='loss-function'>8.1.7.1 损失函数</h4>
-            <p>为了训练我们的 RNN ，需要有损失函数，这里选择交叉熵损失函数，它经常和 softmax 函数一起使用，具体介绍查看 <a href="#">第 4.3.3 小节 交叉熵损失</a> 的内容 ，计算规则如下：</p>
+            <p>为了训练我们的 RNN ，需要有损失函数，这里选择交叉熵损失函数，它经常和 softmax 函数一起使用，具体介绍查看 <a href="index.html#section4-sub3">第 4.3.3 小节 交叉熵损失</a> 的内容 ，计算规则如下：</p>
             <p class="highlight-math" style="text-align: center;">\(loss = - \sum_{i=1}^n y_i \ln(p_i)\)</p>
             <ul class="with-bullets">
                 <li>
@@ -517,7 +516,7 @@ print(porbs)</code></pre>
             <p>\(l = -\ln(0.9) = 0.105\)</p>
             <p>如果真实标签为负向情绪，那么它的损失为：</p>
             <p>\(l = -\ln(0.1) = 2.302585\)</p>
-            <p>可以看到<strong>如果目标预测错误，那么它的损失较大</strong>。如果目标预测正确，那么它的损失接近于 0 。有了损失函数后，就可以用梯度下降最小化损失，这意味着需要对一些变量进行求导。</p>
+            <p><strong>如果目标预测错误，那么它的损失较大。如果目标预测正确，那么它的损失接近于 0 。</strong>有了损失函数后，就可以用梯度下降最小化损失，这意味着需要对一些变量进行求导。</p>
             
             <h4 id='definition'>8.1.7.2 定义</h4>
             <p>对一些变量进行定义：</p>
@@ -568,7 +567,7 @@ print(porbs)</code></pre>
             <p>接下来是数学时间！梯度分为三个阶段进行计算：</p>
             <ul class="with-bullets">
                 <li>
-                    <p>第一阶段计算损失 \(l\) 相对于输出 \(y\) 的梯度；</p>
+                    <p>第一个阶段计算损失 \(l\) 相对于输出 \(y\) 的梯度；</p>
                 </li>
                 <li>
                     <p>第二个阶段计算输出 \(y\) 相对于最后一个节点的隐藏状态 \(h_n\) 的梯度 ，同时更新参数 \(W_{hy}\) 和 \(b_y\) ；</p>
@@ -593,11 +592,11 @@ print(porbs)</code></pre>
                 <li>
                     <p>2. 当 \(i \ne c\) （非目标类别）</p>
                     <p>\(\frac{\partial l}{\partial y_c} = \frac{\partial (-ln(p_c))}{\partial y_c}\) ，同样利用链式法则：\(\frac{\partial l}{\partial y_c} = \frac{\partial l}{\partial p_c} \cdot \frac{\partial p_c}{\partial y_c}\)</p>
-                    <p>\(\frac{\partial p_c}{\partial y_i} = -p_c \cdot p_i\)</p>
-                    <p>代入得到 \(\frac{\partial l}{\partial y_i} = -\frac{1}{p_c} \cdot p_c \cdot p_i\)</p>
+                    <p>softmax 的导数公式为：\(\frac{\partial p_c}{\partial y_i} = -p_c \cdot p_i\)</p>
+                    <p>代入得到 \(\frac{\partial l}{\partial y_i} = -\frac{1}{p_c} \cdot (-p_c \cdot p_i) = p_i\)</p>
                 </li>
             </ul>
-            <div class="comment">注：分类别讨论主要是 softmax 函数引起的。</div>
+            <div class="comment">注：分类别讨论主要是 softmax 函数的导数引起的。</div>
             <p>经过计算我们得到损失 \(l\) 相对于输出 \(y\) 的梯度：</p>
             <p class="highlight-math" style="text-align: center;">\(
                 \frac{\partial l}{\partial y_i} = \left\{
@@ -653,7 +652,9 @@ print(porbs)</code></pre>
             <p>第三阶段需要计算每一步的 \(W_{hh}\) ，\(W_{xh}\) 和 \(b_h\) 的梯度，我们有下面公式：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial l}{\partial W_{xh}} = \frac{\partial l}{\partial y} \sum_{t=0}^{n} (\frac{\partial y}{\partial h_t} \cdot \frac{\partial h_t}{\partial W_{xh}}) \)</p>
             <p>因为改变 \(W_{xh}\) 会影响每个 \(h_t\) ，通过影响 \(y\) 值，最终影响损失 \(l\) 。为了计算 \(W_{xh}\) 的梯度，我们需要对所有的 \(t\) 进行反向传播，这就是著名的 <strong>时间上反向传播 (Backpropagation Through Time, BPTT)</strong> 。</p>
-            <img src="res/rnn_backward.svg" alt="时间上反向传播">
+            <a href="https://drive.google.com/file/d/1t757dxY5MaozuV8oc5TzixFO3hLnCIy1/view?usp=sharing">
+                <img src="res/rnn_backward.svg" alt="时间反向传播">
+            </a>
             <p>上述公式需要分别计算 \(\frac{\partial y}{\partial h_t}\) 和 \(\frac{\partial h_t}{\partial W_{xh}}\) 的梯度。</p>
             <p>\(W_{xh}\) 在所有的 \(x_t\) -> \(h_t\) 连接中都用到，所以要对所有的此类连接进行反向传播。对于给定步骤 \(t\) ，我们需要计算 \(\frac{\partial h_t}{\partial W_{xh}}\) ：</p>
             <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
@@ -718,7 +719,7 @@ print(porbs)</code></pre>
                     <p>为了计算 \(\frac{\partial l}{\partial h_t}\) ，不停地更新 <code>dh</code> 的值，它存储最新计算出来的 \(\frac{\partial l}{\partial h_{t+1}}\) 的值。</p>
                 </li>
                 <li>
-                    <p>结束 BPTT 后，使用 <code>numpy.clip()</code> 去掉梯度在 -1 以下，或者 1 以上的值。这有助于缓解梯度爆炸问题，即由于存在大量乘项导致梯度变得非常大。梯度爆炸或消失对于普通 RNN 来说是个问题 - 更复杂的 RNN （如 LSTM）通常更有能力处理它们。</p>
+                    <p>结束 BPTT 后，使用 <code>numpy.clip()</code> 去掉梯度在 -1 以下，或者 +1 以上的值。这有助于缓解梯度爆炸问题，即由于存在大量乘项导致梯度变得非常大。梯度爆炸或消失对于普通 RNN 来说是个问题 - 更复杂的 RNN （如 LSTM）通常更有能力处理它们。</p>
                 </li>
                 <li>
                     <p>一旦计算出所有梯度，就使用梯度下降来更新权重和偏差。</p>
@@ -730,35 +731,35 @@ print(porbs)</code></pre>
 
             <p>终于到了激动人心的时刻，接下来就需要对 RNN 网络进行测试，编写一个辅助函数：</p>
             <pre><code>def process(data, backprop=True):
-items = list(data.items())
-random.shuffle(items)
+    items = list(data.items())
+    random.shuffle(items)
 
-loss = 0
-num_correct = 0
+    loss = 0
+    num_correct = 0
 
-for x, y in items:
-    inputs = create_inputs(x)
-    target = int(y)
+    for x, y in items:
+        inputs = create_inputs(x)
+        target = int(y)
 
-    # forward
-    out, _ = rnn.forward(inputs)
-    probs = softmax(out)
+        # forward
+        out, _ = rnn.forward(inputs)
+        probs = softmax(out)
 
-    # calculate loss / accuracy
-    loss -= numpy.log(probs[target])
-    num_correct += int(numpy.argmax(probs) == target)
+        # calculate loss / accuracy
+        loss -= numpy.log(probs[target])
+        num_correct += int(numpy.argmax(probs) == target)
 
-    if backprop:
-        # build dl/dy
-        dl_dy = probs
-        dl_dy[target] -= 1
+        if backprop:
+            # build dl/dy
+            dl_dy = probs
+            dl_dy[target] -= 1
 
-        # backward
-        rnn.backprop(dl_dy)
-# Convert NumPy scalar to Python scalar.
-if isinstance(loss, numpy.ndarray):
-    loss = loss.item()
-return loss / len(data), num_correct / len(data)</code></pre>
+            # backward
+            rnn.backprop(dl_dy)
+    # Convert NumPy scalar to Python scalar.
+    if isinstance(loss, numpy.ndarray):
+        loss = loss.item()
+    return loss / len(data), num_correct / len(data)</code></pre>
             <p>编写训练循环：</p>
             <pre><code>losses = []
 accuracies = []
@@ -774,7 +775,7 @@ for epoch in range(500):
         test_loss, test_acc = process(pos_peg.test_data, backprop=False)
         print('Test: loss %.3f | accuracy: %.3f' % (test_loss, test_acc))</code></pre>
 
-            <p>跑我们的脚本文件 <a href="">1_7_rnn_backward.py</a> 会得到一些输出，像下面这样：</p>
+            <p>跑程序文件 <a href="">1_7_rnn_backward.py</a> 会得到一些输出，像下面这样：</p>
             <pre><code>Epoch 20
 Train: loss 0.693 | accuracy: 0.552
 Test: loss 0.698 | accuracy: 0.500
@@ -833,17 +834,17 @@ class RNNClassifier(torch.nn.Module):
         return out</code></pre>
             
             <p>代码说明：</p>
-            <ul>
+            <ol>
                 <li>
-                    <p>1. 数据预处理：文本被编码为词索引，并填充到固定长度 (max_len) 。</p>
+                    <p>数据预处理：文本被编码为词索引，并填充到固定长度 (max_len) 。</p>
                 </li>
                 <li>
-                    <p>2. RNN 模型使用嵌入层 (nn.Embedding) 将词索引映射为向量，使用 nn.RNN 构建循环神经网络。用全连接层 (nn.Linear) 将隐藏状态映射为分类结果。</p>
+                    <p>RNN 模型使用嵌入层 (nn.Embedding) 将词索引映射为向量，使用 (nn.RNN) 构建循环神经网络。用全连接层 (nn.Linear) 将隐藏状态映射为分类结果。</p>
                 </li>
                 <li>
-                    <p>3. 训练与测试：通过 DataLoader 迭代数据，使用交叉熵损失函数优化模型。</p>
+                    <p>训练与测试：通过 DataLoader 迭代数据，使用交叉熵损失函数优化模型。</p>
                 </li>
-            </ul>
+            </ol>
             <p>和手写 RNN 的逻辑基本一致。</p>
             <p>运行代码：</p>
             <pre><code>Epoch 1/100, loss: 0.6992
@@ -867,7 +868,7 @@ Epoch 91/100, loss: 0.0041</code></pre>
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5><a href="index.html">综合指南</a></h5>
+                <h5><a href="index.html#section8">循环神经网络</a></h5>
                 <ul id="dynamic-sidebar" class="nav flex-column">
                     <!-- 动态内容 -->
                 </ul>

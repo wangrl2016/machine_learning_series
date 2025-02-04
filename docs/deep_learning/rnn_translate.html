@@ -224,6 +224,23 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        .navigation {
+            margin-top: 30px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        .navigation a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 20px;
+            padding: 10px 30px;
+        }
+        .navigation a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -236,15 +253,25 @@
 
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
-            <h2 class="custom-title">8.5 RNN 翻译</h2>
+            <h2 class="custom-title">8.6 RNN 翻译</h2>
             <p class="title-subtext">使用 PyTorch 和 TorchText 实现一些序列到序列 (seq2seq) 模型的教程！</p>
-            <p style="color: #a0a0a0;">创建日期: 2025-01-24</p>
+            <p style="color: #a0a0a0;">创建日期: 2025-01-29</p>
+
+            <p>第一个小节介绍了使用 PyTorch 的 seq2seq 项目的工作流程，我们将介绍使用编码器-解码器模型的 seq2seq 网络的基础知识、如何在 PyTorch 中实现这些模型，以及如何使用 库来完成所有繁重的工作。该模型本身将基于使用多层 LSTM 的 。</p>
+
+
+            <h3 id="section8-sub6-sub1">8.6.1 序列到序列学习</h3>
             
+            <h3 id="section8-sub6-sub2">8.6.2 </h3>
+            <div class="navigation">
+                <a href="wmt_dataset.html">上一节：8.5 WMT 数据集</a>
+                <a href="seq2seq_paper.html">下一节：8.7 Seq2Seq 论文</a>
+            </div>
         </main>
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5>标题</h5>
+                <h5><a href="index.html">综合指南</a></h5>
                 <ul id="dynamic-sidebar" class="nav flex-column">
                     <!-- 动态内容 -->
                 </ul>
