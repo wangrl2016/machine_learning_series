@@ -726,7 +726,7 @@ Yep, please disappear with the terrible generation.</code></pre>
             <p>之前提到 RNN 很难学习长距离依赖关系——相隔几步的单词之间的交互。这是有问题的，因为一个英文句子的含义通常由不太接近的单词决定：“The man who wore a wig on his head went inside”。这句话实际上是关于一个男人走进屋子，而不是关于假发。但普通的 RNN 不太可能捕捉到这样的信息。为了理解原因，让我们仔细看看上面计算的梯度：</p>
             <p class="highlight-math" style="text-align: center;">\(\frac{\partial E_3}{\partial W} = \sum_{k=0}^3\frac{\partial E_3}{\partial ŷ_3} \cdot \frac{\partial ŷ_3}{\partial s_3} \cdot \frac{\partial s_3}{\partial s_k} \cdot \frac{\partial s_k}{\partial W}\)</p>
             <p>记住\(\frac{\partial s_3}{\partial s_k}\) 本身就需要链式法则计算！比如 \(\frac{\partial s_3}{\partial s_1} = \frac{\partial s_3}{\partial s_2} \cdot \frac{\partial s_2}{\partial s_1}\) 。还要注意，因为我们对向量函数求导，所以结果是一个矩阵（称为雅可比矩阵），其元素都是逐点导数。我们可以重写 \(\frac{\partial s_3}{\partial s_k}\) ：</p>
-            <p class="highlight-math" style="text-align: center;">\((\prod_{j=k+1}^3\frac{\partial s_j}{\parial s_{j-1}})\frac{\partial s_k}{\partial W}\)</p>
+            <p class="highlight-math" style="text-align: center;">\((\prod_{j=k+1}^3\frac{\partial s_j}{\partial s_{j-1}})\frac{\partial s_k}{\partial W}\)</p>
             <p>我们的激活函数将所有的值都映射 [-1, 1] 的范围，并且导数的最大值是 1 （sigmoid 激活函数是 1/4 ）。</p>
             <p>tanh 和 sigmoid 函数在两端的导数都是 0 ，它们接近一条水平线。当这发生时，我们说相应的神经元已经饱和。它们具有零梯度，并将前几层中的其它梯度推向 0 。在矩阵乘法中如果值较小，那么梯度值就会快速表小，最终在几个步骤中消失，然后那些状态就不再对学习起作用：结果就是无法学习长依赖。梯度消失并不是 RNN 独有的，它也发生在其它前馈网络中。只是 RNN 往往非常深（在我们的例子中，深度与句子长度相当），这使得这个问题很常见。</p>
             <p>很容易想象，如果雅可比矩阵的值很大，那么根据我们的激活函数和网络参数，我们可能会得到梯度爆炸而不是梯度消失。事实上，这就是所谓的梯度爆炸问题。梯度消失比梯度爆炸更受关注的原因有两个。首先，梯度爆炸是显而易见的。你的梯度将变成 NaN （不是数字），你的程序会崩溃。其次，在预定义的阈值处剪切梯度是解决梯度爆炸的一个简单有效的做法。梯度消失更成问题，因为他们何时发生或如何处理并不明显。</p>
