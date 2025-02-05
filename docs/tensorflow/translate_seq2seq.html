@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>循环神经网络入门</title>
+    <title>Seq2Seq 翻译模型</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -276,6 +276,7 @@
             <h3>7.3.1 设置</h3>
 
             <p>本教程使用了大量低级 API，因此很容易出现形状错误。<code>ShapeChecker</code> 类用于在整个教程中检查形状：</p>
+            <pre><code></code></pre>
 
             <h3>7.3.2 数据</h3>
 
@@ -283,7 +284,7 @@
             <pre><code>May I borrow this book?  ¿Puedo tomar prestado este libro?</code></pre>
             <p>网站提供多种语言，但此示例使用英语-西班牙语数据集。</p>
             
-            <h4>7.3.2.1 下载并准备数据集</h4>
+            <h4>7.3.2.1 准备数据集</h4>
             <p>为方便起见，此数据集的副本托管在 Google Cloud 上，但我们也可以下载自己的副本。下载数据集后，需要按照以下步骤准备数据：</p>
             <ol>
                 <li>
@@ -300,7 +301,7 @@
                 </li>
             </ol>
 
-            <h4>7.3.2.2 创建 <code>tf.data</code> 数据集</h4>
+            <h4>7.3.2.2 创建 <code>tf.data</code></h4>
 
             <h4>7.3.2.3 文本预处理</h4>
 
