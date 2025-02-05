@@ -253,65 +253,9 @@
 
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
-            <h2 class="custom-title">7.3 Seq2Seq 翻译模型</h2>
-            <p class="title-subtext">带有注意力的神经机器翻译！</p>
-            <p style="color: #a0a0a0;">创建日期: 2025-04-10</p>
-
-            <p>本教程演示了如何训练一个序列到序列 (Seq2Seq) 的模型，它用于西班牙语到英语的翻译。该模型大致基于论文 <a href="https://arxiv.org/abs/1508.04025v5">Effective Approaches to Attention-based Neural Machine Translation</a>，论文的翻译版本在《深度学习综合指南》的 <a href="#">第 9.3 节 局部注意力</a>，感兴趣的读者可以前往阅读。</p>
-            <img src="res/rnn_attention_words_spa.png" alt="RNN 注意力" width="400">
-            <p>上图展示了一个编码器和一个解码器通过注意力连接，虽然这种架构有些过时，但它仍然是一个非常有用的项目，可以帮助更深入地理解序列到序列模型和注意力机制（在继续讨论 <a href="translate_transformer.html">Transformer 翻译模型</a> 之前）。</p>
-            <p>本教程需要有一定的 TensorFlow 基础，理解 Keras 层的概念：</p>
-            <ul class="with-bullets">
-                <li>
-                    <p>直接使用张量；</p>
-                </li>
-                <li>
-                    <p>编写自定义的 <code>keras.Model</code> 模型和 <code>keras.layers.Layer</code> 层。</p>
-                </li>
-            </ul>
-            <p>模型训练完成后，我们将能够输入西班牙语句子，例如 <em>"¿todavia estan en casa?"</em>，能够得到英语翻译：<em>"are you still at home?"</em></p>
-            <p>最终的模型可以使用 <code>tf.saved_model</code> 导出，因此可以在其它 TensorFlow 环境中使用。</p>
-            <p>对于一个玩具示例来说，翻译质量还算合理，但生成的注意力图可能更有趣。这显示了翻译时输入句子的哪些部分引起了模型的注意：</p>
-
-            <h3>7.3.1 设置</h3>
-
-            <p>本教程使用了大量低级 API，因此很容易出现形状错误。<code>ShapeChecker</code> 类用于在整个教程中检查形状：</p>
-
-            <h3>7.3.2 数据</h3>
-
-            <p>语言数据集由 <a href="https://www.manythings.org/anki/">Anki</a> 提供。此数据集包含以下格式的语言翻译对，使用 <em>Tab</em> 键进行分割：</p>
-            <pre><code>May I borrow this book?  ¿Puedo tomar prestado este libro?</code></pre>
-            <p>网站提供多种语言，但此示例使用英语-西班牙语数据集。</p>
-            
-            <h4>7.3.2.1 下载并准备数据集</h4>
-            <p>为方便起见，此数据集的副本托管在 Google Cloud 上，但我们也可以下载自己的副本。下载数据集后，需要按照以下步骤准备数据：</p>
-            <ol>
-                <li>
-                    <p>为每个句子添加开始和结束标记；</p>
-                </li>
-                <li>
-                    <p>通过删除特殊字符来清理句子；</p>
-                </li>
-                <li>
-                    <p>创建单词索引和反向单词索引（从单词 -> 数字 和 数字 -> 单词映射的字典）；</p>
-                </li>
-                <li>
-                    <p>将每个句子填充至最大长度。</p>
-                </li>
-            </ol>
-
-            <h4>7.3.2.2 创建 <code>tf.data</code> 数据集</h4>
-
-            <h4>7.3.2.3 文本预处理</h4>
-
-            <h4>7.3.2.4 处理数据集</h4>
-
-
-            <h3>7.3.3 编/解码器</h3>
-
-            <h3>7.3.4 模型</h3>
-
-            <h3>7.3.5 下一步</h3>
+            <h2 class="custom-title">7.4 Transformer 翻译模型</h2>
+            <p class="title-subtext">使用 Transformer 和 Keras 进行神经机器翻译！</p>
+            <p style="color: #a0a0a0;">创建日期: 2025-04-15</p>
 
             <div class="navigation">
                 <a href="#">上一节：7.1 </a>
