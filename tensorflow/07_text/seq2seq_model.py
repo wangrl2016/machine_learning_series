@@ -4,6 +4,7 @@ import einops
 import pathlib
 import keras
 import numpy
+from matplotlib import pyplot
 
 class ShapeChecker():
     def __init__(self):
@@ -69,6 +70,7 @@ def tf_lower_and_split_punct(text):
     text = tf.strings.join(['[START]', text, '[END]'], separator=' ')
     return text
 
+
 if __name__ == '__main__':
     print(tf.__version__)
     path_to_zip = keras.utils.get_file(
@@ -119,3 +121,44 @@ if __name__ == '__main__':
     context_text_processor.adapt(train_raw.map(lambda context, target: context))
     # Here are the first 10 words from the vacabulary:
     print(context_text_processor.get_vocabulary()[:10])
+
+    target_text_processor = keras.layers.TextVectorization(
+        standardize=tf_lower_and_split_punct, # type: ignore
+        max_tokens=max_vocab_size,
+        ragged=True)
+    target_text_processor.adapt(train_raw.map(lambda context, target: target))
+    print(target_text_processor.get_vocabulary()[:10])
+
+    example_tokens = context_text_processor(example_context_strings)
+    print(example_tokens[:3, :])
+
+    context_vocab = numpy.array(context_text_processor.get_vocabulary())
+    tokens = context_vocab[example_tokens[0].numpy()]
+    print(' '.join(tokens))
+
+    pyplot.subplot(1, 2, 1)
+    pyplot.pcolormesh(example_tokens.to_tensor())
+    pyplot.title('Token IDs')
+    pyplot.subplot(1, 2, 2)
+    pyplot.pcolormesh(example_tokens.to_tensor() != 0)
+    pyplot.title('Mask')
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
+    pyplot.show()
+
+    def process_text(context, target):
+        print('Context type:', type(context))
+        print('Context shape:', tf.shape(context))
+        context = context_text_processor(context).to_tensor()
+        target = target_text_processor(target)
+        targ_in = target[:, :-1].to_tensor()
+        targ_out = target[:, 1:].to_tensor()
+        return (context, targ_in), targ_out
+
+    train_ds = train_raw.map(process_text, tf.data.AUTOTUNE)
+    val_ds = val_raw.map(process_text, tf.data.AUTOTUNE)
+
+    # for (ex_context_tok, ex_tar_in), ex_tar_out in train_ds.take(1): # type: ignore
+    #     print(ex_context_tok[0, :10])
+    #     print(ex_tar_in[0, :10])
+    #     print(ex_tar_out[0, :10])
+    #     break

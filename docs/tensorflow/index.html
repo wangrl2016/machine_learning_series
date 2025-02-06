@@ -251,6 +251,11 @@
                         <a href="translate_seq2seq.html" style="color: inherit;">7.3 Seq2Seq 翻译模型</a>
                     </h3>
 
+                    <p>翻译 TensorFlow 官方教程 <a href="https://www.tensorflow.org/text/tutorials/nmt_with_attention">Neural machine translation with attention</a>，并做出如下改动：</p>
+                    <ul>
+                        <li><p>1. 因为无法引用 <em>tensorflow-text</em> 库，在数据预处理阶段手写 <code>normalize_utf8</code> 函数，用于字符转换。</p></li>
+                    </ul>
+
                     <h3 id="section7-sub4" class="content-section-sub">
                         <a href="translate_seq2seq.html" style="color: inherit;">7.4 Transformer 翻译模型</a>
                     </h3>

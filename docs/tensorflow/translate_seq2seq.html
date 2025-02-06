@@ -259,7 +259,7 @@
 
             <p>本教程演示了如何训练一个序列到序列 (Seq2Seq) 的模型，它用于西班牙语到英语的翻译。该模型大致基于论文 <a href="https://arxiv.org/abs/1508.04025v5">Effective Approaches to Attention-based Neural Machine Translation</a>，论文的翻译版本在《深度学习综合指南》的 <a href="#">第 9.3 节 局部注意力</a>，感兴趣的读者可以前往阅读。</p>
             <img src="res/rnn_attention_words_spa.png" alt="RNN 注意力" width="400">
-            <p>上图展示了一个编码器和一个解码器通过注意力连接，虽然这种架构有些过时，但它仍然是一个非常有用的项目，可以帮助更深入地理解序列到序列模型和注意力机制（在继续讨论 <a href="translate_transformer.html">Transformer 翻译模型</a> 之前）。</p>
+            <p>上图展示了编码器和解码器通过注意力连接，虽然这种架构有些过时，但它仍然是一个非常有用的项目，可以帮助更深入地理解序列到序列模型和注意力机制（在继续讨论 <a href="translate_transformer.html">7.4 Transformer 翻译模型</a> 之前）。</p>
             <p>本教程需要有一定的 TensorFlow 基础，理解 Keras 层的概念：</p>
             <ul class="with-bullets">
                 <li>
@@ -274,9 +274,42 @@
             <p>对于一个玩具示例来说，翻译质量还算合理，但生成的注意力图可能更有趣。这显示了翻译时输入句子的哪些部分引起了模型的注意：</p>
 
             <h3>7.3.1 设置</h3>
+            <pre><code>import unicodedata
+import tensorflow as tf
+import einops
+import pathlib
+import keras
+import numpy
+from matplotlib import pyplot</code></pre>
+            <p class="comment">注：因为无法使用 <em>tensorflow-text</em> 库，后续会自定义 <code>normalize_utf8</code> 函数。</p>
 
             <p>本教程使用了大量低级 API，因此很容易出现形状错误。<code>ShapeChecker</code> 类用于在整个教程中检查形状：</p>
-            <pre><code></code></pre>
+            <pre><code>class ShapeChecker():
+    def __init__(self):
+        # Keep a cache of every axis-name seen.
+        self.shapes = {}
+    
+    def __call__(self, tensor, names, broadcast=False):
+        if not tf.executing_eagerly():
+            return
+        
+        parsed = einops.parse_shape(tensor, names)
+        
+        for name, new_dim in parsed.items():
+            old_dim = self.shapes.get(name, None)
+
+            if (broadcast and new_dim == 1):
+                continue
+            
+            if old_dim is None:
+                # If the axis name is new, add its length to the cache.
+                self.shapes[name] = new_dim
+                continue
+            
+            if new_dim != old_dim:
+                raise ValueError(f'Shape mismatch for dimension: {name}\n'
+                                 f'    found: {new_dim}\n'
+                                 f'    expected: {old_dim}')</code></pre>
 
             <h3>7.3.2 数据</h3>
 
@@ -322,7 +355,7 @@
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5><a href="index.html#section8">循环神经网络</a></h5>
+                <h5><a href="index.html#section8">TensorFlow 详解</a></h5>
                 <ul id="dynamic-sidebar" class="nav flex-column">
                     <!-- 动态内容 -->
                 </ul>
