@@ -510,7 +510,7 @@ i got up at seven . [END] </code></pre>
             <h3>7.3.3 编/解码器</h3>
 
             <p>下图显示了模型的概览，编码器位于左侧，解码器位于右侧。在每个时间步骤中，解码器的输出与编码器的输出相结合，以预测下一个单词。</p>
-            <img src="res/attention_mechanism_rnn.jpg" alt="RNN 中的注意力">
+            <img src="res/attention_mechanism_rnn.jpg" alt="RNN 中的注意力" width="600">
             <p class="comment">注：上述图片来自于论文 Effective Approaches to Attention-based Neural Machine Translation 。</p>
             <p>原始的架构包含了一些额外的连接，这些连接被故意从本教程的模型（下图）中省略，因为他们通常是不必要的，而且很难实现。这些缺失的连接是：</p>
             <ol>
@@ -527,6 +527,23 @@ i got up at seven . [END] </code></pre>
 
             <p>编码器的目标是将上下文序列处理成一系列的向量，这些向量对解码器很有用，因为它会尝试预测每个时间步的下一个输出。由于上下文序列是恒定的，因此对信息在编码器中的流动方式没有限制，因此可以使用双向 RNN 进行处理：</p>
 
+            <img src="res/rnn_bidirectional.png" alt="双向 RNN" width="600">
+
+            <p>编码器做以下几件事情：</p>
+            <ol>
+                <li>
+                    <p>获取一系列的数字标记 (从 <code>context_text_processor</code>) ；</p>
+                </li>
+                <li>
+                    <p>查找每个标记的嵌入向量（使用 <code>layers.Embedding</code>） ；</p>
+                </li>
+                <li>
+                    <p>将嵌入处理成一个新的序列 （使用双向 <code>layers.GRU</code>）；</p>
+                </li>
+                <li>
+                    <p>返回已经处理好的序列，这奖杯传递给注意力模块。</p>
+                </li>
+            </ol>
 
 
             <h4>7.3.3.2 注意力层</h4>
@@ -539,7 +556,7 @@ i got up at seven . [END] </code></pre>
 
             <div class="navigation">
                 <a href="#">上一节：7.1 </a>
-                <a href="#">下一节：7.3 </a>
+                <a href="translate_transformer.html">下一节：7.3 Transformer 翻译模型</a>
             </div>
         </main>
 
