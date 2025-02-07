@@ -58,8 +58,6 @@ def normalize_utf8(text, form='NFKD'):
     #     return tf.map_fn(_normalize, text, dtype=tf.string)
 
 def tf_lower_and_split_punct(text):
-    # Split accented characters.
-    # text = normalize_utf8(text, 'NFKD')
     text = tf.strings.lower(text)
     # Keep space, a to z, and select punctuation.
     text = tf.strings.regex_replace(text, '[^ a-z.?!,¿]', '')
@@ -115,17 +113,6 @@ if __name__ == '__main__':
         print(example_target_strings[:5])
         break
 
-    quit()
-    
-    
-
-    example_text = tf.constant('¿Todavía está en casa?') # Is he still at home?
-    print(example_text.numpy()) # type: ignore
-    print(normalize_utf8(example_text, 'NFKD').numpy()) # type: ignore
-    
-    print(example_text.numpy().decode()) # type: ignore
-    print(tf_lower_and_split_punct(example_text).numpy().decode())
-    
     max_vocab_size = 5000
     
     context_text_processor = keras.layers.TextVectorization(
@@ -157,23 +144,28 @@ if __name__ == '__main__':
     pyplot.subplot(1, 2, 2)
     pyplot.pcolormesh(example_tokens.to_tensor() != 0)
     pyplot.title('Mask')
-    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.94, bottom=0.06)
     pyplot.show()
 
     def process_text(context, target):
-        print('Context type:', type(context))
-        print('Context shape:', tf.shape(context))
+        # print('Context type:', type(context))
+        # print('Context shape:', tf.shape(context))
         context = context_text_processor(context).to_tensor()
         target = target_text_processor(target)
         targ_in = target[:, :-1].to_tensor()
         targ_out = target[:, 1:].to_tensor()
         return (context, targ_in), targ_out
-
+    
     train_ds = train_raw.map(process_text, tf.data.AUTOTUNE)
     val_ds = val_raw.map(process_text, tf.data.AUTOTUNE)
 
-    # for (ex_context_tok, ex_tar_in), ex_tar_out in train_ds.take(1): # type: ignore
-    #     print(ex_context_tok[0, :10])
-    #     print(ex_tar_in[0, :10])
-    #     print(ex_tar_out[0, :10])
-    #     break
+    for (ex_context_tok, ex_tar_in), ex_tar_out in train_ds.take(1): # type: ignore
+        print(ex_context_tok[0, :10])
+        tokens = numpy.array(context_text_processor.get_vocabulary())[ex_context_tok[0, :10].numpy()]
+        print(' '.join(tokens))
+        print(ex_tar_in[0, :10])
+        tokens = numpy.array(target_text_processor.get_vocabulary())[ex_tar_in[0, :10].numpy()]
+        print(' '.join(tokens))
+        print(ex_tar_out[0, :10])
+        tokens = numpy.array(target_text_processor.get_vocabulary())[ex_tar_out[0, :10].numpy()]
+        print(' '.join(tokens))

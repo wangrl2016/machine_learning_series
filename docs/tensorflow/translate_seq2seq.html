@@ -361,7 +361,7 @@ print('Last target sentence:', target_raw[-1])</code></pre>
 Last target sentence: If you want to sound like a native speaker, you must be willing to practice saying the same sentence over and over in the same way that banjo players practice the same phrase over and over until they can play it correctly and at the desired tempo.</code></pre>
 
             <h4>7.3.2.2 创建 <code>tf.data</code></h4>
-            <p>该模型处理的是词汇量有限的多语言文本。因此，标准化 (Standardize) 输入文本非常重要。第一步是 Unicode 规范化，以拆分重音音符并用 ASCII 等效字符替换兼容字符。这里使用自定义的 unicode 规范化操作：</p>
+            <p>该模型处理的是词汇量有限的多语言文本。因此，标准化 (Standardize) 输入文本非常重要。第一步是 Unicode 规范化，这里使用自定义的 unicode 规范化操作：</p>
             <pre><code>def normalize_utf8(text, form='NFKD'):
     return unicodedata.normalize(form, text).encode('utf-8') # type: ignore</code></pre>
             <p>例如我们有个样本 <code>example_text = '¿Todavía está en casa?' # Is he still at home?</code> 分别输出原始语句和经过转换后的语句：</p>
@@ -408,11 +408,130 @@ tf.Tensor(
     b'He responded very quickly to my letter.' b'People are complicated.'], shape=(5,), dtype=string)</code></pre>
 
             <h4>7.3.2.3 文本预处理</h4>
+            <p>上一步中进行了 Unicode 字符处理，这里继续进行标准化，通过 <code>tf_lower_and_split_punct</code> 函数，以拆分重音音符并用 ASCII 等效字符替换兼容字符：</p>
+            <pre><code>def tf_lower_and_split_punct(text):
+    text = tf.strings.lower(text)
+    # Keep space, a to z, and select punctuation.
+    text = tf.strings.regex_replace(text, '[^ a-z.?!,¿]', '')
+    # Add spaces around punctuation.
+    text = tf.strings.regex_replace(text, '[.?!,¿]', r' \0 ')
+    # Strip whitespace.
+    text = tf.strings.strip(text)
+
+    text = tf.strings.join(['[START]', text, '[END]'], separator=' ')
+    return text</code></pre>
+            
+            <p>上述这个标准化函数将被包裹在 <code>keras.layers.TextVectorization</code> 层中，该层将处理词汇提取和将输入文本转换为标记序列。</p>
+            <p><code>TextVectorization</code> 层和其它许多 Keras 预处理层都有个 <code>adapt</code> 方法。此方法读取一个时期的训练数据，其工作原理和 <code>Model.fit</code> 非常相似。<code>adapt</code> 方法根据数据初始化该层，在这里它确定词汇表：</p>
+            <pre><code>max_vocab_size = 5000
+
+context_text_processor = keras.layers.TextVectorization(
+    standardize=tf_lower_and_split_punct, # type: ignore
+    max_tokens=max_vocab_size,
+    ragged=True)
+
+context_text_processor.adapt(train_raw.map(lambda context, target: context))
+# Here are the first 10 words from the vacabulary:
+print(context_text_processor.get_vocabulary()[:10])</code></pre>
+            
+            <p>下面输出的是西班牙语的词汇表：</p>
+            <pre><code>['', '[UNK]', '[START]', '[END]', '.', 'que', 'de', 'el', 'a', 'no']</code></pre>
+            <p>对英语作同样的处理：</p>
+            <pre><code>target_text_processor = keras.layers.TextVectorization(
+    standardize=tf_lower_and_split_punct, # type: ignore
+    max_tokens=max_vocab_size,
+    ragged=True)
+target_text_processor.adapt(train_raw.map(lambda context, target: target))
+print(target_text_processor.get_vocabulary()[:10])</code></pre>
+            <p>下面输出英语的词汇表：</p>
+            <pre><code>['', '[UNK]', '[START]', '[END]', '.', 'the', 'i', 'to', 'you', 'tom']</code></pre>
+            
+            <p>初始化完这些层之后，可以将一批字符串转换为数字标记 (Token ID)：</p>
+            <pre><code>example_tokens = context_text_processor(example_context_strings)
+print(example_tokens[:3, :])
+
+tf.RaggedTensor [[2, 798, 2036, 39, 81, 1379, 5, 54, 44, 4, 3],
+ [2, 10, 8, 337, 203, 8, 578, 4, 3], [2, 20, 15, 23, 213, 2842, 4, 3]</code></pre>
+
+            <p>通过 <code>get_vocabulary</code> 方法可以将这些数字标记重新转换为字符串：</p>
+            <pre><code>context_vocab = numpy.array(context_text_processor.get_vocabulary())
+tokens = context_vocab[example_tokens[0].numpy()]
+print(' '.join(tokens))
+
+[START] probablemente sere yo quien tendra que hacer eso . [END]</code></pre>
+            
+            <pre>返回的数字标记是以 0 填充的，因此很容易转换成掩码：</pre>
+            <pre><code>pyplot.subplot(1, 2, 1)
+pyplot.pcolormesh(example_tokens.to_tensor())
+pyplot.title('Token IDs')
+pyplot.subplot(1, 2, 2)
+pyplot.pcolormesh(example_tokens.to_tensor() != 0)
+pyplot.title('Mask')
+pyplot.subplots_adjust(left=0.08, right=0.92, top=0.94, bottom=0.06)
+pyplot.show()</code></pre>
+            <p>展示的图像如下所示：</p>
+            <img src="res/pcolormesh_seq2seq.png" alt="pcolormesh 图像">
 
             <h4>7.3.2.4 处理数据集</h4>
 
+            <p>下面的 <code>process_text</code> 函数将数据集字符串转换为数字标记。它同时将 <code>(context, target)</code> 对转换为 <code>((context, target_in), target_out)</code> 对，用于 <code>Keras.Model.fit</code> 方法。</p>
+            <p>Keras 希望 <code>(inputs, labels)</code> 输入，因此 <code>inputs</code> 就是 <code>(context, target_in)</code> ，<code>labels</code> 就是 <code>target_out</code> 。<code>target_in</code> 和 <code>target_out</code> 的区别就是向前移动一位，这样就是每个位置的 <code>label</code> 就是下一个数字标记。</p>
+            <pre><code>def process_text(context, target):
+    # print('Context type:', type(context))
+    # print('Context shape:', tf.shape(context))
+    context = context_text_processor(context).to_tensor()
+    target = target_text_processor(target)
+    targ_in = target[:, :-1].to_tensor()
+    targ_out = target[:, 1:].to_tensor()
+    return (context, targ_in), targ_out
+
+train_ds = train_raw.map(process_text, tf.data.AUTOTUNE)
+val_ds = val_raw.map(process_text, tf.data.AUTOTUNE)
+
+for (ex_context_tok, ex_tar_in), ex_tar_out in train_ds.take(1): # type: ignore
+    print(ex_context_tok[0, :10])
+    tokens = numpy.array(context_text_processor.get_vocabulary())[ex_context_tok[0, :10].numpy()]
+    print(' '.join(tokens))
+    print(ex_tar_in[0, :10])
+    tokens = numpy.array(target_text_processor.get_vocabulary())[ex_tar_in[0, :10].numpy()]
+    print(' '.join(tokens))
+    print(ex_tar_out[0, :10])
+    tokens = numpy.array(target_text_processor.get_vocabulary())[ex_tar_out[0, :10].numpy()]
+    print(' '.join(tokens))</code></pre>
+            <p>下面是第一批中的第一个序列的文本和数字标记对应的样子：</p>
+            <pre><code>tf.Tensor([   2   18 1390    8   33  691    4    3    0    0], shape=(10,), dtype=int64)
+[START] me levante a las siete . [END]  
+tf.Tensor([  2   6 100  63  42 762   4   0   0   0], shape=(10,), dtype=int64)
+[START] i got up at seven .   
+tf.Tensor([  6 100  63  42 762   4   3   0   0   0], shape=(10,), dtype=int64)
+i got up at seven . [END] </code></pre>
+
 
             <h3>7.3.3 编/解码器</h3>
+
+            <p>下图显示了模型的概览，编码器位于左侧，解码器位于右侧。在每个时间步骤中，解码器的输出与编码器的输出相结合，以预测下一个单词。</p>
+            <img src="res/attention_mechanism_rnn.jpg" alt="RNN 中的注意力">
+            <p class="comment">注：上述图片来自于论文 Effective Approaches to Attention-based Neural Machine Translation 。</p>
+            <p>原始的架构包含了一些额外的连接，这些连接被故意从本教程的模型（下图）中省略，因为他们通常是不必要的，而且很难实现。这些缺失的连接是：</p>
+            <ol>
+                <li>
+                    <p>将状态从编码器的 RNN 馈送到解码器的 RNN ；</p>
+                </li>
+                <li>
+                    <p>将注意力输出反馈给 RNN 的输入</p>
+                </li>
+            </ol>
+            <img src="res/rnn_attention_improve.png" alt="改进版 RNN 注意力" width="600">
+            
+            <h4> 7.3.3.1 编码器</h4>
+
+            <p>编码器的目标是将上下文序列处理成一系列的向量，这些向量对解码器很有用，因为它会尝试预测每个时间步的下一个输出。由于上下文序列是恒定的，因此对信息在编码器中的流动方式没有限制，因此可以使用双向 RNN 进行处理：</p>
+
+
+
+            <h4>7.3.3.2 注意力层</h4>
+
+            <h4>7.3.3.3 解码器</h4>
 
             <h3>7.3.4 模型</h3>
 
