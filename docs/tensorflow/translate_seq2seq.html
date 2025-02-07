@@ -362,8 +362,50 @@ Last target sentence: If you want to sound like a native speaker, you must be wi
 
             <h4>7.3.2.2 创建 <code>tf.data</code></h4>
             <p>该模型处理的是词汇量有限的多语言文本。因此，标准化 (Standardize) 输入文本非常重要。第一步是 Unicode 规范化，以拆分重音音符并用 ASCII 等效字符替换兼容字符。这里使用自定义的 unicode 规范化操作：</p>
+            <pre><code>def normalize_utf8(text, form='NFKD'):
+    return unicodedata.normalize(form, text).encode('utf-8') # type: ignore</code></pre>
+            <p>例如我们有个样本 <code>example_text = '¿Todavía está en casa?' # Is he still at home?</code> 分别输出原始语句和经过转换后的语句：</p>
+            <pre><code>print(tf.constant(example_text).numpy())
+print(normalize_utf8(example_text, 'NFKD'))
+
+b'\xc2\xbfTodav\xc3\xada est\xc3\xa1 en casa?'
+b'\xc2\xbfTodavi\xcc\x81a esta\xcc\x81 en casa?'</code></pre>
             
-            <p>上面创建了两个字符串数组，我们可以将它们转换为 <code>tf.data.Dataset</code> ，以有效地对它们进行打乱和批处理：</p>
+            <p>将 <code>normalize_utf8</code> 函数应用于 <code>context</code> 之上，并将 <code>context</code> 和 <code>target</code> 转换为 <code>tf.data.Dataset</code> ，以有效地对它们进行打乱和批处理：</p>
+            <pre><code>context_raw = numpy.vectorize(normalize_utf8)(context_raw)
+# print('Last context sentence:', context_raw[-1])
+
+BUFFER_SIZE = len(context_raw)
+print(BUFFER_SIZE)
+BATCH_SIZE = 64
+
+is_train = numpy.random.uniform(size=(len(target_raw), )) < 0.8
+
+train_raw = (
+    tf.data.Dataset.from_tensor_slices((context_raw[is_train], target_raw[is_train]))
+    .shuffle(BUFFER_SIZE)
+    .batch(BATCH_SIZE, drop_remainder=True))
+val_raw = (
+    tf.data.Dataset.from_tensor_slices((context_raw[~is_train], target_raw[~is_train]))
+    .shuffle(BUFFER_SIZE)
+    .batch(BATCH_SIZE, drop_remainder=True))
+
+for example_context_strings, example_target_strings in train_raw.take(1): # type: ignore
+    print(example_context_strings[:5])
+    print(example_target_strings[:5])
+    break</code></pre>
+
+            <p>查看训练集 context 和 target 前 5 个字符串的输出结果：</p>
+            <pre><code>tf.Tensor(
+[b'No estoy tan interesado como tu\xcc\x81 en la literatura.'
+    b'\xc2\xbfEres alema\xcc\x81n, o no?'
+    b'El nin\xcc\x83o le tiro\xcc\x81 una piedra al gato.'
+    b'E\xcc\x81l respondio\xcc\x81 muy ra\xcc\x81pido a mi carta.'
+    b'La gente es complicada.'], shape=(5,), dtype=string)
+tf.Tensor(
+[b'I am not as interested in literature as you.' b"You're German, right?"
+    b'The child threw a stone at the cat.'
+    b'He responded very quickly to my letter.' b'People are complicated.'], shape=(5,), dtype=string)</code></pre>
 
             <h4>7.3.2.3 文本预处理</h4>
 

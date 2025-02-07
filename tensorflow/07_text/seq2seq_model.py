@@ -88,13 +88,12 @@ if __name__ == '__main__':
     example_text = '¿Todavía está en casa?' # Is he still at home?
     print(tf.constant(example_text).numpy())
     print(normalize_utf8(example_text, 'NFKD'))
-    
-    context_raw = [normalize_utf8(text) for text in context_raw]
-    print('Last context sentence:', context_raw[-1])
-    
+
     print(tf.constant(example_text).numpy().decode()) # type: ignore
     print(tf_lower_and_split_punct(normalize_utf8(example_text)).numpy().decode())
-    quit()
+
+    context_raw = numpy.vectorize(normalize_utf8)(context_raw)
+    # print('Last context sentence:', context_raw[-1])
 
     BUFFER_SIZE = len(context_raw)
     print(BUFFER_SIZE)
@@ -115,6 +114,10 @@ if __name__ == '__main__':
         print(example_context_strings[:5])
         print(example_target_strings[:5])
         break
+
+    quit()
+    
+    
 
     example_text = tf.constant('¿Todavía está en casa?') # Is he still at home?
     print(example_text.numpy()) # type: ignore
