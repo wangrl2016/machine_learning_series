@@ -283,7 +283,7 @@ import numpy
 from matplotlib import pyplot</code></pre>
             <p class="comment">注：因为无法使用 <em>tensorflow-text</em> 库，后续会自定义 <code>normalize_utf8</code> 函数。</p>
 
-            <p>本教程使用了大量低级 API，因此很容易出现形状错误。<code>ShapeChecker</code> 类用于在整个教程中检查形状：</p>
+            <p>本教程使用了大量低级 API，因此很容易出现形状错误。<code>ShapeChecker</code> 类型用于在整个教程中检查形状：</p>
             <pre><code>class ShapeChecker():
     def __init__(self):
         # Keep a cache of every axis-name seen.
@@ -333,8 +333,37 @@ from matplotlib import pyplot</code></pre>
                     <p>将每个句子填充至最大长度。</p>
                 </li>
             </ol>
+            <p>下载文件：</p>
+            <pre><code>path_to_zip = keras.utils.get_file(
+    'spa-eng.zip', origin='http://storage.googleapis.com/download.tensorflow.org/data/spa-eng.zip',
+    extract=True)
+
+# Dir 'spa-eng_extracted/' for some computer. 
+path_to_file = pathlib.Path(path_to_zip).parent/'spa-eng_extracted/spa-eng/spa.txt'</code></pre>
+            <p class="comment">文件路径可能还包括 'spa-eng_extracted/' 。</p>
+            <p>下载完成之后，进行解析，分成源句子和目标句子：</p>
+            <pre><code>def load_data(path):
+    text = path.read_text(encoding='utf-8')
+    
+    lines = text.splitlines()
+    pairs = [line.split('\t') for line in lines]
+    
+    context = numpy.array([context for target, context in pairs])
+    target = numpy.array([target for target, context in pairs])
+    
+    return target, context
+
+target_raw, context_raw = load_data(path_to_file)
+print('Last context sentence:', context_raw[-1])
+print('Last target sentence:', target_raw[-1])</code></pre>
+            <p>输出最后两个句子，说明程序运行正确！</p>
+            <pre><code>Last context sentence: Si quieres sonar como un hablante nativo, debes estar dispuesto a practicar diciendo la misma frase una y otra vez de la misma manera en que un músico de banjo practica el mismo fraseo una y otra vez hasta que lo puedan tocar correctamente y en el tiempo esperado.
+Last target sentence: If you want to sound like a native speaker, you must be willing to practice saying the same sentence over and over in the same way that banjo players practice the same phrase over and over until they can play it correctly and at the desired tempo.</code></pre>
 
             <h4>7.3.2.2 创建 <code>tf.data</code></h4>
+            <p>该模型处理的是词汇量有限的多语言文本。因此，标准化 (Standardize) 输入文本非常重要。第一步是 Unicode 规范化，以拆分重音音符并用 ASCII 等效字符替换兼容字符。这里使用自定义的 unicode 规范化操作：</p>
+            
+            <p>上面创建了两个字符串数组，我们可以将它们转换为 <code>tf.data.Dataset</code> ，以有效地对它们进行打乱和批处理：</p>
 
             <h4>7.3.2.3 文本预处理</h4>
 

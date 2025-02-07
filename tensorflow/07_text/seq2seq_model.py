@@ -45,20 +45,21 @@ def load_data(path):
     return target, context
 
 def normalize_utf8(text, form='NFKD'):
-    def _normalize(s):
-        s = s.numpy().decode('utf-8')  # Decode after getting NumPy value
-        normalized_s = unicodedata.normalize(form, s) # type: ignore
-        return tf.constant(normalized_s.encode('utf-8'))
+    return unicodedata.normalize(form, text).encode('utf-8') # type: ignore
+    # def _normalize(s):
+    #     s = s.numpy().decode('utf-8')  # Decode after getting NumPy value
+    #     normalized_s = unicodedata.normalize(form, s) # type: ignore
+    #     return tf.constant(normalized_s.encode('utf-8'))
 
-    # Handle both single strings and batches of strings
-    if isinstance(text, tf.Tensor) and text.shape == (): # single string
-        return _normalize(text) # pass tf.Tensor to _normalize
-    else:  # Batch of strings (or already normalized Python string)
-        return tf.map_fn(_normalize, text, dtype=tf.string)
+    # # Handle both single strings and batches of strings
+    # if isinstance(text, tf.Tensor) and text.shape == (): # single string
+    #     return _normalize(text) # pass tf.Tensor to _normalize
+    # else:  # Batch of strings (or already normalized Python string)
+    #     return tf.map_fn(_normalize, text, dtype=tf.string)
 
 def tf_lower_and_split_punct(text):
     # Split accented characters.
-    text = normalize_utf8(text, 'NFKD')
+    # text = normalize_utf8(text, 'NFKD')
     text = tf.strings.lower(text)
     # Keep space, a to z, and select punctuation.
     text = tf.strings.regex_replace(text, '[^ a-z.?!,¿]', '')
@@ -81,9 +82,20 @@ if __name__ == '__main__':
     path_to_file = pathlib.Path(path_to_zip).parent/'spa-eng_extracted/spa-eng/spa.txt'
     
     target_raw, context_raw = load_data(path_to_file)
-    print('Train dataset len:', context_raw[-1])
-    print(target_raw[-1])
+    print('Last context sentence:', context_raw[-1])
+    print('Last target sentence:', target_raw[-1])
+
+    example_text = '¿Todavía está en casa?' # Is he still at home?
+    print(tf.constant(example_text).numpy())
+    print(normalize_utf8(example_text, 'NFKD'))
     
+    context_raw = [normalize_utf8(text) for text in context_raw]
+    print('Last context sentence:', context_raw[-1])
+    
+    print(tf.constant(example_text).numpy().decode()) # type: ignore
+    print(tf_lower_and_split_punct(normalize_utf8(example_text)).numpy().decode())
+    quit()
+
     BUFFER_SIZE = len(context_raw)
     print(BUFFER_SIZE)
     BATCH_SIZE = 64
