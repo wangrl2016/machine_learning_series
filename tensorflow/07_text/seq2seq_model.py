@@ -574,14 +574,4 @@ if __name__ == '__main__':
     print(result[0].numpy().decode())
     print(result[1].numpy().decode())
     print(result[2].numpy().decode())
-    
-    export = Export(model)
-    tf.saved_model.save(export, 'translator',
-                    signatures={'serving_default': export.translate})
-    
-    reloaded = tf.saved_model.load('translator')
-    result = reloaded.translate(tf.constant(inputs))
-    print(result[0].numpy().decode())
-    print(result[1].numpy().decode())
-    print(result[2].numpy().decode())
-    print()
+
