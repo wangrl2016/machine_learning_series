@@ -544,12 +544,135 @@ i got up at seven . [END] </code></pre>
                     <p>返回已经处理好的序列，这将会传递给注意力模块。</p>
                 </li>
             </ol>
+            <pre><code>class Encoder(keras.layers.Layer):
+    def __init__(self, text_processor, units):
+        super(Encoder, self).__init__()
+        self.text_processor = text_processor
+        self.vocab_size = text_processor.vocabulary_size()
+        self.units = units
+        
+        # The embedding layer converts tokens to vectors.
+        self.embedding = keras.layers.Embedding(self.vocab_size, units, mask_zero=True)
+        
+        # The RNN layers processes those vectors sequentially.
+        self.rnn = keras.layers.Bidirectional(
+            merge_mode='sum',
+            layer= keras.layers.GRU(units,
+                                    # Return the sequence and state
+                                    return_sequences=True,
+                                    recurrent_initializer='glorot_uniform'))
+        
+    def call(self, x):
+        shape_checker = ShapeChecker()
+        shape_checker(x, 'batch s')
+        
+        # 2. The embedding layer looks up the embedding vector for each token.
+        x = self.embedding(x)
+        shape_checker(x, 'batch s units')
+        
+        # 3. The GRU processes the sequence of embeddings.
+        x = self.rnn(x)
+        shape_checker(x, 'batch s units')
+        
+        # 4 Returns the new sequence of embeddings.
+        return x
+    
+    def convert_input(self, texts):
+        texts = tf.convert_to_tensor(texts)
+        if len(texts.shape) == 0:
+            texts = tf.convert_to_tensor(texts)[tf.newaxis] # type: ignore
+        context = self.text_processor(texts).to_tensor()
+        context = self(context)
+        return context</code></pre>
+
+            <p>尝试一下：</p>
+            <pre><code>UNITS = 256
+# Encoder the input sequence.
+encoder = Encoder(context_text_processor, UNITS)
+ex_context = encoder(ex_context_tok)
+print(f'Context tokens, shape (batch, s): {ex_context_tok.shape}')
+print(f'Encoder output, shape (batch, s, units): {ex_context.shape}')</code></pre>
+
+            <p>可以看到 <code>(64, 18)</code>的维度变成 <code>(64, 18, 256)</code> ：</p>
+
+            <pre><code>Context tokens, shape (batch, s): (64, 18)
+Encoder output, shape (batch, s, units): (64, 18, 256)</code></pre>
 
 
             <h4>7.3.3.2 注意力层</h4>
 
             <p>注意力层让解码器可以访问编码器提取的信息。它根据整个上下文序列计算出一个向量，并将其添加到解码器的输出中。</p>
             <p>从整个序列计算单个向量的最简单方法就是取整个序列的平均值 <code>layers.GloabalAveragePooling1D</code> 。注意力层类似，但计算整个上下文序列的 <em>加权平均值 (Weighted Average)</em> 。其中权重是根据上下文和查询向量的组合计算出来的。</p>
+
+            <pre><code>class CrossAttention(keras.layers.Layer):
+    def __init__(self, units, **kwargs):
+        super().__init__()
+        self.mha = keras.layers.MultiHeadAttention(key_dim=units, num_heads=1, **kwargs)
+        self.layernorm = keras.layers.LayerNormalization()
+        self.add = keras.layers.Add()
+
+    def call(self, x, context):
+        shape_checker = ShapeChecker()
+        shape_checker(x, 'batch t units')
+        shape_checker(context, 'batch s units')
+        
+        attn_output, attn_scores = self.mha(
+            query=x,
+            value=context,
+            return_attention_scores=True)
+        
+        shape_checker(x, 'batch t units')
+        shape_checker(attn_scores, 'batch heads t s')
+        
+        # Cache the attention scores for plotting later.
+        attn_scores = tf.reduce_mean(attn_scores, axis=1)
+        shape_checker(attn_scores, 'batch t s')
+        self.last_attention_weights = attn_scores
+
+        x = self.add([x, attn_output])
+        x = self.layernorm(x)
+
+        return x</code></pre>
+
+            <pre><code>attention_layer = CrossAttention(UNITS)
+# Attend to the encoded tokens.
+embed = keras.layers.Embedding(target_text_processor.vocabulary_size(),
+                                output_dim=UNITS, mask_zero=True)
+ex_tar_embed = embed(ex_tar_in)
+result = attention_layer(ex_tar_embed, ex_context)
+print(f'Context sequence, shape (batch, s, units): {ex_context.shape}')
+print(f'Target sequence, shape (batch, t, units): {ex_tar_embed.shape}')
+print(f'Attention result, shape (batch, t, units): {result.shape}')
+print(f'Attention weights, shape (batch, t, s): {attention_layer.last_attention_weights.shape}')</code></pre>
+
+            <p>上述代码的输入，注意 <em>s</em> 和 <em>t</em> 的长度大小是不一致的：</p>
+            <pre><code>Context sequence, shape (batch, s, units): (64, 18, 256)
+Target sequence, shape (batch, t, units): (64, 16, 256)
+Attention result, shape (batch, t, units): (64, 16, 256)
+Attention weights, shape (batch, t, s):    (64, 16, 18)</code></pre>
+
+            <p>在每个目标序列的位置，通过上下文序列注意力权重相加都为 1：</p>
+            <pre><code>print(attention_layer.last_attention_weights[0].numpy().sum(axis=-1))
+
+[1.         1.         1.         1.         0.99999994 1.
+1.         1.         1.         1.         1.         1.
+1.         1.         1.         1.        ]</code></pre>
+
+            <p>由于初始化时随机性较小，注意力权重最初都接近于 <em>1/(sequence_length)</em> 。随着训练的进行，模型将学会让这些权重变得不那么统一。</p>
+            <pre><code>attention_weights = attention_layer.last_attention_weights
+mask = (ex_context_tok != 0).numpy() # type: ignore
+
+pyplot.subplot(1, 2, 1)
+pyplot.pcolormesh(mask*attention_weights[:, 0, :])
+pyplot.title('Attention weights')
+
+pyplot.subplot(1, 2, 2)
+pyplot.pcolormesh(mask)
+pyplot.title('Mask')
+pyplot.subplots_adjust(left=0.08, right=0.92, top=0.94, bottom=0.06)
+pyplot.show()</code></pre>
+            <p>上下文序列的注意权重 t = 0 时：</p>
+            <img src="res/attention_weights_t0.png" alt="t0 时刻注意力">
 
             <h4>7.3.3.3 解码器</h4>
 

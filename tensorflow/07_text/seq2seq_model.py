@@ -105,11 +105,42 @@ class Encoder(keras.layers.Layer):
     def convert_input(self, texts):
         texts = tf.convert_to_tensor(texts)
         if len(texts.shape) == 0:
-            texts = tf.convert_to_tensor(texts)[tf.newaxis]
+            texts = tf.convert_to_tensor(texts)[tf.newaxis] # type: ignore
         context = self.text_processor(texts).to_tensor()
         context = self(context)
         return context
+
+class CrossAttention(keras.layers.Layer):
+    def __init__(self, units, **kwargs):
+        super().__init__()
+        self.mha = keras.layers.MultiHeadAttention(key_dim=units, num_heads=1, **kwargs)
+        self.layernorm = keras.layers.LayerNormalization()
+        self.add = keras.layers.Add()
+
+    def call(self, x, context):
+        shape_checker = ShapeChecker()
+        shape_checker(x, 'batch t units')
+        shape_checker(context, 'batch s units')
         
+        attn_output, attn_scores = self.mha(
+            query=x,
+            value=context,
+            return_attention_scores=True)
+        
+        shape_checker(x, 'batch t units')
+        shape_checker(attn_scores, 'batch heads t s')
+        
+        # Cache the attention scores for plotting later.
+        attn_scores = tf.reduce_mean(attn_scores, axis=1)
+        shape_checker(attn_scores, 'batch t s')
+        self.last_attention_weights = attn_scores
+
+        x = self.add([x, attn_output])
+        x = self.layernorm(x)
+
+        return x
+
+
 if __name__ == '__main__':
     print(tf.__version__)
     path_to_zip = keras.utils.get_file(
@@ -216,3 +247,29 @@ if __name__ == '__main__':
     ex_context = encoder(ex_context_tok)
     print(f'Context tokens, shape (batch, s): {ex_context_tok.shape}')
     print(f'Encoder output, shape (batch, s, units): {ex_context.shape}')
+
+    attention_layer = CrossAttention(UNITS)
+    # Attend to the encoded tokens.
+    embed = keras.layers.Embedding(target_text_processor.vocabulary_size(),
+                                   output_dim=UNITS, mask_zero=True)
+    ex_tar_embed = embed(ex_tar_in)
+    result = attention_layer(ex_tar_embed, ex_context)
+    print(f'Context sequence, shape (batch, s, units): {ex_context.shape}')
+    print(f'Target sequence, shape (batch, t, units): {ex_tar_embed.shape}')
+    print(f'Attention result, shape (batch, t, units): {result.shape}')
+    print(f'Attention weights, shape (batch, t, s): {attention_layer.last_attention_weights.shape}')
+
+    print(attention_layer.last_attention_weights[0].numpy().sum(axis=-1))
+
+    attention_weights = attention_layer.last_attention_weights
+    mask = (ex_context_tok != 0).numpy() # type: ignore
+
+    pyplot.subplot(1, 2, 1)
+    pyplot.pcolormesh(mask*attention_weights[:, 0, :])
+    pyplot.title('Attention weights')
+
+    pyplot.subplot(1, 2, 2)
+    pyplot.pcolormesh(mask)
+    pyplot.title('Mask')
+    pyplot.subplots_adjust(left=0.08, right=0.92, top=0.94, bottom=0.06)
+    pyplot.show()
