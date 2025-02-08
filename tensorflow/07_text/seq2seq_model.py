@@ -5,6 +5,7 @@ import pathlib
 import keras
 import numpy
 from matplotlib import pyplot
+from matplotlib import ticker
 
 class ShapeChecker():
     def __init__(self):
@@ -240,8 +241,120 @@ def get_next_token(self, context, next_token, done, temperature = 0.0):
     # Once a sequence is done it only produces 0-padding.
     next_token = tf.where(done, tf.constant(0, dtype=tf.int64), next_token)
 
-    return next_token, done, state
+    return next_token, done
 
+class Translator(keras.Model):
+    @classmethod
+    def add_method(cls, fun):
+        setattr(cls, fun.__name__, fun)
+        return fun
+    
+    def __init__(self, units,
+               context_text_processor,
+               target_text_processor):
+        super().__init__()
+        # Build the encoder and decoder
+        encoder = Encoder(context_text_processor, units)
+        decoder = Decoder(target_text_processor, units)
+
+        self.encoder = encoder
+        self.decoder = decoder
+
+    def call(self, inputs):
+        context, x = inputs
+        context = self.encoder(context)
+        logits = self.decoder(context, x)
+        return logits
+    
+@Translator.add_method
+def translate(self, texts, *, max_length=50, temperature=0.0):
+    # Process the input texts.
+    context = self.encoder.convert_input(texts)
+    batch_size = tf.shape(texts)[0]
+    
+    # Setup the loop inputs.
+    tokens = []
+    attention_weights = []
+    next_token, done = self.decoder.get_initial_state(context)
+    
+    for _ in range(max_length):
+        # Generate the next token.
+        next_token, done = self.decoder.get_next_token(
+            context, next_token, done, temperature)
+        
+        # Collect the generated tokens.
+        tokens.append(next_token)
+        attention_weights.append(self.decoder.last_attention_weights)
+        
+        if tf.executing_eagerly() and tf.reduce_all(done):
+            break
+        
+    # Stack the lists of tokens and attention weights.
+    tokens = tf.concat(tokens, axis=-1) # t*[(batch 1)] -> (batch, t)
+    self.last_attention_weights = tf.concat(attention_weights, axis=1)  # t*[(batch 1 s)] -> (batch, t s)
+    
+    result = self.decoder.tokens_to_text(tokens)
+    return result
+
+@Translator.add_method
+def plot_attention(self, text, **kwargs):
+    assert isinstance(text, str)
+    output = self.translate([text], **kwargs)
+    output = output[0].numpy().decode()
+    
+    attention = self.last_attention_weights[0]
+    context = tf_lower_and_split_punct(normalize_utf8(text))
+    context = context.numpy().decode().split()
+    
+    output = tf_lower_and_split_punct(output)
+    output = output.numpy().decode().split()[1:]
+    
+    fig = pyplot.figure(figsize=(5, 5))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.matshow(attention, cmap='viridis', vmin=0.0)
+    
+    fontdict = {'fontsize': 14}
+
+    ax.set_xticklabels([''] + context, fontdict=fontdict, rotation=90)
+    ax.set_yticklabels([''] + output, fontdict=fontdict)
+
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+
+    ax.set_xlabel('Input text')
+    ax.set_ylabel('Output text')
+    pyplot.show()
+
+def masked_loss(y_true, y_pred):
+    # Calculate the loss for each item in the batch.
+    loss_fn = keras.losses.SparseCategoricalCrossentropy(
+        from_logits=True, reduction='none')
+    loss = loss_fn(y_true, y_pred)
+    
+    # Mask off the losses on padding.
+    mask = tf.cast(y_true != 0, loss.dtype) # type: ignore
+    loss *= mask # type: ignore
+    
+    # Return the total
+    return tf.reduce_sum(loss) / tf.reduce_sum(mask)
+    
+def masked_acc(y_true, y_pred):
+    # Calculate the loss for each item in the batch.
+    y_pred = tf.argmax(y_pred, axis=-1)
+    y_pred = tf.cast(y_pred, y_true.dtype)
+
+    match = tf.cast(y_true == y_pred, tf.float32)
+    mask = tf.cast(y_true != 0, tf.float32)
+
+    return tf.reduce_sum(match)/tf.reduce_sum(mask)
+
+class Export(tf.Module):
+    def __init__(self, model):
+        self.model = model
+
+    @tf.function(input_signature=[tf.TensorSpec(dtype=tf.string, shape=[None])])
+    def translate(self, inputs):
+        return self.model.translate(inputs)
 
 if __name__ == '__main__':
     print(tf.__version__)
@@ -388,7 +501,7 @@ if __name__ == '__main__':
     
     for n in range(10):
         # Run one step.
-        next_token, done, state = decoder.get_next_token(
+        next_token, done = decoder.get_next_token(
             ex_context, next_token, done, temperature=1.0)
         # Add the token to the output.
         tokens.append(next_token)
@@ -399,3 +512,76 @@ if __name__ == '__main__':
     # Convert the tokens back to a string.
     result = decoder.tokens_to_text(tokens)
     print(result[:3].numpy())
+
+    model = Translator(UNITS, context_text_processor, target_text_processor)
+    
+    logits = model((ex_context_tok, ex_tar_in))
+    print(f'Context tokens, shape: (batch, s, units) {ex_context_tok.shape}')
+    print(f'Target tokens, shape: (batch, t) {ex_tar_in.shape}')
+    print(f'logits, shape: (batch, t, target_vocabulary_size) {logits.shape}')
+    
+    model.compile(optimizer='adam',
+                  loss=masked_loss,
+                  metrics=[masked_acc, masked_loss])
+    
+    vocab_size = 1.0 * target_text_processor.vocabulary_size()
+
+    print('Expected_loss',  tf.math.log(vocab_size).numpy())
+    print("Expected_acc", 1 / vocab_size)
+
+    print(model.evaluate(val_ds, steps=20, return_dict=True))
+    
+    history = model.fit(
+        train_ds.repeat(),
+        epochs=100,
+        steps_per_epoch=100,
+        validation_data=val_ds,
+        validation_steps=20,
+        callbacks=[keras.callbacks.EarlyStopping(patience=10)])
+    
+    pyplot.plot(history.history['loss'], label='loss')
+    pyplot.plot(history.history['val_loss'], label='val_loss')
+    pyplot.ylim([0, max(pyplot.ylim())])
+    pyplot.xlabel('Epoch #')
+    pyplot.ylabel('CE/token')
+    pyplot.legend()
+    pyplot.show()
+    
+    pyplot.plot(history.history['masked_acc'], label='accuracy')
+    pyplot.plot(history.history['val_masked_acc'], label='val_accuracy')
+    pyplot.ylim([0, max(pyplot.ylim())])
+    pyplot.xlabel('Epoch #')
+    pyplot.ylabel('CE/token')
+    pyplot.legend()
+    pyplot.show()
+    
+    result = model.translate(['¿Todavía está en casa?']) # Are you still home
+    print(result[0].numpy().decode())
+
+    # Are you still home?
+    model.plot_attention('¿Todavía está en casa?') 
+    # This is my life.
+    model.plot_attention('Esta es mi vida.')
+    # Try to find out.
+    model.plot_attention('Tratar de descubrir.')
+
+    inputs = [
+        'Hace mucho frio aqui.', # "It's really cold here."
+        'Esta es mi vida.', # "This is my life."
+        'Su cuarto es un desastre.' # "His room is a mess"
+    ]
+    result = model.translate(inputs)
+    print(result[0].numpy().decode())
+    print(result[1].numpy().decode())
+    print(result[2].numpy().decode())
+    
+    export = Export(model)
+    tf.saved_model.save(export, 'translator',
+                    signatures={'serving_default': export.translate})
+    
+    reloaded = tf.saved_model.load('translator')
+    result = reloaded.translate(tf.constant(inputs))
+    print(result[0].numpy().decode())
+    print(result[1].numpy().decode())
+    print(result[2].numpy().decode())
+    print()
