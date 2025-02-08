@@ -209,7 +209,38 @@ def call(self, context, x, state=None, return_state=False):
 
 @Decoder.add_method
 def get_initial_state(self, context):
-    pass
+    batch_size = tf.shape(context)[0]
+    start_tokens = tf.fill([batch_size, 1], self.start_token)
+    print(tf.shape(start_tokens))
+    done = tf.zeros([batch_size, 1], dtype=tf.bool)
+    return start_tokens, done
+ 
+@Decoder.add_method
+def tokens_to_text(self, tokens):
+    words = self.id_to_word(tokens)
+    result = tf.strings.reduce_join(words, axis=-1, separator=' ')
+    result = tf.strings.regex_replace(result, r'^\s*\[START\]\s*', '')
+    result = tf.strings.regex_replace(result, r'\s*\[END\]\s*$', '')
+    return result
+
+@Decoder.add_method
+def get_next_token(self, context, next_token, done, temperature = 0.0):
+    logits, state = self(
+        context, next_token,
+        return_state=True) 
+
+    if temperature == 0.0:
+        next_token = tf.argmax(logits, axis=-1)
+    else:
+        logits = logits[:, -1, :]/temperature
+        next_token = tf.random.categorical(logits, num_samples=1)
+
+    # If a sequence produces an `end_token`, set it `done`
+    done = done | (next_token == self.end_token)
+    # Once a sequence is done it only produces 0-padding.
+    next_token = tf.where(done, tf.constant(0, dtype=tf.int64), next_token)
+
+    return next_token, done, state
 
 
 if __name__ == '__main__':
@@ -350,3 +381,21 @@ if __name__ == '__main__':
     print(f'encoder output shape: (batch, s, units) {ex_context.shape}')
     print(f'input target tokens shape: (batch, t) {ex_tar_in.shape}')
     print(f'logits shape shape: (batch, target_vocabulary_size) {logits.shape}')
+
+    # Setup the loop variables.
+    next_token, done = decoder.get_initial_state(ex_context)
+    tokens = []
+    
+    for n in range(10):
+        # Run one step.
+        next_token, done, state = decoder.get_next_token(
+            ex_context, next_token, done, temperature=1.0)
+        # Add the token to the output.
+        tokens.append(next_token)
+    
+    # Stack all the token together.
+    tokens = tf.concat(tokens, axis=-1) # (batch, t)
+    
+    # Convert the tokens back to a string.
+    result = decoder.tokens_to_text(tokens)
+    print(result[:3].numpy())
