@@ -207,6 +207,10 @@ def call(self, context, x, state=None, return_state=False):
     else:
         return logits
 
+@Decoder.add_method
+def get_initial_state(self, context):
+    pass
+
 
 if __name__ == '__main__':
     print(tf.__version__)
