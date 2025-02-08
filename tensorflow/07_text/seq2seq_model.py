@@ -69,7 +69,47 @@ def tf_lower_and_split_punct(text):
     text = tf.strings.join(['[START]', text, '[END]'], separator=' ')
     return text
 
-
+class Encoder(keras.layers.Layer):
+    def __init__(self, text_processor, units):
+        super(Encoder, self).__init__()
+        self.text_processor = text_processor
+        self.vocab_size = text_processor.vocabulary_size()
+        self.units = units
+        
+        # The embedding layer converts tokens to vectors.
+        self.embedding = keras.layers.Embedding(self.vocab_size, units, mask_zero=True)
+        
+        # The RNN layers processes those vectors sequentially.
+        self.rnn = keras.layers.Bidirectional(
+            merge_mode='sum',
+            layer= keras.layers.GRU(units,
+                                    # Return the sequence and state
+                                    return_sequences=True,
+                                    recurrent_initializer='glorot_uniform'))
+        
+    def call(self, x):
+        shape_checker = ShapeChecker()
+        shape_checker(x, 'batch s')
+        
+        # 2. The embedding layer looks up the embedding vector for each token.
+        x = self.embedding(x)
+        shape_checker(x, 'batch s units')
+        
+        # 3. The GRU processes the sequence of embeddings.
+        x = self.rnn(x)
+        shape_checker(x, 'batch s units')
+        
+        # 4 Returns the new sequence of embeddings.
+        return x
+    
+    def convert_input(self, texts):
+        texts = tf.convert_to_tensor(texts)
+        if len(texts.shape) == 0:
+            texts = tf.convert_to_tensor(texts)[tf.newaxis]
+        context = self.text_processor(texts).to_tensor()
+        context = self(context)
+        return context
+        
 if __name__ == '__main__':
     print(tf.__version__)
     path_to_zip = keras.utils.get_file(
@@ -169,3 +209,10 @@ if __name__ == '__main__':
         print(ex_tar_out[0, :10])
         tokens = numpy.array(target_text_processor.get_vocabulary())[ex_tar_out[0, :10].numpy()]
         print(' '.join(tokens))
+
+    UNITS = 256
+    # Encoder the input sequence.
+    encoder = Encoder(context_text_processor, UNITS)
+    ex_context = encoder(ex_context_tok)
+    print(f'Context tokens, shape (batch, s): {ex_context_tok.shape}')
+    print(f'Encoder output, shape (batch, s, units): {ex_context.shape}')
