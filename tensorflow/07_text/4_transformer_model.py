@@ -1,7 +1,7 @@
 
 from matplotlib import pyplot
 import tensorflow as tf
-import tensorflow_text as tf_text
+import tensorflow_text
 import tensorflow_datasets as tfds
 import keras
 import numpy

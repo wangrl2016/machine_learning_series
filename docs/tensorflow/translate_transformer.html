@@ -317,6 +317,13 @@
             <img src="res/self_attention_distrib.png" alt="自注意力分布" width="800">
 
             <h3>7.4.2 设置</h3>
+            <p>需要安装 <a>TensorFlow Datasets</a> 下载数据集，和 <a>TensroFlow Text</a> 进行文本预处理，导入必要的模块：</p>
+            <pre><code>from matplotlib import pyplot
+import tensorflow as tf
+import tensorflow_text
+import tensorflow_datasets as tfds
+import keras
+import numpy</code></pre>
 
             <h3>7.4.3 数据处理</h3>
 
@@ -338,9 +345,12 @@
                 <li>
                     <p>如果我们一步一步地努力，一切都会变得有意义。</p>
                 </li>
-            </ul>
+            </ol>
 
-            <p>随着学习本教程的进度，我们将解释这两个图中的每个组件。</p>
+            <img src="res/transformer.png" alt="原始 Transformer 架构" width="400">
+
+            <p>随着学习本教程的进度，我们将解释这两个图中的每个组件。下图是 4 层的 Transformer 表示：</p>
+            <img src="res/transformer_4layer.png" alt="4 层 Transformer" width="400">
 
             <h4>7.4.5.1 嵌入和位置编码</h4>
 
