@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../laptop_coding_48.png" type="image/png">
     <title>TensorFlow 详解</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -251,12 +252,34 @@
             <main class="col-md-8">
                 <h1>TensorFlow 详解</h1>
 
+                <p>本教程主要翻译 <a href="https://www.tensorflow.org/tutorials">TensorFlow 官方教程</a> ，并做了一些修改。所有代码都放在 <a href="https://github.com/artinte/machine-learning-series/tree/develop/tensorflow">tensorflow</a> 目录中，可以直接在本地电脑上运行。</p>
+
+                <p>对于初学者，最好的起点是使用用户友好的 Keras API，通过将构建块拼凑在一起来构建模型。</p>
+
+                <p>教程以章节的形式呈现，1 - 3 章为基础部分，主要讲述 Keras 基础知识。4 - 13 章为高级部分，利用 Keras 全面理解 TensorFlow 机器学习的知识。</p>
+
                 <section id="section1" class="content-section">
                     <h2>01 快速入门</h2>
 
                     <h3 id="section2-sub1" class="content-section-sub">
                         <a href="quickstart_beginner.html" style="color: inherit;">1.1 新手速览</a>
                     </h3>
+
+                    <p>翻译 TensorFlow 官方教程 <a href="https://www.tensorflow.org/tutorials/quickstart/beginner">TensorFlow 2 quickstart for beginners</a> ，并做出如下改动：</p>
+                    <ul>
+                        <li>
+                            <p>1. 增加 MNIST 样本图片显示。</p>
+                        </li>
+                        <li>
+                            <p>2. 直接使用 <code>keras</code> 代替 <code>tf.keras</code> 。</p>
+                        </li>
+                        <li>
+                            <p>3. 同时处理 5 个样本，让模型随机输出概率更接近 2.3 。</p>
+                        </li>
+                        <li>
+                            <p>4. 使用 <code>argmax</code> 函数输出模型预测的类别。</p>
+                        </li>
+                    </ul>
 
                     <h3 id="section2-sub1" class="content-section-sub">
                         <a href="#" style="color: inherit;">1.2 专家速览</a>

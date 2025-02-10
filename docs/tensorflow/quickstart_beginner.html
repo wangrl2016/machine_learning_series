@@ -113,8 +113,8 @@
             font-weight: bold;
         }
         pre {
-            background: #263238;
-            color: #c3e88d;
+            background: #E3F2FD;
+            color: #212121;
             padding: 15px;
             border-radius: 5px;
             overflow-x: auto;
@@ -255,10 +255,10 @@
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
             <h2 class="custom-title">1.1 新手速览</h2>
-            <p class="title-subtext">使用 Keras 构建手写数字识别模型！</p>
+            <p class="title-subtext">使用 Keras API 构建手写数字识别模型！</p>
             <p style="color: #a0a0a0;">创建日期: 2022-07-16</p>
 
-            <p>本教程使用 <a href="https://keras.io/">Keras</a> 简单介绍以下几点：</p>
+            <p>本教程简单使用 <a href="https://keras.io/">Keras</a> 来进行以下几点：</p>
             <ol>
                 <li>
                     <p>加载预先构建的数据集；</p>
@@ -274,7 +274,9 @@
                 </li>
             </ol>
 
-            <p>学习本教程必须具备 Python 基础知识，可以阅读教材 <a href="#">Python 语言入门</a>，针对机器学习而编写。代码实现在文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/tensorflow/01_quickstart/1_1_quickstart_begginer.py">quickstart_beginner.py</a> 中，可在电脑上安装 Python 环境，下载相关依赖，点击运行！</p>
+            <p>学习本教程必须具备 Python 基础知识，可以阅读教程 <a href="#">Python 语言入门</a>，针对机器学习而编写。代码实现在文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/tensorflow/01_quickstart/1_1_quickstart_begginer.py">quickstart_beginner.py</a> 中，可在本地电脑上安装 Python 环境，下载相关依赖，点击运行！</p>
+            <p>以下示例图片由程序 <a href="https://github.com/artinte/machine-learning-series/blob/develop/tensorflow/01_quickstart/1_2_show_mnist_tfds.py">show_mnist_tfds.py</a> 生成：</p>
+            <img src="res/show_mnist_tfds.png" alt="MNIST 示例图片" width="400">
 
             <h3>1.1.1 设置</h3>
 
@@ -293,12 +295,12 @@ TensorFlow version: 2.18.0</samp></pre>
 
             <h3>1.1.2 加载数据集</h3>
 
-            <p>加载并准备 MNIST 数据集，图像像素值范围为 <em>[0, 255]</em> 。通过将这些值除以 <em>255.0</em> ，将它们缩小到 <em>[0, 1]</em> 的范围，这还会将样本数据从整形转换为浮点型：</p>
+            <p>加载并准备 MNIST 数据集，图像像素值范围为 <em>[0, 255]</em> 。通过将这些值除以 <em>255.0</em> ，缩小到 <em>[0, 1]</em> 的范围，这还会将样本数据从整形转换为浮点型：</p>
             <pre><code>(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0</code></pre>
 
             <h3>1.1.3 构建模型</h3>
-            <p>建立 <code>keras.Sequential</code> 模型：</p>
+            <p>建立 <code>keras.models.Sequential</code> 模型：</p>
             <pre><code>model = keras.models.Sequential([
     keras.layers.Flatten(input_shape=(28, 28)),
     keras.layers.Dense(128, activation='relu'),
@@ -306,19 +308,19 @@ x_train, x_test = x_train / 255.0, x_test / 255.0</code></pre>
     keras.layers.Dense(10)
 ])</code></pre>
 
-            <p><a href="https://www.tensorflow.org/guide/keras/sequential_model">Sequential</a> 用于将 <strong>层 (Layer)</strong> 进行堆叠，其中每一层都有一个输入张量和一个输出张量。层是具有已知数学结构的函数，可以重复使用并具有可训练的变量。大多数 TensorFlow 模型是由层组成，本模型使用了 <code>Flatten</code> 、<code>Dense</code> 和 <code>Dropout</code> 层。</p>
-            <p>对于每个示例，模型都会返回一个 <em>Logits</em> 分数向量，向量的长度为类别 (0-9) 的个数（本示例为 10）。</p>
+            <p><a href="https://www.tensorflow.org/guide/keras/sequential_model">Sequential</a> 用于将 <strong>层 (Layer)</strong> 进行堆叠，其中每一层都有一个输入张量和一个输出张量。层是具有已知数学结构的函数，可以重复使用，并具有可训练的变量。大多数 TensorFlow 模型是由层组成，本模型使用了 <code>Flatten</code> 、<code>Dense</code> 和 <code>Dropout</code> 层。</p>
+            <p>对于每个示例，模型都会返回一个 <strong><em>Logits</em> 分数</strong> 向量，向量的长度为类别 (0-9) 的个数（本示例为 10）。</p>
             <pre><code>NUM = 5
 predictions = model.call(x_train[:NUM]).numpy()
 print(numpy.round(predictions, 3))</code></pre>
-            <p>获取 5 个样本，输入到模型中，输出 Logits 分数，保留 3 位小数：</p>
+            <p>获取 5 个样本，输入到模型中，输出 <em>Logits</em> 分数，保留 3 位小数：</p>
             <pre><samp>[[-0.797  0.542 -0.022 -0.481  0.255 -0.392 -0.245 -0.312  0.504  0.064]
  [-0.379  0.724 -0.208 -0.074  0.267 -0.277 -0.065 -0.521  0.559 -0.346]
  [-0.696  0.233  0.224 -0.351 -0.181 -0.293  0.202 -0.245  0.535 -0.139]
  [-0.348 -0.472 -0.281 -0.101  0.154 -0.258 -0.396 -0.699  0.596 -0.044]
  [-0.544  0.774 -0.79  -0.719  0.233 -0.238 -0.13  -0.153  0.599 -0.2  ]]</samp></pre>
 
-            <p>可以使用 <code>tf.nn.softmax</code> 函数将这些 <em>Logits</em> 分数转换为每个类别的 <strong>概率 (Probability)</strong> ：</p>
+            <p>使用 <code>tf.nn.softmax</code> 函数将这些 <em>Logits</em> 分数转换为每个类别的 <strong>概率 (Probability)</strong> ：</p>
             <pre><code>probabilities = tf.nn.softmax(predictions).numpy()
 print(numpy.round(probabilities, 3))</code></pre>
 
@@ -346,7 +348,7 @@ print(numpy.round(probabilities, 3))</code></pre>
 
             <p>使用 <code>Model.fit</code> 方法调整模型的参数并最小化损失：</p>
             <pre><code>model.fit(x_train, y_train, epochs=5)</code></pre>
-            <p>训练过程中模型识别的准去率逐渐提高，最终达到 <em>98.30%</em> ：</p>
+            <p>训练过程中模型识别的准确率逐渐提高，最终达到 <em>98.30%</em> ：</p>
             <pre><samp>Epoch 1/5
 1875/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 1ms/step - accuracy: 0.8643 - loss: 0.4636.2900
 Epoch 2/5
@@ -360,7 +362,7 @@ Epoch 5/5
 
             <p>使用 <code>Model.evaluate</code> 方法在测试集上评估模型的性能：</p>
             <pre><code>model.evaluate(x_test, y_test, verbose=2)</code></pre>
-            <p>模型在从未看过的样本上依然有 97.65 % 的正确率（稍微低于训练）： </p>
+            <p>模型在从未看过的样本上依然有 <em>97.65%</em> 的正确率（稍微低于训练）： </p>
             <pre><samp>313/313 - 0s - 1ms/step - accuracy: 0.9765 - loss: 0.0735</samp></pre>
 
             <p>如果我们希望模型返回一个概率，可以包装训练好的模型，将 softmax 层附加在最后：</p>
@@ -382,7 +384,7 @@ print('True label:', y_test[:NUM])</code></pre>
 Predict label: [7 2 1 0 4]
 True label: [7 2 1 0 4]</samp></pre>
 
-            <p>恭喜！我们已经使用 Keras 的 API ，使用预先构建的数据集，训练了机器学习模型。</p>
+            <p>恭喜！我们已经使用 Keras 的 API ，利用预先构建的数据集，训练了机器学习模型。</p>
 
             <div class="navigation">
                 <a href="https://www.tensorflow.org/install">上一节：1.0 环境配置</a>
