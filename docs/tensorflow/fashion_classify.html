@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../laptop_coding_48.png" type="image/png">
-    <title>专家速览</title>
+    <title>基础图片分类</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -254,123 +254,38 @@
 
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
-            <h2 class="custom-title">1.2 专家速览</h2>
-            <p class="title-subtext">自定义手写数字识别模型！</p>
+            <h2 class="custom-title">2.1 基础图片分类</h2>
+            <p class="title-subtext">对运动鞋和衬衫等服装图像进行分类！</p>
             <p style="color: #a0a0a0;">创建日期: 2022-07-18</p>
+            <p>本教程训练神经网络模型，对运动鞋和衬衫等服装图像进行分类。这是一个完整的 TensorFlow 程序的快速概述，并在我们学习的过程中解释细节。</p>
+            <p>代码在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/tensorflow/02_keras/2_1_fashion_classify.py">fashion_classify.py</a> 文件里，可以在本地电脑中运行！</p>
+            <h3>2.1.1 Fashion 数据集</h3>
 
-            <p>重新实现手写数字识别模型，使用卷积层之后，准确率更高。执行程序在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/tensorflow/01_quickstart/2_1_quickstart_expert.py">quickstart_expert.py</a> 文件中，可以直接在本地电脑运行！新手可以不用关注具体实现！</p>
-            <p>程序中导入 TensorFlow 库：</p>
-            <pre><code>import keras
-import tensorflow as tf</code></pre>
-
-            <h3>1.2.1 加载数据集</h3>
-
-            <p>加载并准备 MNIST 数据集：</p>
-            <pre><code>(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
-x_train, x_test = x_train / 255.0, x_test / 255.0
-
-# Add a channels dimension.
-x_train = x_train[..., tf.newaxis].astype('float32')
-x_test = x_test[..., tf.newaxis].astype('float32')</code></pre>
-
-            <p>使用 <code>tf.data</code> 对数据集进行 <em>随机排列 (Shuffle)</em> 和 <em>批处理 (Batch)</em> ：</p>
-            <pre><code>BATCH_SIZE = 32
-
-train_ds = tf.data.Dataset.from_tensor_slices(
-    (x_train, y_train)).shuffle(10000).batch(BATCH_SIZE)
-test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(BATCH_SIZE)</code></pre>
-
-            <h3>1.2.2 构建模型</h3>
-
-            <p>使用 <code>keras.Model</code> 子类构建自定义模型：</p>
-            <pre><code>class MyModel(keras.Model):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = keras.layers.Conv2D(32, 3, activation='relu')
-        self.flatten = keras.layers.Flatten()
-        self.d1 = keras.layers.Dense(128, activation='relu')
-        self.d2 = keras.layers.Dense(10)
-
-    def call(self, x):
-        x = self.conv1(x)
-        x = self.flatten(x)
-        x = self.d1(x)
-        return self.d2(x)</code></pre>
-
-            <p>选择训练中的优化器和损失函数：</p>
-            <pre><code>loss_object = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-optimizer = keras.optimizers.Adam()</code></pre>
-
-            <p>选择指标来衡量模型的损失和准确率，这些指标会累积各个时期的值，然后打印总体结果：</p>
-            <pre><code>train_loss = keras.metrics.Mean(name='train_loss')
-train_accuracy = keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
-test_loss = keras.metrics.Mean(name='test_loss')
-test_accuracy = keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')</code></pre>
-
-            <h3>1.2.3 训练与测试</h3>
-
-            <p>使用 <code>tf.GradientTape</code> 训练模型：</p>
-            <pre><code>@tf.function
-def train_step(images, labels):
-    with tf.GradientTape() as tape:
-        predictions = model(images, training=True)
-        loss = loss_object(labels, predictions)
-
-    gradients = tape.gradient(loss, model.trainable_variables)
-    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-
-    train_loss(loss)
-    train_accuracy(labels, predictions)</code></pre>
-
-            <p>测试模型：</p>
-            <pre><code>@tf.function
-def test_step(images, labels):
-    predictions = model(images, training=False)
-    t_loss = loss_object(labels, predictions)
-
-    test_loss(t_loss)
-    test_accuracy(labels, predictions)</code></pre>
-
-            <p>每轮训练后并进行测试：</p>
-            <pre><code>EPOCHS = 5
-for epoch in range(EPOCHS):
-    # Reset the metrics at the start of the next epoch
-    train_loss.reset_state()
-    train_accuracy.reset_state()
-    test_loss.reset_state()
-    test_accuracy.reset_state()
-
-    for images, labels in train_ds:
-        train_step(images, labels)
-
-    for test_images, test_labels in test_ds:
-        test_step(test_images, test_labels)
-
-    print(
-        f'Epoch {epoch + 1}, '
-        f'loss: {train_loss.result():0.2f}, '
-        f'accuracy: {train_accuracy.result() * 100:0.2f}, '
-        f'test loss: {test_loss.result():0.2f}, '
-        f'test accuracy: {test_accuracy.result() * 100:0.2f}')</code></pre>
-            <p>输出训练和测试结果：</p>
-            <pre><code>Epoch 1, loss: 0.13, accuracy: 96.05, test loss: 0.06, test accuracy: 98.14
-Epoch 2, loss: 0.04, accuracy: 98.71, test loss: 0.06, test accuracy: 98.10
-Epoch 3, loss: 0.02, accuracy: 99.32, test loss: 0.06, test accuracy: 98.21
-Epoch 4, loss: 0.01, accuracy: 99.49, test loss: 0.07, test accuracy: 98.18
-Epoch 5, loss: 0.01, accuracy: 99.71, test loss: 0.07, test accuracy: 98.12
-            </code></pre>
-            
-            <p>图像分类器现在的准确率在 <em>98%</em> 以上！</p>
-
+            <p>本教程使用 <a href="https://github.com/zalandoresearch/fashion-mnist">Fashion MNIST</a> 数据集，其中包含 10 个类别，共 70000 张灰度图像。这些图像以低分辨率（28x28 像素）显示单件服装，如下所示：</p>
+            <img src="res/fashion_mnist_sprite.jpg" alt="服装示例" width="600">
+            <p>Fashion MNIST 旨在替代经典的 MNIST 数据集（通常比喻成机器学习领域的<em>"Hello, World"</em>），它在 <a href="quickstart_beginner.html">第 1.1 节 新手速览</a> 中已经使用。MNIST 数据集包含手写数字（0、1、2等）的图像，其格式与我们在此处使用的服装图片相同。</p>
+            <p>使用 Fashion MNIST 以增加多样性，并且比常规的 MNIST 问题稍微更具挑战性。这两个数据集都相对较小，用于验证算法是否按预期工作，它们是测试和调试代码的良好起点。</p>
+            <p>选取 60000 张图像用于训练网络，10000 张图像用于评估神经网络进行图像分类的准确性。直接从 Keras 中导入数据集：</p>
+            <pre><code>(train_images, train_labels), (test_images, test_labels) = keras.datasets.fashion_mnist.load_data()</code></pre>
+            <p>加载数据集返回四个 NumPy 数组：</p>
+            <ul class="with-bullets">
+                <li>
+                    <p><code>train_images</code> 和 <code>train_labels</code> 是训练集 -- 模型用于学习的数据；</p>
+                </li>
+                <li>
+                    <p><code>test_images</code> 和 <code>test_labels</code> 是测试集 -- 模型用于测试的数据。</p>
+                </li>
+            </ul>
+            <p>图像是 28x28 的 NumPy 数组，像素值在 [0, 255] 的区间。标签是整形数组，从 0 到 9 ，对应图像所代表的服装类别：</p>
             <div class="navigation">
-                <a href="quickstart_beginner.html">上一节：1.1 新手速览</a>
-                <a href="fashion_classify.html">下一节：2.1 基础图片分类</a>
+                <a href="quickstart_expert.html">上一节：1.0 专家速览</a>
+                <a href="#">下一节：2.2 基础文本分类</a>
             </div>
         </main>
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5><a href="index.html#section1">快速入门</a></h5>
+                <h5><a href="index.html#section1">Keras 基础</a></h5>
                 <ul id="dynamic-sidebar" class="nav flex-column">
                     <!-- 动态内容 -->
                 </ul>
