@@ -258,22 +258,109 @@
             <p class="title-subtext">自定义手写数字识别模型！</p>
             <p style="color: #a0a0a0;">创建日期: 2022-07-18</p>
 
+            <p>重新实现手写数字识别模型，使用卷积层之后，准确率更高。执行程序在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/tensorflow/01_quickstart/2_1_quickstart_expert.py">quickstart_expert.py</a> 文件中，可以直接在本地电脑运行！新手可以不用关注具体实现！</p>
             <p>程序中导入 TensorFlow 库：</p>
+            <pre><code>import keras
+import tensorflow as tf</code></pre>
+
+            <h3>1.2.1 加载数据集</h3>
 
             <p>加载并准备 MNIST 数据集：</p>
+            <pre><code>(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Add a channels dimension.
+x_train = x_train[..., tf.newaxis].astype('float32')
+x_test = x_test[..., tf.newaxis].astype('float32')</code></pre>
 
             <p>使用 <code>tf.data</code> 对数据集进行 <em>随机排列 (Shuffle)</em> 和 <em>批处理 (Batch)</em> ：</p>
+            <pre><code>BATCH_SIZE = 32
+
+train_ds = tf.data.Dataset.from_tensor_slices(
+    (x_train, y_train)).shuffle(10000).batch(BATCH_SIZE)
+test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(BATCH_SIZE)</code></pre>
+
+            <h3>1.2.2 构建模型</h3>
 
             <p>使用 <code>keras.Model</code> 子类构建自定义模型：</p>
+            <pre><code>class MyModel(keras.Model):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = keras.layers.Conv2D(32, 3, activation='relu')
+        self.flatten = keras.layers.Flatten()
+        self.d1 = keras.layers.Dense(128, activation='relu')
+        self.d2 = keras.layers.Dense(10)
+
+    def call(self, x):
+        x = self.conv1(x)
+        x = self.flatten(x)
+        x = self.d1(x)
+        return self.d2(x)</code></pre>
 
             <p>选择训练中的优化器和损失函数：</p>
+            <pre><code>loss_object = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+optimizer = keras.optimizers.Adam()</code></pre>
 
             <p>选择指标来衡量模型的损失和准确率，这些指标会累积各个时期的值，然后打印总体结果：</p>
+            <pre><code>train_loss = keras.metrics.Mean(name='train_loss')
+train_accuracy = keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+test_loss = keras.metrics.Mean(name='test_loss')
+test_accuracy = keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')</code></pre>
+
+            <h3>1.2.3 训练与测试</h3>
 
             <p>使用 <code>tf.GradientTape</code> 训练模型：</p>
+            <pre><code>@tf.function
+def train_step(images, labels):
+    with tf.GradientTape() as tape:
+        predictions = model(images, training=True)
+        loss = loss_object(labels, predictions)
+
+    gradients = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
+    train_loss(loss)
+    train_accuracy(labels, predictions)</code></pre>
 
             <p>测试模型：</p>
+            <pre><code>@tf.function
+def test_step(images, labels):
+    predictions = model(images, training=False)
+    t_loss = loss_object(labels, predictions)
+
+    test_loss(t_loss)
+    test_accuracy(labels, predictions)</code></pre>
+
+            <p>每轮训练后并进行测试：</p>
+            <pre><code>EPOCHS = 5
+for epoch in range(EPOCHS):
+    # Reset the metrics at the start of the next epoch
+    train_loss.reset_state()
+    train_accuracy.reset_state()
+    test_loss.reset_state()
+    test_accuracy.reset_state()
+
+    for images, labels in train_ds:
+        train_step(images, labels)
+
+    for test_images, test_labels in test_ds:
+        test_step(test_images, test_labels)
+
+    print(
+        f'Epoch {epoch + 1}, '
+        f'loss: {train_loss.result():0.2f}, '
+        f'accuracy: {train_accuracy.result() * 100:0.2f}, '
+        f'test loss: {test_loss.result():0.2f}, '
+        f'test accuracy: {test_accuracy.result() * 100:0.2f}')</code></pre>
+            <p>输出训练和测试结果：</p>
+            <pre><code>Epoch 1, loss: 0.13, accuracy: 96.05, test loss: 0.06, test accuracy: 98.14
+Epoch 2, loss: 0.04, accuracy: 98.71, test loss: 0.06, test accuracy: 98.10
+Epoch 3, loss: 0.02, accuracy: 99.32, test loss: 0.06, test accuracy: 98.21
+Epoch 4, loss: 0.01, accuracy: 99.49, test loss: 0.07, test accuracy: 98.18
+Epoch 5, loss: 0.01, accuracy: 99.71, test loss: 0.07, test accuracy: 98.12
+            </code></pre>
             
+            <p>图像分类器现在的准确率在 <em>98%</em> 以上！</p>
 
             <div class="navigation">
                 <a href="quickstart_beginner.html">上一节：1.1 新手速览</a>
