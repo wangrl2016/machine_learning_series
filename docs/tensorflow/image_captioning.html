@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../laptop_coding_48.png" type="image/png">
-    <title>Transformer 翻译模型</title>
+    <title>图像字幕</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -254,144 +254,18 @@
 
         <!-- 中间内容：显示具体某一个小节 -->
         <main class="col-md-8 content">
-            <h2 class="custom-title">7.4 Transformer 翻译模型</h2>
-            <p class="title-subtext">使用 Transformer 和 Keras 进行神经机器翻译！</p>
-            <p style="color: #a0a0a0;">创建日期: 2025-04-15</p>
+            <h2 class="custom-title">7.5 图像字幕</h2>
+            <p class="title-subtext">用视觉注意力制作图像字幕！</p>
+            <p style="color: #a0a0a0;">创建日期: 2025-04-25</p>
 
-            <p>本教程演示如何创建和训练序列到序列的 Transformer 模型，它将葡萄牙语翻译成英语。Transformer 最初在论文 Attention is all you need 中提出，可以查看《深度学习综合指南》<a href="../deep_learning/transformer_paper.html">第 9.4 节 Transformer 论文</a> 的内容。</p>
-            <p>Transformer 是一种深度神经网络，它利用自注意力机制取代了 CNN 和 RNN 。自注意力机制让 Transformer 能够轻松地在输入序列之间传递信息。</p>
-            <p>正如 <a href="https://research.google/blog/transformer-a-novel-neural-network-architecture-for-language-understanding/">Google AI 博客文章</a> 中所解释的那样：</p>
-
-            <p>机器翻译的神经网络通常包含一个编码器，用于读取输入句子并生成其表示。然后，解码器参考编码器生成的表示，同时逐字生成输出句子，同时。Transformer 首先为每个单词生成初始表示或嵌入，然后，它使用自注意力机制聚合来自所有其它单词的信息，根据整个上下文为每个单词生成一个新的表示，由下图填充的球表示。然后对所有单词并行重复此步骤多次，依次生成新的表示：</p>
-            <img src="res/transform_20fps.gif" alt="transform 示意图" width="600"> 
-
-            <p>需要消化的内容很多，本教程的目标是将其分解为易于理解的部分。在本教程中，我们将：</p>
-            <ul class="with-bullets">
-                <li>
-                    <p>准备数据；</p>
-                </li>
-                <li>
-                    <p>实现必要的组件：</p>
-                    <ul class="with-bullets">
-                        <li>位置嵌入；</li>
-                        <li>注意力层；</li>
-                        <li>编码器和解码器。</li>
-                    </ul>
-                </li>
-                <li>
-                    <p>构建和训练 Transformer ；</p>
-                </li>
-                <li>
-                    <p>生成翻译；</p>
-                </li>
-                <li>
-                    <p>导出模型。</p>
-                </li>
-            </ul>
-
-            <p>为了充分利用本教程，如果您了解 <a href="character_based_rnn.html">文本生成</a> 和 <a href="../deep_learning/attention_mechanism.html">注意力机制</a> 的基础知识，这将很有帮助。</p>
-
-            <p>Transformer 是一种序列到序列的编码器-解码器模型，类似于 <a href="translate_seq2seq.html">第 7.3 节 Seq2Seq 翻译模型</a> 中的模型。单层 Transformer 需要编写更多代码，但与编码器-解码器 RNN 模型几乎相同，如下图所示展示带有注意力的 RNN 模型：</p>
-            <img src="res/rnn_attention_words.png" alt="RNN 注意力" width="400">
-            <p>唯一的区别是 RNN 层被替换为自注意力层。本教程构建了一个 4 层 Transformer，它更强大，但从根本上来说并不更复杂。如下图展示单层 Transformer 模型：</p>
-            <img src="res/transformer_1layer_words.png" alt="Transformer 1层" width="400">
-            <p>训练完模型后，我们可以输入葡萄牙语句子并返回英语翻译。可以看到生成的可视化注意力权重：</p>
-
-            <h3>7.4.1 为何如此重要</h3>
-
-            <ul class="with-bullets">
-                <li>
-                    <p>Transformer 擅长对序列数据（例如自然语言）进行建模。</p>
-                </li>
-                <li>
-                    <p>与循环神经网络 (RNN) 不同，Transformer 是可并行化的。这使得他们在 GPU 和 TPU 等硬件上非常高效。主要原因是 Transformer 用注意力机制取代了循环，计算可以同时进行。层输出可以并行计算，而不像 RNN 那样串联计算。</p>
-                </li>
-                <li>
-                    <p>与 RNN（如 Seq2Seq）或卷积神经网络 (CNN) 不同，Transformer 能够捕获输入或输出序列中远距离位置之间的上下文和依赖。因此，长连接可以被学习。在每一层中注意力机制允许每个位置访问整个输入，而 RNN 或者 CNN ，信息需要经过许多处理步骤才能移动很长距离，这使得学习变得困难。</p>
-                </li>
-                <li>
-                    <p>Transformer 不对数据中的时空关系做任何假设，这对于处理一组对象非常理想。</p>
-                </li>
-            </ul>
-            <p>下图展示在英语到法语上训练的Transformer 的第 5 层到 第 6 层，单词 "it" 的编码器自注意力分布（八个注意力头之一）：</p>
-            <img src="res/self_attention_distrib.png" alt="自注意力分布" width="800">
-
-            <h3>7.4.2 设置</h3>
-            <p>需要安装 <a>TensorFlow Datasets</a> 下载数据集，和 <a>TensroFlow Text</a> 进行文本预处理，导入必要的模块：</p>
-            <pre><code>from matplotlib import pyplot
-import tensorflow as tf
-import tensorflow_text
-import tensorflow_datasets as tfds
-import keras
-import numpy</code></pre>
-
-            <h3>7.4.3 数据处理</h3>
-
-            <h4>7.4.3.1 下载数据集</h4>
-
-            <h4>7.4.3.2 设置标记器</h4>
-
-            <h4>7.4.3.3 使用 tf.data</h4>
-
-            <h3>7.4.4 测试数据集</h3>
-
-            <h3>7.4.5 定义组件</h3>
-
-            <p>Transformer 内部有很多事情要做。需要记住的重要事项是：</p>
-            <ol>
-                <li>
-                    <p>它遵循与带有编码器和解码器的标准序列到序列模型相同的一般模式；</p>
-                </li>
-                <li>
-                    <p>如果我们一步一步地努力，一切都会变得有意义。</p>
-                </li>
-            </ol>
-
-            <img src="res/transformer.png" alt="原始 Transformer 架构" width="400">
-
-            <p>随着学习本教程的进度，我们将解释这两个图中的每个组件。下图是 4 层的 Transformer 表示：</p>
-            <img src="res/transformer_4layer.png" alt="4 层 Transformer" width="400">
-
-            <h4>7.4.5.1 嵌入和位置编码</h4>
-
-            <p>编码器和解码器的输入使用相同的嵌入和位置编码逻辑。</p>
-            <p>给定一个标记序列，输入标记（葡萄牙语）和目标标记（英语）都必须使用一个层转换为 <code>keras.layers.Embedding</code> 向量。</p>
-            <p>整个模型中使用的注意力层将其输入市委一组无序的向量。由于模型不包含任何循环层或者卷积层。它需要某种方法来识别词序，否则它会将输入序列市委一个词语背包，例如 <em>how are you</em> 等它是无法区分 <em>how you are</em> 和 <em>you how are</em> 的，</p>
-            <p>Transformer 为嵌入向量添加了位置编码。它使用一组不同频率的正弦和余弦（跨序列）。根据定义，附近的元素将具有相似的位置编码。</p>
-            <p>原始论文采用以下公式来计算位置编码：</p>
-
-            <p>位置编码函数是一堆正弦和余弦，它们根据沿嵌入向量深度的位置以不同的频率振动，</p>
-
-            <h4>7.4.5.2 添加并规范化</h4>
-            <h4>7.4.5.3 基础注意力层</h4>
-
-            <p>整个模型都使用了注意力层，除了注意力的配置方式外，这些层都是相同的。每个层都包含一个 <code>layers.MultiHeadAttention</code> 、一个 <code>layers.LayerNormalization</code> 和一个 <code>layers.Add</code> 。</p>
-
-            <p>要实现这些注意层，请从仅包含组件层的简单基类开始。每个用例都将作为子类实现。这样编写的代码会多一点，但意图却很明确。</p>
-            <h4>7.4.5.4 交叉注意力层</h4>
-            <h4>7.4.5.5 全局自注意力层</h4>
-            <h4>7.4.5.6 因果自注意力层</h4>
-            <h4>7.4.5.7 前馈网络</h4>
-            <h4>7.4.5.8 编码器层</h4>
-            <h4>7.4.5.9 编码器</h4>
-            <h4>7.4.5.10 解码器层</h4>
-            <h4>7.4.5.11 解码器</h4>
+            <p>给定如下例所示的图像，我们的目标是生成注入 <em>“冲浪者在海浪上冲浪”</em>之类的标题。</p>
+            <p>这里使用的模型架构灵感来自于论文 <a href="https://arxiv.org/abs/1502.03044">Show, Attend and Tell: Neural Image Caption Generation with Visual Attention</a> ，但是更新为使用 2 层的 Transformer 解码器。要充分利用本教程，我们应该对 有一定的经验。</p>
+            <p>本教程中构建的模型架构如下所示，从图像中提取特征，并传递到 Transformer-解码器的交叉注意力层。</p>
             
-            <h3>7.4.6 Transformer</h3>
-
-            <h3>7.4.7 训练</h3>
-
-            <h3>7.4.8 运行推理</h3>
-
-            <h3>7.4.9 创建注意力图</h3>
-
-            <h3>7.4.10 导出模型</h3>
-
-            <h3>7.4.11 结论</h3>
 
             <div class="navigation">
-                <a href="translate_seq2seq.html">上一节：7.3 Seq2Seq 翻译模型</a>
-                <a href="#">下一节：7.5 </a>
+                <a href="translate_transformer.html">上一节：7.4 Transformer 翻译模型</a>
+                <a href="#">下一节：7.6</a>
             </div>
         </main>
 
