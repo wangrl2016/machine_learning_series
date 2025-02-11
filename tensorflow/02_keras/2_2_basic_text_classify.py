@@ -40,6 +40,9 @@ if __name__ == '__main__':
         for i in range(3):
             print('Review:', text_batch.numpy()[i])
             print('Label:', label_batch.numpy()[i])
+    
+    print('Label 0 corresponds to', raw_train_ds.class_names[0])
+    print('Label 1 corresponds to', raw_train_ds.class_names[1])
 
     raw_val_ds = keras.utils.text_dataset_from_directory(
         train_dir,
@@ -127,6 +130,7 @@ if __name__ == '__main__':
     pyplot.plot(epochs, val_loss, 'b', label='Validation loss')
     pyplot.title("Training and validation loss")
     pyplot.legend()
+    pyplot.grid()
     pyplot.subplots_adjust(left=0.08, right=0.98, top=0.94, bottom=0.06)
     pyplot.show()
 
@@ -134,6 +138,7 @@ if __name__ == '__main__':
     pyplot.plot(epochs, val_acc, 'b', label='Validation acc')
     pyplot.title('Training and validation accuracy')
     pyplot.legend()
+    pyplot.grid()
     pyplot.subplots_adjust(left=0.08, right=0.98, top=0.94, bottom=0.06)
     pyplot.show()
 
@@ -142,6 +147,6 @@ if __name__ == '__main__':
         "The movie was okay.",
         "The movie was terrible..."
     ])
-    print(model.predict(vectorize_layer(examples)))
+    print(model.predict(vectorize_layer(examples)).squeeze())
     print(numpy.round(model.predict(vectorize_layer(text_batch)), 3).squeeze())
     print(label_batch)
