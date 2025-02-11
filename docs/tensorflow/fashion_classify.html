@@ -350,7 +350,24 @@ print(len(test_labels))</code></pre>
 10000</samp></pre>
 
             <h3>2.1.3 数据预处理</h3>
-
+            <p>在训练网络之前，必须对数据进行预处理。如果我们检查训练集中的第一个图像，会看到像素值在 0 - 255 的范围内：</p>
+            <img src="res/fashion_first_image.png" alt="第一张图片" width="400">
+            <p>在将这些值输入到神经网络模型之前，先将它们缩放到 0 - 1 的范围。为此，将这些值除以 255 ，重要的是，训练集和测试集必须以相同的方式进行预处理：</p>
+            <pre><code>train_images = train_images / 255.0
+test_images = test_images / 255.0</code></pre>
+            <p>为了验证数据格式是否正确，让我们显示训练集中前 25 张图像并在每个图像下方显示类别名称：</p>
+            <pre><code>for i in range(25):
+    pyplot.subplot(5, 5, i+1)
+    pyplot.xticks([])
+    pyplot.yticks([])
+    pyplot.grid(False)
+    pyplot.imshow(train_images[i], cmap=pyplot.cm.binary)
+    pyplot.xlabel(class_names[train_labels[i]])
+pyplot.subplots_adjust(wspace=0.5, hspace=0.5,
+                        left=0.04, right=0.96, top=0.96, bottom=0.06)
+pyplot.show()</code></pre>
+            <img src="res/fashion_25_image.png" alt="前 25 张">
+            
 
             <div class="navigation">
                 <a href="quickstart_expert.html">上一节：1.0 专家速览</a>
