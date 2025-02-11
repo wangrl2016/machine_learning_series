@@ -277,6 +277,81 @@
                 </li>
             </ul>
             <p>图像是 28x28 的 NumPy 数组，像素值在 [0, 255] 的区间。标签是整形数组，从 0 到 9 ，对应图像所代表的服装类别：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>标签</th>
+                        <th>类别</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td class="positive">T-shirt/top</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td class="negative">Trouser</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="positive">Pullover</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="negative">Dress</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="positive">Coat</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td class="negative">Sandal</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td class="positive">Shirt</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td class="negative">Sneaker</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td class="positive">Bag</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td class="negative">Ankle boot</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <P>每张图像都对应一个标签，因为类别名称没有包含在数据集中，因此将它们存储在 <code>class_names</code> 变量中，以便稍后绘制图像的时候使用：</P>
+            <pre><code>class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+            'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']</code></pre>
+
+            <h3>2.1.2 探索数据</h3>
+            <p>在训练模型之前，我们先来了解以下数据集的格式。下图显示训练集中有 60000 张图像，每张图像的大小为 28x28 像素：</p>
+            <pre><code>print(train_images.shape)</code></pre>
+            <pre><samp>(60000, 28, 28)</samp></pre>
+            <p>同样，训练有 60000 个标签：</p>
+            <pre><code>print(len(train_labels))</code></pre>
+            <pre><samp>60000</samp></pre>
+            <p>每个标签都是 0 - 9 之间的整数（打印前 10 个标签）：</p>
+            <pre><code>print(train_labels[:10])</code></pre>
+            <pre><samp>[9 0 0 3 0 2 7 2 5 5]</samp></pre>
+            <p>测试集有 10000 张图像，每张图像时 28x28 像素，包含 10000 个图像标签：</p>
+            <pre><code>print(test_images.shape)
+print(len(test_labels))</code></pre>
+            <pre><samp>(10000, 28, 28)
+10000</samp></pre>
+
+            <h3>2.1.3 数据预处理</h3>
+
+
             <div class="navigation">
                 <a href="quickstart_expert.html">上一节：1.0 专家速览</a>
                 <a href="#">下一节：2.2 基础文本分类</a>
@@ -285,7 +360,7 @@
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5><a href="index.html#section1">Keras 基础</a></h5>
+                <h5><a href="index.html#section2">Keras 基础</a></h5>
                 <ul id="dynamic-sidebar" class="nav flex-column">
                     <!-- 动态内容 -->
                 </ul>
