@@ -417,12 +417,68 @@ pyplot.show()</code></pre>
             </ol>
 
             <h4>2.1.5.1 提供信息</h4>
+            <p>要开始训练，调用 <code>Model.fit</code> 方法 - 之所以这样称呼，是因为它可以将模型拟合到训练数据：</p>
+            <pre><code>model.fit(train_images, train_labels, epochs=10)</code></pre>
+            <p>随着模型的训练，会显示损失和准确率指标，该模型在训练数据集上的准确率达到约 0.91 ：</p>
+            <pre><samp>Epoch 1/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 876us/step - accuracy: 0.7827 - loss: 0.6255   
+Epoch 2/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 934us/step - accuracy: 0.8603 - loss: 0.3885
+Epoch 3/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 1ms/step - accuracy: 0.8763 - loss: 0.3426   
+Epoch 4/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 903us/step - accuracy: 0.8858 - loss: 0.3111
+Epoch 5/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 1ms/step - accuracy: 0.8941 - loss: 0.2873  
+Epoch 6/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 913us/step - accuracy: 0.8961 - loss: 0.2799
+Epoch 7/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 867us/step - accuracy: 0.8988 - loss: 0.2671
+Epoch 8/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 902us/step - accuracy: 0.9043 - loss: 0.2565
+Epoch 9/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 925us/step - accuracy: 0.9088 - loss: 0.2426
+Epoch 10/10
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 893us/step - accuracy: 0.9102 - loss: 0.2407</samp></pre>
+
             <h4>2.1.5.2 评估准确度</h4>
+            <p>接下来，比较模型在测试集上的表现：</p>
+            <pre><code>test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+print('Test accuracy:', test_acc)</code></pre>
+            <pre><samp>313/313 - 0s - 928us/step - accuracy: 0.8857 - loss: 0.3391
+Test accuracy: 0.885699987411499</samp></pre>
+            <p>事实证明，测试数据集上的准确率略低于训练数据集上的准确率。训练准确率和测试准确率之间的差距代表了过度拟合 (Overfitting) 。当机器学习模型在新的、以前未见过的输入上的表现比在训练数据上的表现更差时，就会发生过拟合。过拟合的模型会记住训练数据集中的噪声和细节，以至于对模型在新数据上的性能产生负面影响。</p>
             <h4>2.1.5.3 做出预测</h4>
+            <p>训练完模型后，可以使用它来预测某些图像。附加一个 softmax 层，将模型的线性输出 (Logits) 转换未概率，这更容易解释：</p>
+            <pre><code>probability_model = keras.Sequential([model,
+                keras.layers.Softmax()])</code></pre>
+            <p>预测测试集中前 5 张图片：</p>
+            <pre><code>predictions = probability_model.predict(test_images[:5])
+print(numpy.argmax(predictions, axis=-1))
+print(test_labels[:5])</code></pre>
+            <p>预测是一个由 10 个数字组成的数组，它们表示模型对图像与 10 种不同服装相对应的置信度，这里选择最高的置信度，当作预测的类别：</p>
+            <pre><samp>[9 2 1 1 6]
+[9 2 1 1 6]</samp></pre>
 
             <h3>2.1.6 使用模型</h3>
             <p>最后，使用训练好的模型对单幅图像进行预测。</p>
+            <pre><code># Grab an image from the test dataset.
+img = test_images[1]
+print(img.shape)</code></pre>
+            <pre><samp>(28, 28)</samp></pre>
             <p>模型经过优化，可以一次性对一批数据进行预测。因此，即使使用单张图像，也需要将其添加到列表中：</p>
+            <pre><code># Add the image to a batch where it's the only member.
+img = numpy.expand_dims(img, axis=0)
+print(img.shape)</code></pre>
+            <pre><samp>(1, 28, 28)</samp></pre>
+            <p>现在预测该图像正确的标签：</p>
+            <pre><code>pred = probability_model.predict(img)
+print(numpy.round(pred, 3))</code></pre>
+            <pre><samp>[[0.    0.    0.999 0.    0.    0.    0.    0.    0.    0.   ]]</samp></pre>
+            <p><code>keras.Model.predict</code>返回一个二维矩阵 - 数据批次中每张图片对应一个列表。获取批次中（唯一）图片的预测：</p>
+            <pre><code>print(numpy.argmax(pred[0]))</code></pre>
+            <pre><samp>2</samp></pre>
+            <p>该模型如预期的那样预测了正确的标签。</p>
 
             <div class="navigation">
                 <a href="quickstart_expert.html">上一节：1.2 专家速览</a>

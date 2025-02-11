@@ -57,8 +57,8 @@ if __name__ == '__main__':
     probability_model = keras.Sequential([model,
                                           keras.layers.Softmax()])
     predictions = probability_model.predict(test_images[:5])
-    print(numpy.argmax(predictions[0]))
-    print(test_labels[0])
+    print(numpy.argmax(predictions, axis=-1))
+    print(test_labels[:5])
 
     # Grab an image from the test dataset.
     img = test_images[1]
@@ -68,5 +68,5 @@ if __name__ == '__main__':
     print(img.shape)
 
     pred = probability_model.predict(img)
-    print(pred)
+    print(numpy.round(pred, 3))
     print(numpy.argmax(pred[0]))
