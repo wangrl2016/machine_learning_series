@@ -257,7 +257,68 @@
             <h2 class="custom-title">2.2 基础文本分类</h2>
             <p class="title-subtext">构建二元分类器模型来对 IMDB 数据集（文本）执行情绪分析！</p>
             <p style="color: #a0a0a0;">创建日期: 2022-07-22</p>
-            <p>本教程演示了从磁盘中读取纯文本进行文本分类，我们会训练一个 <strong>二元分类器 (Binary Classifier)</strong> 对 IMDB 电影评论数据集进行语义分析。代码在 <a href="#"></a> 文件里。</p>
+            <p>本教程演示了从磁盘中读取纯文本进行文本分类，我们会训练一个 <strong>二元分类器 (Binary Classifier)</strong> 对 IMDB 电影评论数据集进行情绪分析。代码在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/tensorflow/02_keras/2_2_basic_text_classify.py">basic_text_classify.py</a> 文件里。</p>
+
+            <h3>2.2.1 情绪分析</h3>
+            <p>本教程训练了一个情绪分析模型，将电影评论分为正面或负面，这是一个二元分类的示例，是一种重要且广泛适用的机器学习模型。</p>
+            <p>将使用包含 50000 条电影评论文本的大型数据集，其中 25000 条用于训练，25000 用于测试。</p>
+            <h4>2.2.1.1 IMDB 数据集</h4>
+
+            <p>让我们下载并提取数据集，然后探索目录结构。</p>
+            <pre><code>url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+dataset = keras.utils.get_file('aclImdb_v1', url,
+                untar=True,
+                cache_subdir='')
+dataset_dir = os.path.join(os.path.dirname(dataset), 'aclImdb_v1/aclImdb')
+print(os.listdir(dataset_dir))
+train_dir = os.path.join(dataset_dir, 'train')
+print(os.listdir(train_dir))</code></pre>
+            <pre><samp>['imdb.vocab', 'imdbEr.txt', 'README', 'test', 'train']
+['labeledBow.feat', 'neg', 'pos', 'unsup', 'unsupBow.feat', 'urls_neg.txt', 'urls_pos.txt', 'urls_unsup.txt']</samp></pre>
+            
+            <p><em>train/pos</em> 和 <em>train/neg</em> 包含许多文本文件，每个文件都是一篇电影评论，我们来看看其中一个：</p>
+            <pre><code>sample_file = os.path.join(train_dir, 'pos/1181_9.txt')
+with open(sample_file) as f:
+    print(f.read())</code></pre>
+            <pre><samp>Rachel Griffiths writes and directs this award winning short film. A heartwarming story about coping with grief and cherishing the memory of those we've loved and lost. Although, only 15 minutes long, Griffiths manages to capture so much emotion and truth onto film in the short space of time. Bud Tingwell gives a touching performance as Will, a widower struggling to cope with his wife's death. Will is confronted by the harsh reality of loneliness and helplessness as he proceeds to take care of Ruth's pet cow, Tulip. The film displays the grief and responsibility one feels for those they have loved and lost. Good cinematography, great direction, and superbly acted. It will bring tears to all those who have lost a loved one, and survived.</samp></pre>
+            <h4>2.2.1.2 加载数据集</h4>
+            <p>接下来我们会从磁盘中加载数据，并处理成合适的格式用于训练。使用 <code>text_dataset_from_directory</code> 函数，它期望下面形式的目录：</p>
+            <pre><samp>main_directory/
+...class_a/
+......a_text_1.txt
+......a_text_2.txt
+...class_b/
+......b_text_1.txt
+......b_text_2.txt</samp></pre>
+            <p>要准备用于二元分类的数据集，我们需要磁盘上有两个文件夹，分别对应于 <em>class_a</em> 和 <em>class_b</em> 。这些将是正面和负面的电影评论，可以在 <em>aclImdb/train/pos</em> 和 <em>aclImdb/train/neg</em> 中找到。由于 IMDB 数据集包含其它文件夹，因此需要将它们删除：</p>
+            <pre><code>remove_dir = os.path.join(train_dir, 'unsup')
+shutil.rmtree(remove_dir)</code></pre>
+            <p>使用 <code>text_dataset_from_directory</code> 函数创建一个 <code>tf.data.Dataset</code> 类型，<code>tf.data</code> 是一个用于处理数据的强大工具集合。</p>
+            <p>在运行机器学习实验时，最佳做法是将数据集分为三个部分：训练、验证和测试。</p>
+            <p>IMDB 数据集已分为训练集和测试集，但缺少验证集。让我们设置 <code>validation_split</code> 参数，以 <em>80:20</em> 的比例分割训练数据，创建一个验证集：</p>
+            <pre><code>BATCH_SIZE = 32
+seed = 42
+raw_train_ds = keras.utils.text_dataset_from_directory(
+    train_dir,
+    batch_size=BATCH_SIZE,
+    validation_split=0.2,
+    subset='training',
+    seed=seed)</code></pre>
+            <pre><samp>Found 25000 files belonging to 2 classes.
+Using 20000 files for training.</samp></pre>
+            <p>如上所示，训练文件夹中有 25000 个示例，将使用其中的 80%（即 20000 个）进行训练。我们可以迭代数据集并打印一些示例，如下所示：</p>
+            <pre><code>for text_batch, label_batch in raw_train_ds.take(1):
+    for i in range(3):
+        print('Review:', text_batch.numpy()[i])
+        print('Label:', label_batch.numpy()[i])</code></pre>
+            <pre><samp>Review: b'"Pandemonium" is a horror movie spoof that comes off more stupid than funny. Believe me when I tell you, I love comedies. Especially comedy spoofs. "Airplane", "The Naked Gun" trilogy, "Blazing Saddles", "High Anxiety", and "Spaceballs" are some of my favorite comedies that spoof a particular genre. "Pandemonium" is not up there with those films. Most of the scenes in this movie had me sitting there in stunned silence because the movie wasn\'t all that funny. There are a few laughs in the film, but when you watch a comedy, you expect to laugh a lot more than a few times and that\'s all this film has going for it. Geez, "Scream" had more laughs than this film and that was more of a horror film. How bizarre is that?<br /><br />*1/2 (out of four)'
+Label: 0
+Review: b"David Mamet is a very interesting and a very un-equal director. His first movie 'House of Games' was the one I liked best, and it set a series of films with characters whose perspective of life changes as they get into complicated situations, and so does the perspective of the viewer.<br /><br />So is 'Homicide' which from the title tries to set the mind of the viewer to the usual crime drama. The principal characters are two cops, one Jewish and one Irish who deal with a racially charged area. The murder of an old Jewish shop owner who proves to be an ancient veteran of the Israeli Independence war triggers the Jewish identity in the mind and heart of the Jewish detective.<br /><br />This is were the flaws of the film are the more obvious. The process of awakening is theatrical and hard to believe, the group of Jewish militants is operatic, and the way the detective eventually walks to the final violent confrontation is pathetic. The end of the film itself is Mamet-like smart, but disappoints from a human emotional perspective.<br /><br />Joe Mantegna and William Macy give strong performances, but the flaws of the story are too evident to be easily compensated."      
+Label: 0
+Review: b'Great documentary about the lives of NY firefighters during the worst terrorist attack of all time.. That reason alone is why this should be a must see collectors item.. What shocked me was not only the attacks, but the"High Fat Diet" and physical appearance of some of these firefighters. I think a lot of Doctors would agree with me that,in the physical shape they were in, some of these firefighters would NOT of made it to the 79th floor carrying over 60 lbs of gear. Having said that i now have a greater respect for firefighters and i realize becoming a firefighter is a life altering job. The French have a history of making great documentary\'s and that is what this is, a Great Documentary.....'
+Label: 1</samp></pre>
+            <p>接下来，我们将创建验证和测试数据集，使用训练集中剩余的 5000 条评论进行验证：</p>
+            
 
             <div class="navigation">
                 <a href="fashion_classify.html">上一节：2.1 基础图片分类</a>
