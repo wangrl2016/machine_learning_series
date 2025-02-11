@@ -39,4 +39,34 @@ if __name__ == '__main__':
                            left=0.04, right=0.96, top=0.96, bottom=0.06)
     pyplot.show()
 
+    model = keras.Sequential([
+        keras.layers.Flatten(input_shape=(28, 28)),
+        keras.layers.Dense(128, activation='relu'),
+        keras.layers.Dense(10)
+    ])
 
+    model.compile(optimizer='adam',
+                  loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                  metrics=['accuracy'])
+
+    model.fit(train_images, train_labels, epochs=10)
+
+    test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+    print('Test accuracy:', test_acc)
+
+    probability_model = keras.Sequential([model,
+                                          keras.layers.Softmax()])
+    predictions = probability_model.predict(test_images[:5])
+    print(numpy.argmax(predictions[0]))
+    print(test_labels[0])
+
+    # Grab an image from the test dataset.
+    img = test_images[1]
+    print(img.shape)
+    # Add the image to a batch where it's the only member.
+    img = numpy.expand_dims(img, axis=0)
+    print(img.shape)
+
+    pred = probability_model.predict(img)
+    print(pred)
+    print(numpy.argmax(pred[0]))
