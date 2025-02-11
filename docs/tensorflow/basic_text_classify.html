@@ -318,8 +318,14 @@ Label: 0
 Review: b'Great documentary about the lives of NY firefighters during the worst terrorist attack of all time.. That reason alone is why this should be a must see collectors item.. What shocked me was not only the attacks, but the"High Fat Diet" and physical appearance of some of these firefighters. I think a lot of Doctors would agree with me that,in the physical shape they were in, some of these firefighters would NOT of made it to the 79th floor carrying over 60 lbs of gear. Having said that i now have a greater respect for firefighters and i realize becoming a firefighter is a life altering job. The French have a history of making great documentary\'s and that is what this is, a Great Documentary.....'
 Label: 1</samp></pre>
             <p>接下来，我们将创建验证和测试数据集，使用训练集中剩余的 5000 条评论进行验证：</p>
-            
+            <pre><code></code></pre>
+            <pre><samp></samp></pre>
 
+            <h4>2.2.1.3 预处理</h4>
+            <p>接下来，我们需要使用 <code>keras.layers.TextVectorization</code> 层 <em>标准化 (Standardize)</em> 、<em>标记化 (Tokenize)</em> 和 <em>向量化 (Vectorize)</em> 数据集</p>
+            <p>标准化是指对文本进行预处理，通常是为了删除标点符号或 HTML 元素以简化数据集。标记化是指将字符串拆分未标记（例如通过按空格拆分将句子拆分未单个单词）。矢量化是指将标记转换未数字，以便可以将它们输入到神经网络中。所有这些任务都可以通过 <code>keras.layers.TextVectorization</code> 层来完成。</p>
+            <p>正如我们在上面看到的，评论包含各种 HTML 标签，例如 <code>br</code> 。这些标签不会被 TextVectorization 层中的默认标准化器删除（默认情况下，它将文本转换为小写并删除标点符号，但是不会删除 HTML）。我们将自定义一个标准化函数来删除 HTML：</p>
+            
             <div class="navigation">
                 <a href="fashion_classify.html">上一节：2.1 基础图片分类</a>
                 <a href="#">下一节：2.3 </a>
