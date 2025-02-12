@@ -320,15 +320,27 @@
             <p>简单起见，考虑下面的回归问题：给定成对的（输入-输出）数据集 \(\lbrace(x_1, y_1), ... , (x_n, y_n)\rbrace\) ，如何学习 \(f\) 来预测任意新的输入 \(x\) 的输出 \(\hat{y} = f(x)\) ？</p>
             <p>根据下面的非线性函数生成一个人工数据集： </p>
             <p class="highlight-math" style="text-align: center;">\(y_i = 2sin(x_i) + x_i^{0.8} + ξ\)</p>
-            <p>其中 \(ξ\) 为加入的噪声项，服从均值为 0 和标准差为 0.5 的正态分布。在这里生成了 50 个训练样本。为了更好地可视化，需要对训练样本进行排序。文件 为生成代码：</p>
+            <p>其中 \(ξ\) 为加入的噪声项，服从均值为 0 和标准差为 0.5 的正态分布。在这里生成了 50 个训练样本。为了更好地可视化，需要对训练样本进行排序，代码在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/random_point_dataset.py">random_point_dataset.py</a> 文件里：</p>
+            <pre><code>def func(x):
+    return 2 * numpy.sin(x) + x**0.8
 
+rng = numpy.random.default_rng(0)
+n_train = 50
+x_train = numpy.sort(rng.random(n_train) * 5)
+y_train = func(x_train) + rng.normal(0.0, 0.5, (n_train,))
+x_truth = numpy.arange(0, 5, 0.1)
+y_truth = func(x_truth)</code></pre>
+            <img src="res/random_point_dataset.png" alt="随机点数据集" width="400">
 
-        
+            <h4>9.1.4.2 平均汇聚</h4>
+            <p>先使用最简单的估计器来解决回归问题，基于平均汇聚来计算所有训练样本的平均值：</p>
+            <p class="highlight-math" style="text-align: center;">\(f(x) = \frac{1}{n}\sum_{i=1}^{n} y_i\)</p>
+            <p>如下图所示，这个估计器确实不够聪明，真实函数 (Truth) 和预测函数 (Pred) 相差很大：</p>
         </main>
 
             <!-- 右侧小标题导航 -->
             <aside class="col-md-2 right-sidebar">
-                <h5>标题</h5>
+                <h5><a href="index.html#section9">Transformer 架构</a></h5>
                 <ul id="dynamic-sidebar" class="nav flex-column">
                     <!-- 动态内容 -->
                 </ul>
