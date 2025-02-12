@@ -9,14 +9,13 @@ if __name__ == '__main__':
     n_train = 50
     x_train = numpy.sort(rng.random(n_train) * 5)
     y_train = func(x_train) + rng.normal(0.0, 0.5, (n_train,))
-    x_test = numpy.arange(0, 5, 0.1)
-    y_test = func(x_test)
-    n_test = len(x_test)
-    y_hat = y_train.mean().repeat(n_test)
-    
+    x = numpy.arange(0, 5, 0.1)
+    y_truth = func(x)
+    y_pred = y_train.mean().repeat(len(x))
+
     pyplot.plot(x_train, y_train, 'o', alpha=0.5, label='Samples')
-    pyplot.plot(x_test, y_test, label='True')
-    pyplot.plot(x_test, y_hat, '--', label='Pred')
+    pyplot.plot(x, y_truth, label='Truth')
+    pyplot.plot(x, y_pred, '--', label='Pred')
     pyplot.grid(True)
     pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)

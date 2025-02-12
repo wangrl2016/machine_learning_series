@@ -328,14 +328,32 @@ rng = numpy.random.default_rng(0)
 n_train = 50
 x_train = numpy.sort(rng.random(n_train) * 5)
 y_train = func(x_train) + rng.normal(0.0, 0.5, (n_train,))
-x_truth = numpy.arange(0, 5, 0.1)
-y_truth = func(x_truth)</code></pre>
-            <img src="res/random_point_dataset.png" alt="随机点数据集" width="400">
+x = numpy.arange(0, 5, 0.1)
+y_truth = func(x)</code></pre>
+            <img src="res/random_point_dataset.png" alt="随机点数据集" width="600">
 
             <h4>9.1.4.2 平均汇聚</h4>
-            <p>先使用最简单的估计器来解决回归问题，基于平均汇聚来计算所有训练样本的平均值：</p>
+            <p>先使用最简单的估计器来解决回归问题，基于平均汇聚来计算所有训练样本输出的平均值：</p>
             <p class="highlight-math" style="text-align: center;">\(f(x) = \frac{1}{n}\sum_{i=1}^{n} y_i\)</p>
+            <p>代码实现在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/average_pooling.py">average_pooling.py</a> 文件里，学习得到的预测函数使用 Pred 进行标记：</p>
+            <pre><code>y_pred = y_train.mean().repeat(len(x))</code></pre>
             <p>如下图所示，这个估计器确实不够聪明，真实函数 (Truth) 和预测函数 (Pred) 相差很大：</p>
+            <img src="res/average_pooling.png" alt="平均汇聚" width="600">
+
+            <h4>9.1.4.2 无参注意汇聚</h4>
+            <p>显然，平均汇聚忽略了输入 \(x_i\) 。于是 Nadaraya 和 Watson 提出了一个更好的想法，根据输入的位置对输出 \(y_i\) 进行加权：</p>
+            <p class="highlight-math" style="text-align: center;">\(f(x) = \sum_{i=1}^{n} \frac{K(x - x_i)}{\sum_{j=1}^{n} K(x - x_j)} y_i\)</p>
+            <p>其中 \(K\) 是 核 ，上述公式被称为 Nadaraya-Watson 核回归。这里不会深入讨论核函数细节，但受此启发，我们可以得到一个更加通用的注意力汇聚公式：</p>
+            <p class="highlight-math" style="text-align: center;">\(f(x) = \sum_{i=1}^{n} \alpha(x, x_i)y_i\)</p>
+            <p>其中 \(x\) 是查询，\((x_i, y_i)\) 是键值对，将查询 \(x\) 和键 \(x_i\) 之间的关系建模为注意力权重 \(\alpha(x, x_i)\) ，这个权重将被分配给每一个对应值 \(y_i\) 。对于任何查询，模型在所有键值对注意力权重都是一个有效的概率分布：它们是非负的，并且总和为 1 。</p>
+            <p>为了更好地理解注意力汇聚，下面考虑一个 <em>高斯核 (Gaussian Kernel)</em> ，其定义为：</p>
+            <p class="highlight-math" style="text-align: center;">\(K(\mu) = \frac{1}{\sqrt{2\pi}} exp(-\frac{{{\mu}^2}}{2})\)</p>
+
+            <p>将高斯核代入注意力汇聚公式可以得到：</p>
+            <p class="highlight-math" style="text-align: center;">\(f(x) = \sum_{i=1}^{n} \alpha(x, x_i)y_i = \sum_{i=1}^{n}softmax(-\frac{1}{2}(x - x_i)^2)y_i\)</p>
+            <p>上面公式表明，如果一个键 \(x_i\) 越是接近给定的查询 \(x\) ，那么分配给这个键对应值 \(y_i\) 的注意力权重就会越大，也就是“获得了更多的注意力”。</p>
+            <p>Nadaray-Waston 核回归是一个无参模型，接下来我们将基于这个模型来绘制预测结果。从绘制的结果会发现新的模型预测是平滑的，比平均汇聚的预测更接近真实。</p>
+
         </main>
 
             <!-- 右侧小标题导航 -->
