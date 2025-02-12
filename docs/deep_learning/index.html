@@ -132,6 +132,14 @@
             text-underline-offset: 8px;
             color: #3498db;
         }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 -2px 6px rgba(0, 0, 0, 0.1);;
+        }
         /* 移动端样式（只在屏幕宽度 < 1024 px 时生效 */
         @media screen and (max-width: 1024px) {
             .sidebar, .right-sidebar {
@@ -552,6 +560,36 @@
                 </section>
                 <section id="section9" class="content-section">
                     <h2>09 Transformer 架构</h2>
+                    <p>提到大语言模型 (LLM) 背后的技术，很多人就会想到 <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a> 这篇论文，然后以论文里的模型架构图（如下所示）开始向新手讲述其原理。</p>
+                    <a href="#"><img src="res/transformer.png" width="400" alt="Transformer 架构图"></a>
+                    <p>即使你有神经网络的基础知识，当听到编码器-解码器架构，词嵌入、位置编码、多头注意力、自注意力等这些高级名词时，很容易因为太多抽线概念揉在一起，导致无法理解。</p>
+                    <p>Transformer 架构的出现并不是一蹴而就的，如果你跟随机器翻译 (Machine Translate) 的历史，就会发现技术是层层递进的，就像地球生命的演化过程。从简单到复杂，最后彻底掌握大语言模型技术。</p>
+                    <p>本章就是以技术演化的结构来编写，通过相关论文逐步解释 Transformer 架构，并带有大量的代码实现。</p>
+                    <p>最初神经网络这个名词带有人们强烈想要模仿人类大脑的结构获取智能的想法，在上个世纪它经历了曲折的发展过程，可以查看维基百科 <a href="https://en.wikipedia.org/wiki/History_of_artificial_intelligence">人工智能的历史</a> 。</p>
+
+                    <p>1997 年，发表论文 <a href="https://blog.xpgreat.com/file/lstm.pdf">LONG SHORT-TERM MEMORY</a> ，属于普通 RNN 网络的改进版，用于解决长距离依赖问题。</p>
+                    <p>1998 年，Yann LeCun 发表论文 <a href="http://vision.stanford.edu/cs598_spring07/papers/Lecun98.pdf">Gradient-Based Learning Applied to Document Recognition</a> ，将梯度引入到神经网络，解决了手写数字识别问题。</p>
+                    <p>这个时间段深度学习的理论基本已经确定，主要限制于硬件水平无法将理论应用于大规模网络。</p>
+                    <p>2007 年英伟达公司提出统一计算架构 (CUDA) ，用于处理通用的计算任务。</p>
+                    <p>计算机技术的不断发展，许多研究者此时已经看到重启深度学习的曙光，2009 年，李飞飞团队发表论文 <a href="https://ieeexplore.ieee.org/document/5206848">ImageNet: A large-scale hierarchical image database</a> ，ImageNet 规模和多样性远远大于当时的图像数据集，为计算机视觉的研究人员提供无与伦比的机会。</p>
+                    <p>2012 年，Alex Krizhevsky 等人发表论文 <a href="https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">ImageNet Classification with Deep Convolutional Neural Networks</a> ，使用 GPU 构建了当时最大的卷积神经网络。在 ILSVRC-2012 比赛中将 Top-5 错误率从 26.2% 降低到 15.3% ，使人们意识到深度神经网络巨大的潜力。</p>
+                    <p>技术在不断推进，2015 年，何凯明等人发表论文 <a href="https://arxiv.org/abs/1512.03385">Deep Residual Learning for Image Recognition</a> ，提出残差架构，可以训练更深的网络。ILSVRC-2015 的错误率降低到 3.57%，相当于彻底解决该问题。</p>
+                    
+                    <p>具体到机器翻译方面，因为文本有先后位置关系，当时最流行的技术是使用 LSTM 网络，这个时期有非常多的论文在研究：</p>
+                    <ul>
+                        <li>A Neural Probabilistic Language Model</li>
+                        <li>Recurrent neural network based language model</li>
+                        <li>On the difficulty of training Recurrent Neural Networks</li>
+                        <li>Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation</li>
+                        <li>Generating Sequences With Recurrent Neural Networks</li>
+                    </ul>
+                    <p>在这里，我们需要理解 RNN 的基本原理是什么，它的核心是隐藏状态，如下图所示：</p>
+                    <p>用 RNN 对文本进行分类</p>
+                    <p>用 RNN 生成文本</p>
+                    <p>在这里我们应该学会文本的预处理，词嵌入。</p>
+                    <p>在统计机器翻译中，我们需要初步理解 编码器-解码器架构，以及什么是短语表示。</p>
+                    
+
 
                     <h3 id="section9-sub1" class="content-section-sub">
                         <a href="attention_mechanism.html" style="color: inherit;">9.1 注意力机制</a>
