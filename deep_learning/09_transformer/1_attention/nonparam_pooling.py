@@ -1,6 +1,7 @@
 import numpy
 from matplotlib import pyplot
 import torch
+import show_heatmap
 
 def func(x):
     return 2 * numpy.sin(x) + x**0.8
@@ -26,3 +27,8 @@ if __name__ == '__main__':
     pyplot.legend()
     pyplot.subplots_adjust(left=0.08, right=0.92, top=0.96, bottom=0.06)
     pyplot.show()
+
+    show_heatmap.show_heatmap(attention_weights.T.unsqueeze(0)
+                              .unsqueeze(0).detach().numpy(),
+                              'Sorted pred inputs',
+                              'Sorted train inputs')

@@ -350,9 +350,10 @@ y_truth = func(x)</code></pre>
             <p class="highlight-math" style="text-align: center;">\(K(\mu) = \frac{1}{\sqrt{2\pi}} exp(-\frac{{{\mu}^2}}{2})\)</p>
 
             <p>将高斯核代入注意力汇聚公式可以得到：</p>
-            <p class="highlight-math" style="text-align: center;">\(f(x) = \sum_{i=1}^{n} \alpha(x, x_i)y_i = \sum_{i=1}^{n}softmax(-\frac{1}{2}(x - x_i)^2)y_i\)</p>
-            <p>上面公式表明，如果一个键 \(x_i\) 越是接近给定的查询 \(x\) ，那么分配给这个键对应值 \(y_i\) 的注意力权重就会越大，也就是“获得了更多的注意力”。</p>
-            <p>代码在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/nonparam_pooling.py">nonparam_pooling.py</a> 文件里。</p>
+            <div class="scroll-container highlight-math" style="text-align: center;">
+                \(f(x) = \sum_{i=1}^{n} \alpha(x, x_i)y_i = \sum_{i=1}^{n}softmax(-\frac{1}{2}(x - x_i)^2)y_i\)
+            </div>
+            <p>上面公式表明，如果一个键 \(x_i\) 越是接近给定的查询 \(x\) ，那么分配给这个键对应值 \(y_i\) 的注意力权重就会越大，也就是“获得了更多的注意力”，代码在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/nonparam_pooling.py">nonparam_pooling.py</a> 文件里：</p>
             <pre><code># Each row contains the same input (query).
 x_pred_repeat = x.repeat(n_train).reshape((-1, n_train))
 # shape: (n_pred, n_train)
@@ -363,6 +364,46 @@ y_hat = torch.matmul(attention_weights, torch.tensor(y_train))</code></pre>
             <pre><samp>Attention weigths shape: torch.Size([100, 50])</samp></pre>
             <p>Nadaray-Waston 核回归是一个无参模型，接下来我们将基于这个模型来绘制预测结果。从绘制的结果会发现新的模型预测是平滑的，比平均汇聚的预测更接近真实。</p>
             <img src="res/nonparam_pooling.png" alt="无参汇聚" width="600">
+            <p>文件 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/show_heatmap.py">show_heatmap.py</a> 提供了一个绘制热力图的函数，能够可视化注意力权重：</p>
+            <pre><code>def show_heatmap(matrices, x_label = '', y_label = '', cmap='Reds'):
+    num_rows, num_cols = matrices.shape[0], matrices.shape[1]
+    fig, axes = pyplot.subplots(num_rows, num_cols,
+                                sharex=True, sharey=True, squeeze=False)
+    # shape os axes: (1 x 1)
+    for row_idx, (row_axes, row_matrices) in enumerate(zip(axes, matrices)):
+        for col_idx, (ax, matrix) in enumerate(zip(row_axes, row_matrices)):
+            pcm = ax.imshow(matrix, cmap=cmap)
+            if row_idx == num_rows - 1:
+                ax.set_xlabel(x_label)
+            if col_idx == 0:
+                ax.set_ylabel(y_label)
+    fig.colorbar(pcm, ax=axes, shrink=0.6)
+    fig.subplots_adjust(left=0.1, right=0.96, top=0.96, bottom=0.1, wspace=0.2, hspace=0.2)
+    pyplot.show()</code></pre>
+            <img src="res/nonparam_heatmap.png" alt="无参热力图" width="600">
+
+            <h4>9.1.4.3 有参注意汇聚</h4>
+            <p>无参数的 Nadaraya-Watson 核回归具有一致性的优点：如果有足够的数据，此模型会收敛到最优结果。尽管如此，我们还是可以轻松地将可学习的参数集成到注意力汇聚中。</p>
+            <p>与无参注意汇聚公式略有不同，在将查询 \(x\) 和键 \(x_i\) 之间的距离乘以可学习参数 \(w\)：</p>
+            <div class="scroll-container highlight-math"  style="text-align: center;">
+                \(f(x) = \sum_{i=1}^{n} \alpha(x, x_i)y_i = \sum_{i=1}^{n}softmax(-\frac{1}{2}((x - x_i)w)^2)y_i\)
+            </div>
+            <p>为了更有效地计算小批量数据的注意力，我们可以利用批量矩阵乘法。假设第一个小批量数据包括 \(n\) 个矩阵 \(X_1, ... , X_n\) ，矩阵的形状为 \(a \times b\) ，第二个小批量包含 \(n\) 个矩阵 \(Y_1, ... , Yn\) ，矩阵的形状为 \(b \times c\) 。</p>
+            <p>它们的批量矩阵乘法得到 \(n\) 个矩阵 \(\X_{1}Y_1, ... , X_{n}Y_n) ，形状为 \(a \times c\) 。因此，假定两个张量的形状分别为 \((n, a, b)\) 和 \((n, b, c)\) ，它们的批量矩阵乘法输出的形状为 \((n, a, c)\) ，具体计算过程在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/batch_array_dot.py">batch_array_dot.py</a> 文件里：</p>
+            <pre><code>x = torch.ones((2, 1, 4))
+y = torch.ones((2, 4, 6))
+print(torch.bmm(x, y).shape)</code></pre>
+            <pre><samp>torch.Size([2, 1, 6])</samp></pre>
+            <p>在注意力机制的背景中，我们可以使用小批量矩阵乘法来计算小批量数据中的加权平均值：</p>
+            <pre><code>weights = (torch.ones((2, 10)) * 0.1).unsqueeze(1)
+values = torch.arange(20.0).reshape((2, 10)).unsqueeze(-1)
+print('Weights shape:', weights.shape)
+print('Values shape:', values.shape)
+result = torch.bmm(weights, values)
+print('Result shape:', result.shape)</code></pre>
+            <pre><samp>Weights shape: torch.Size([2, 1, 10])
+Values shape: torch.Size([2, 10, 1])
+Result shape: torch.Size([2, 1, 1])</samp></pre>
         </main>
 
             <!-- 右侧小标题导航 -->
