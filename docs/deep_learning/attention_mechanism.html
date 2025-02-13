@@ -389,7 +389,7 @@ y_hat = torch.matmul(attention_weights, torch.tensor(y_train))</code></pre>
                 \(f(x) = \sum_{i=1}^{n} \alpha(x, x_i)y_i = \sum_{i=1}^{n}softmax(-\frac{1}{2}((x - x_i)w)^2)y_i\)
             </div>
             <p>为了更有效地计算小批量数据的注意力，我们可以利用批量矩阵乘法。假设第一个小批量数据包括 \(n\) 个矩阵 \(X_1, ... , X_n\) ，矩阵的形状为 \(a \times b\) ，第二个小批量包含 \(n\) 个矩阵 \(Y_1, ... , Yn\) ，矩阵的形状为 \(b \times c\) 。</p>
-            <p>它们的批量矩阵乘法得到 \(n\) 个矩阵 \(\X_{1}Y_1, ... , X_{n}Y_n) ，形状为 \(a \times c\) 。因此，假定两个张量的形状分别为 \((n, a, b)\) 和 \((n, b, c)\) ，它们的批量矩阵乘法输出的形状为 \((n, a, c)\) ，具体计算过程在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/batch_array_dot.py">batch_array_dot.py</a> 文件里：</p>
+            <p>它们的批量矩阵乘法得到 \(n\) 个矩阵 \(X_{1}Y_1, ... , X_{n}Y_n\) ，形状为 \(a \times c\) 。因此，假定两个张量的形状分别为 \((n, a, b)\) 和 \((n, b, c)\) ，它们的批量矩阵乘法输出的形状为 \((n, a, c)\) ，具体计算过程在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/batch_array_dot.py">batch_array_dot.py</a> 文件里：</p>
             <pre><code>x = torch.ones((2, 1, 4))
 y = torch.ones((2, 4, 6))
 print(torch.bmm(x, y).shape)</code></pre>
@@ -404,6 +404,34 @@ print('Result shape:', result.shape)</code></pre>
             <pre><samp>Weights shape: torch.Size([2, 1, 10])
 Values shape: torch.Size([2, 10, 1])
 Result shape: torch.Size([2, 1, 1])</samp></pre>
+
+            <p>基于带参数的注意力汇聚，使用小批量矩阵乘法，定义带参数的 Nadaraya-Watson 核回归版本，代码在 <a href="https://github.com/artinte/machine-learning-series/blob/develop/deep_learning/09_transformer/1_attention/param_pooling.py">param_pooling.py</a> 文件里：</p>
+            <pre><code>class NWKernelRegression(torch.nn.Module):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.w = torch.nn.Parameter(torch.tensor([0.1]), requires_grad=True)
+
+    def forward(self, queries, keys, values):
+        queries = queries.repeat_interleave(keys.shape[1]).reshape((-1, keys.shape[1]))
+        self.attention_weights = torch.nn.functional.softmax(
+            -((queries - keys) * self.w) ** 2 / 2, dim=1)
+        return torch.bmm(self.attention_weights.unsqueeze(1),
+                            values.unsqueeze(-1)).reshape(-1)</code></pre>
+            <p>训练带参数的注意力汇聚模型时，使用平方损失和随机梯度下降：</p>
+            <pre><code>net = NWKernelRegression()
+loss = torch.nn.MSELoss(reduction='none')
+trainer = torch.optim.SGD(net.parameters(), lr=0.5)
+
+for epoch in range(5):
+    trainer.zero_grad()
+    l = loss(net(x_train, keys, values), y_train)
+    l.sum().backward()
+    trainer.step()
+    print(f'Epoch {epoch + 1}, loss {float(l.sum().item()):.6f}')</code></pre>
+            <p>如下所示，训练完带参数的注意力汇聚模型后可以发现：在尝试拟合带噪声的训练数据时，预测结果绘制的线不如之前非参数模型的平滑：</p>
+            <img src="res/param_pooling.png" alt="有参注意汇聚" width="600">
+            <p>为什么新的模型更不平滑呢？下面看一下输出结果的绘制图：与非参数的注意力汇聚模型相比，带参数的模型加入可学习的参数后，曲线在注意力权重较大的区域变得更不平滑：</p>
+            <img src="res/param_heatmap.png" alt="有参热力图" width="600">
         </main>
 
             <!-- 右侧小标题导航 -->

@@ -12,6 +12,7 @@ def show_heatmap(matrices, x_label = '', y_label = '', cmap='Reds'):
                 ax.set_xlabel(x_label)
             if col_idx == 0:
                 ax.set_ylabel(y_label)
-    fig.colorbar(pcm, ax=axes, shrink=0.6)
+    # fig.colorbar(pcm, ax=axes, shrink=0.6)
+    pyplot.grid()
     fig.subplots_adjust(left=0.1, right=0.96, top=0.96, bottom=0.1, wspace=0.2, hspace=0.2)
     pyplot.show()
