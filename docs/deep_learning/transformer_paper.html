@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../laptop_coding_48.png" type="image/png">
     <title>Transformer 论文</title>
     <!-- 引入 Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -309,6 +310,10 @@
             <img src="res/transformer.png" alt="Transformer 架构" width="400">
             <p>Transformer 整体架构如上图所示，编码器（左边）和解码器（右边）都使用多头自注意力和全连接层。</p>
             <h4>9.4.3.1 编码器和解码器栈</h4>
+            <p><strong>编码器 (Encoder)</strong> ：编码器由 \(N = 6\) 个相同层堆叠而成。每个层有两个子层，第一个子层是多头自注意力机制，第二个是简单的全连接前馈网络。两个子层都分别采用了残差连接，然后进行了层归一化。</p>
+            <p>也就是说，每个子层的输出为 <em>LayerNorm(x + Sublayer(x))</em> ，其中 <em>Sublayer(x)</em> 是子层本身实现的函数。为了促进这些残差连接，模型中的所有子层，包括嵌入层，产生的输出维度都是 \(d_{model} = 512\) 。</p>
+            <p><strong>解码器 (Decoder)</strong> ：解码器也由 \(N = 6\) 个相同的层堆叠而成，除了编码器的两个子层外，解码器还插入第三个子层，该子层对编码器的输出执行多头注意力。与编码器类似，我们在每个子层中采用残差连接，然后进行层归一化。</p>
+            <p>我们还修改了解码器堆栈中的自注意力子层，以防止在当前位置时关注后续位置。这种掩盖，加上输出偏移一个位置的事实，确保位置 \(i\) 的预测智能依赖于小于 \(i\) 的位置的已知输出。</p>
             
             <h4 id="attention">9.4.3.2 注意力</h4>
 
