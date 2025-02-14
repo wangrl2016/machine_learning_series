@@ -113,8 +113,8 @@
             font-weight: bold;
         }
         pre {
-            background: #263238;
-            color: #c3e88d;
+            background: #E3F2FD;
+            color: #212121;
             padding: 15px;
             border-radius: 5px;
             overflow-x: auto;
@@ -416,7 +416,7 @@ print('Vocab:', vocab)</code></pre>
             <pre><code>18 unique words found
 Vocab: ['now', 'and', 'or', 'good', 'not', 'sad', 'is', 'right', 'was', 'earlier',
     'at', 'very', 'am', 'i', 'bad', 'this', 'all', 'happy']</code></pre>
-            <div class="comment">注：set 结构体会自动过滤到重复的单词。</div>
+            <p class="comment">注：set 结构体会自动过滤到重复的单词。</p>
             <p><code>vocab</code> 包含训练集中至少出现一次的所有单词，现在可以使用对应的整数表示单词表中的单词，这是必要的，因为 RNN 不能理解文本，我们必须给它输入数字。</p>
             <pre><code># Assign indices to each word.
 word_to_idx = { w: i for i, w in enumerate(vocab) }
