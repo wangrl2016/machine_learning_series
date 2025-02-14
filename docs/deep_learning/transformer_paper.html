@@ -247,7 +247,7 @@
             <p class="title-subtext"><strong style="color: red;">注意力 (Attention)</strong> ，你只需要它！</p>
             <p style="color: #a0a0a0;">创建日期: 2025-01-23</p>
             <p>论文作者：Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</p>
-            <p>主要的 <strong>序列传导模型 (Sequence Transduction Model)</strong> 基于复杂的循环或者卷积神经网络，它们包含一个 <strong>编码器 (Encoder)</strong> 和一个 <strong>解码器 (Decoder)</strong>。性能最佳的模型还通过 <strong>注意力机制 (Attention Mechanism)</strong> 连接编码器和解码器。我们提出一种新的简单的网络架构 <strong style="color: red;">Transformer</strong> ，它只基于注意力机制，完全省去了循环和卷积操作。</p>
+            <p>主要的 <strong>序列转导模型 (Sequence Transduction Model)</strong> 基于复杂的循环或者卷积神经网络，它们包含一个 <strong>编码器 (Encoder)</strong> 和一个 <strong>解码器 (Decoder)</strong>。性能最佳的模型还通过 <strong>注意力机制 (Attention Mechanism)</strong> 连接编码器和解码器。我们提出一种新的简单的网络架构 <strong style="color: red;">Transformer</strong> ，它只基于注意力机制，完全省去了循环和卷积操作。</p>
             <p>在两个 <em>机器翻译 (Machine Translation)</em> 任务上的实验表明，模型质量优越，并行性更高，并且训练时间明显减少。在 WMT 2014 英语翻译成德语的任务中，我们的模型获得 28.4 BLEU 分数，比现有最佳结果，包括 <em>集成 (Ensemble)</em> 模型，至少提高 2 BLEU 分数。在 WMT 2014 英语翻译成法语的任务中，我们的模型在 8 块 GPU 上训练了 3.5 天，达到了 41.8 BLEU 分数，创新了单模型最好成绩，其训练成本仅为其它最佳模型的一小部分。</p>
             <p class="paper-comment">
                 WMT 是 <em>Workshop on Machine Translation</em> 的缩写，WMT 14 指的是 2014 年的机器翻译研讨会，它提供了 <em>英-法</em> 和 <em>英-德</em> 语言数据集。
@@ -279,7 +279,7 @@
                 </li>
             </ul>
             <h3>9.4.1 介绍</h3>
-            <p>循环神经网络，特别是长短期记忆 (LSTM) 和门控循环 (GRU) 神经网络，已经被认为是解决 <em>序列建模 (Sequence Modeling)</em>和传导问题（比如语言建模和机器翻译）的最先进方法。许多研究工作在持续推动循环语言模型和 <em>编码器-解码器 (Encoder-Decoder) 架构的边界。</em></p>
+            <p>循环神经网络，特别是长短期记忆 (LSTM) 和门控循环 (GRU) 神经网络，已经被认为是解决 <em>序列建模 (Sequence Modeling)</em>和转导问题（比如语言建模和机器翻译）的最先进方法。许多研究工作在持续推动循环语言模型和 <em>编码器-解码器 (Encoder-Decoder) 架构的边界。</em></p>
             <p class="paper-comment">LSTM 来自于论文 <a href="https://deeplearning.cs.cmu.edu/S23/document/readings/LSTM.pdf">Long Short-Term Memory</a> ，GRU 来自于论文 <a href="https://arxiv.org/abs/1412.3555">Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling</a> 。</p>
             <p class="comment">语言建模、机器翻译和编码器-解码器相关研究论文：</p>
             <ol>
@@ -293,7 +293,7 @@
             <p>循环模型通常根据输入和输出序列的符号位置进行计算。通过位置与计算时间步骤对齐，它们会生成一系列的隐状态 \(h_t\) ，它是之前隐状态 \(h_{t-1}\) 和位置 \(t\) 输入的函数。这种固有的顺序性阻碍了训练样本的并行化，这在较长的序列中尤其重要，因为内存限制了样本之间的批处理。</p>
             <p>最近的研究通过 <em>分解技巧 (Factoization Trick)</em> 和 <em>条件计算 (Conditional Computation)</em> ，显著提高了计算效率，同时后者也能提高模型性能。然而，顺序计算的基本约束仍然存在。</p>
             <p class="paper-comment">分解技巧来自于论文 <a href="https://arxiv.org/abs/1703.10722">Factorization tricks for LSTM networks</a> ，条件计算来自于论文 <a href="https://arxiv.org/abs/1701.06538">Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer</a> 。</p>
-            <p>注意力机制已经称为序列建模和传导模型不可或缺的一部分，它允许对依赖关系进行建模，而无需考虑它们在输入或输出序列中的距离。然而，除了少数情况外，这种注意力机制都是与循环网络结合使用的。</p>
+            <p>注意力机制已经称为序列建模和转导模型不可或缺的一部分，它允许对依赖关系进行建模，而无需考虑它们在输入或输出序列中的距离。然而，除了少数情况外，这种注意力机制都是与循环网络结合使用的。</p>
             <p class="paper-comment">论文 <a href="https://arxiv.org/abs/1409.0473">Neural Machine Translation by Jointly Learning to Align and Translate</a> 和 <a href="https://arxiv.org/abs/1702.00887">Structured Attention Networks</a> 使用注意力机制，论文 <a href="https://arxiv.org/abs/1606.01933">A Decomposable Attention Model for Natural Language Inference</a> 使用注意力将问题分解成可以解决的子问题，实现并行化。</p>
             <p>在这项工作中，我们提出了 Transformer ，这是一种避免循环、完全依靠注意力机制来绘制输入和输出之间的全局依赖关系的架构。Transformer 显著提高了并行化水平，在 8 个 P100 GPU 上训练 12 小时后，就可以达到最新的翻译质量水平。</p>
 
@@ -305,8 +305,9 @@
             <p>然后，据我们所知，Transformer 是第一个完全依赖自注意力来计算其输入和输出表示的传导模型，而无需使用序列对齐的 RNN 或者 CNN 。在以下部分中，我们将描述 Transformer ，为什么使用自注意力，讨论相对于其它模型的优点。</p>
 
             <h3>9.4.3 模型架构</h3>
-            
-
+            <p>大多数具有竞争力的神经序列转导模型都具有编码器-解码器结构。这里，编码器将符号表示的输入序列 \((x_1, ... , x_n)\) 映射成连续表示的序列 \(z = (z_1, ... , z_n)\) 。给定 \(z\) ，解码器生成一个输出符号序列 \((y_1, ... , y_m)\) ，每次生成一个元素。在每个步骤中，模型都是自回归的，在生成下一个符号时将先前生成的符号作为附加输入。</p>
+            <img src="res/transformer.png" alt="Transformer 架构" width="400">
+            <p>Transformer 整体架构如上图所示，编码器（左边）和解码器（右边）都使用多头自注意力和全连接层。</p>
             <h4>9.4.3.1 编码器和解码器栈</h4>
             
             <h4 id="attention">9.4.3.2 注意力</h4>
