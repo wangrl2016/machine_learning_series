@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../laptop_coding_48.png" type="image/png">
+    <title>新手速览</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../article_style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+        <!-- 左侧小节列表 -->
+        <nav class="col-md-2 sidebar">
+
+        </nav>
+
+        <!-- 中间内容：显示具体某一个小节 -->
+        <main class="col-md-8 content">
+            <h2 class="custom-title">11.5 Latent Diffusion 论文</h2>
+            <p class="title-subtext">利用潜在扩散模型进行高分辨率图像合成！</p>
+            <p style="color: #a0a0a0;">创建日期: 2025-02-14</p>
+            <p>论文作者：Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, Bjorn Ommer</p>
+
+            <div class="navigation">
+                <a href="https://www.tensorflow.org/install">上一节：1.0 环境配置</a>
+                <a href="quickstart_expert.html">下一节：1.2 专家速览</a>
+            </div>
+        </main>
+
+            <!-- 右侧小标题导航 -->
+            <aside class="col-md-2 right-sidebar">
+                <h5><a href="index.html#section1">快速入门</a></h5>
+                <ul id="dynamic-sidebar" class="nav flex-column">
+                    <!-- 动态内容 -->
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+        <!-- 引入 Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script>
+            // 获取所有的 h3 和 h4 元素
+            const sidebar = document.getElementById('dynamic-sidebar');
+            const elements = Array.from(document.querySelectorAll('h3, h4')); // 获取所有 h3 和 h4 元素
+
+            // 动态生成目录项
+            elements.forEach(element => {
+                // 如果没有 id，则为该元素生成一个 id
+                if (!element.id) {
+                    element.id = `${element.tagName.toLowerCase()}-${Math.random().toString(36).substr(2, 9)}`;
+                }
+
+                const link = document.createElement('a');
+                link.href = `#${element.id}`;
+                link.textContent = element.textContent;
+
+                const listItem = document.createElement('li');
+                // 如果是 h4 元素，添加缩进
+                if (element.tagName.toLowerCase() === 'h4') {
+                    listItem.style.marginLeft = '20px'; // 控制缩进
+                }
+                listItem.appendChild(link);
+
+                sidebar.appendChild(listItem);
+            });
+
+            // 高亮当前目录项
+            function highlightCurrentLink(targetId) {
+                const links = sidebar.querySelectorAll('a');
+                links.forEach(link => {
+                    if (link.getAttribute('href') === `#${targetId}`) {
+                        link.classList.add('highlight-link');
+                    } else {
+                        link.classList.remove('highlight-link');
+                    }
+                });
+            }
+
+            // 页面滚动时更新高亮
+            window.addEventListener('scroll', () => {
+                let found = false;
+                elements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
+                        if (!found) {
+                            highlightCurrentLink(el.id);
+                            found = true;
+                        }
+                    }
+                });
+            });
+
+            // 为每个目录链接添加点击事件
+            const links = sidebar.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                        highlightCurrentLink(targetId);
+                    }
+                });
+            });
+        </script>
+</body>
+</html>
