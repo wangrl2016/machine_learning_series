@@ -462,7 +462,7 @@ if __name__ == '__main__':
     print_translation(sentence, translated_text, ground_truth)
 
     sentence = 'os meus vizinhos ouviram sobre esta ideia.'
-    garound_truth = 'and my neighboring homes heard about this idea .'
+    ground_truth = 'and my neighboring homes heard about this idea .'
     translated_text, translated_tokens, attention_weights = translator(tf.constant(sentence))
     print_translation(sentence, translated_text, ground_truth)
 

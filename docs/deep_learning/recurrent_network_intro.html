@@ -336,7 +336,7 @@ pyplot.plot(range(len(stock)), stock, color='b')</code></pre>
             <p>使用矩阵表示权重，使用向量表示偏置，上面 3 组权重和 2 组偏置就能构成一个完整的 RNN 。下面公式将所有的参数放在一起：</p>
             <p class="highlight-math" style="text-align: center;">\(h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b_h)\)</p>
             <p class="highlight-math" style="text-align: center;">\(y_t = W_{hy} \cdot h_t + b_y\)</p>
-            <div class="comment">注：不要跳过这些等式，停下来思考一分钟，记住这些权重是矩阵，其它变量是向量。</div>
+            <p class="comment">注：不要跳过这些等式，停下来思考一分钟，记住这些权重是矩阵，其它变量是向量。</p>
             <p>所有权重都使用矩阵乘法计算，并将偏置添加到乘积结果中。使用 tanh 作为第一个激活函数（也可以使用其它激活函数，如 sigmoid 函数）。如果不知道什么是激活函数，<a href="index.html#section4-sub2">第 4.2 节 激活函数</a> 详细地介绍了它们。</p>
         
             <h3 id="problem">8.1.3 问题</h3>
