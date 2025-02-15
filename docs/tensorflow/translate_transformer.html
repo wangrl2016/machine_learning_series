@@ -164,14 +164,87 @@ print(tokens)</code></pre>
      b'curiosity', b'.', b'[END]'] ]&gt;</samp></pre>
             <p>比如单词 <em>searchability</em> 分解成为 <em>search</em> 和 <em>##ability</em> ，单词 <em>serendipity</em> 分解成 <em>s</em> , <em>##ere</em> , <em>##nd</em> , <em>##ip</em> 和 <em>##ity</em> 。</p>
             <p>需要注意的是标记的文本包含 <em>[START]</em> 和 <em>[END]</em> 两个标记。</p>
-            
+            <p>数据集中每个示例的标记分布如下：</p>
+            <pre><code>lengths = []
+for pt_examples, en_examples in train_examples.batch(1024):
+    pt_tokens = tokenizers.pt.tokenize(pt_examples)
+    lengths.append(pt_tokens.row_lengths())
+
+    en_tokens = tokenizers.en.tokenize(en_examples)
+    lengths.append(en_tokens.row_lengths())
+    print('.', end='', flush=True)
+print()
+
+all_lengths = numpy.concatenate(lengths)
+pyplot.hist(all_lengths, numpy.linspace(0, 500, 101))
+pyplot.ylim(pyplot.ylim())
+max_length = max(all_lengths)
+pyplot.plot([max_length, max_length], pyplot.ylim())
+pyplot.title(f'Maximum tokens per examples: {max_length}')
+pyplot.show()</code></pre>
+
             <h4>7.4.3.3 使用 tf.data</h4>
+            <p>以下函数将批量数据作为输入，并将其转换为适合训练的格式：</p>
+            <ol>
+                <li><p>将它们进行标记化；</p></li>
+                <li><p>最大长度不超过 <code>MAX_TOKENS</code> ；</p></li>
+                <li><p>将目标拆分为输入和标签。这些标记回移动一步，这样每个输入位置的标签是下一个预测的标记；</p></li>
+                <li><p>将 <code>RaggedTensor</code> 转换为填充的密集 <code>Tensor</code></p> 。</li>
+                <li>返回 <code>(inputs, labels)</code> 文本对。</li>
+            </ol>
+            <pre><code>    def prepare_batch(pt, en):
+    pt = tokenizers.pt.tokenize(pt) # output is ragged
+    pt = pt[:, :MAX_TOKENS]    # trim to MAX_TOKENS
+    pt = pt.to_tensor() # convert to 0-padded dense tensor
+
+    en = tokenizers.en.tokenize(en)
+    en = en[:, :(MAX_TOKENS + 1)]
+    en_inputs = en[:, :-1].to_tensor() # drop the [END] tokens
+    en_labels = en[:, 1:].to_tensor() # drop the [START] tokens
+
+    return (pt, en_inputs), en_labels</code></pre>
+
+            <p>下面的函数将文本数据集转换为批量数据，以供训练：</p>
+            <ol>
+                <li><p>将文本进行标记，并过滤掉太长的句子。（使用 <code>batch</code> 函数是因为在批量数据上进行标记更有效率；</p></li>
+                <li><p><code>shuffle</code> 方法对批量数据进行随机排序；</p></li>
+                <li><p><code>prefetch</code> 将数据集与模型并行运行，以确保在需要时有数据可用。</p></li>
+            </ol>
+            <pre><code>BUFFER_SIZE = 20000
+BATCH_SIZE = 64
+
+def make_batches(ds):
+    return (ds.shuffle(BUFFER_SIZE).batch(BATCH_SIZE).map(
+        prepare_batch, tf.data.AUTOTUNE).prefetch(buffer_size=tf.data.AUTOTUNE))</code></pre>
 
             <h3>7.4.4 测试数据集</h3>
+            <pre><code># Create training and validation set batches.
+train_batches = make_batches(train_examples)
+val_batches = make_batches(val_examples)
+</code></pre>
+            <p>生成的 <code>tf.data.Dataset</code> 对象可以使用 Keras 进行训练。Keras 的 <code>Model.fit</code> 函数期望 <code>(inputs, labels)</code> 数据对。<code>inputs</code> 是葡萄牙语和西班牙语标记对 <code>(pt, en)</code> 。 <code>labels</code> 是相同的英语序列，移动 1 个单位。这个移动会导致每个位置输入的 <code>en</code> 序列，它的 <code>label</code> 是下一个标记，如下图所示：</p>
+            <img src="res/shifted_1_word.png" alt="移动一个标记" width="400">
+            <p>这种设置称为 <em>Teacher Forcing</em> ，因为无论模型在每个时间步的输出如何，它都会获得真实值作为下一个时间步的输入。这是一种简单而有效的文本生成模型训练方法。它之所以高效，是因为我们不需要按顺序运行模型，不同序列位置的输出可以并行计算。</p>
+            <p>你可能期望 <code>(input, output)</code> 简单地对应 <code>(Portuguese, English)</code> 句子。给定葡萄牙句子序列，模型会尝试生成英语序列。</p>
+            <p>可以使用这种方式训练模型。你需要写推理循环，将模型的输出传入到输入中。这种方式速度较慢（时间步骤不能并行运行），学习难度也较大（模型无法正确的出句子的结尾，除非它能正确得出句子的开头），但它可以提供更稳定的模型，因为模型必须在训练期间学会纠正自己的错误。</p>
+            <pre><code>for (pt, en), en_labels in train_batches.take(1):
+    break
+
+print(pt.shape)
+print(en.shape)
+print(en_labels.shape)
+print(en[0][:10])
+print(en_labels[0][:10])</code></pre>
+            <p><code>en</code> 和 <em>em_labels</em> 是相同的，只是移动了一位：</p>
+            <pre><samp>(64, 64)
+(64, 59)
+(64, 59)
+tf.Tensor([   2   76  144  162  317   77 5461   72  155  395], shape=(10,), dtype=int64)
+tf.Tensor([  76  144  162  317   77 5461   72  155  395   13], shape=(10,), dtype=int64)</samp></pre>
 
             <h3>7.4.5 定义组件</h3>
 
-            <p>Transformer 内部有很多事情要做。需要记住的重要事项是：</p>
+            <p>Transformer 内部有很多内容。需要记住的重要事项是：</p>
             <ol>
                 <li>
                     <p>它遵循与带有编码器和解码器的标准序列到序列模型相同的一般模式；</p>
@@ -183,7 +256,7 @@ print(tokens)</code></pre>
 
             <img src="res/transformer.png" alt="原始 Transformer 架构" width="400">
 
-            <p>随着学习本教程的进度，我们将解释这两个图中的每个组件。下图是 4 层的 Transformer 表示：</p>
+            <p>下图是 4 层的 Transformer 表示，我们将逐步解释其中每个组件，</p>
             <img src="res/transformer_4layer.png" alt="4 层 Transformer" width="400">
 
             <h4>7.4.5.1 嵌入和位置编码</h4>
