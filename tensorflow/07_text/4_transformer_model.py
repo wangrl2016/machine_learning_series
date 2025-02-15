@@ -363,6 +363,17 @@ if __name__ == '__main__':
     print(en[0][:10])
     print(en_labels[0][:10])
 
+    pos_encoding = positional_encoding(length=2048, depth=512)
+    # Check the shape.
+    print(pos_encoding.shape)
+
+    # Plot the dimensions.
+    pyplot.pcolormesh(pos_encoding.numpy().T, cmap='RdBu')
+    pyplot.ylabel('Depth')
+    pyplot.xlabel('Position')
+    pyplot.colorbar()
+    pyplot.show()
+
     embed_pt = PositionalEmbedding(vocab_size=tokenizers.pt.get_vocab_size().numpy(), d_model=512)
     embed_en = PositionalEmbedding(vocab_size=tokenizers.en.get_vocab_size().numpy(), d_model=512)
 

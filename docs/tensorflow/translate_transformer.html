@@ -261,20 +261,90 @@ tf.Tensor([  76  144  162  317   77 5461   72  155  395   13], shape=(10,), dtyp
 
             <h4>7.4.5.1 嵌入和位置编码</h4>
 
-            <p>编码器和解码器的输入使用相同的嵌入和位置编码逻辑。</p>
+            <p>编码器和解码器的输入使用相同的嵌入和位置编码逻辑：</p>
+            <img src="res/pos_embed.png" alt="嵌入和位置编码" width="600">
             <p>给定一个标记序列，输入标记（葡萄牙语）和目标标记（英语）都必须使用一个层转换为 <code>keras.layers.Embedding</code> 向量。</p>
-            <p>整个模型中使用的注意力层将其输入市委一组无序的向量。由于模型不包含任何循环层或者卷积层。它需要某种方法来识别词序，否则它会将输入序列市委一个词语背包，例如 <em>how are you</em> 等它是无法区分 <em>how you are</em> 和 <em>you how are</em> 的，</p>
-            <p>Transformer 为嵌入向量添加了位置编码。它使用一组不同频率的正弦和余弦（跨序列）。根据定义，附近的元素将具有相似的位置编码。</p>
+
+            <p>整个模型中使用的注意力层将其输入视为一组无序的向量。由于模型不包含任何循环层或者卷积层。它需要某种方法来识别词序，否则它会将输入序列视为一个词语背包，例如 <em>how are you</em> ，<em>how you are</em> 和 <em>you how are</em> ，它是无法区分的。</p>
+            <p>Transformer 为嵌入向量添加了 <strong>位置编码 (Positional Encoding)</strong> 。它使用一组不同频率的正弦和余弦（跨序列）。根据定义，附近的元素将具有相似的位置编码。</p>
             <p>原始论文采用以下公式来计算位置编码：</p>
+            <p class="highlight-math" style="text-align: center;">
+                \(PE_{(pos, 2i)} = sin(pos/10000^{2i/d_{model}})\)
+            </p>
+            <p class="highlight-math" style="text-align: center;">
+                \(PE_{(pos, 2i+1)} = cos(pos/10000^{2i/d_{model}})\)
+            </p>
+            <p class="comment">下面的代码实现了它，但不是交错的正弦和余弦，而是简单地连接正弦和余弦向量。在功能上是等效的，而且更容易实现，并在下面的图中显示。</p>
+            <pre><code>def positional_encoding(length, depth):
+    depth = depth / 2
 
-            <p>位置编码函数是一堆正弦和余弦，它们根据沿嵌入向量深度的位置以不同的频率振动，</p>
+    positions = numpy.arange(length)[:, numpy.newaxis]  # (seq, 1)
+    depths = numpy.arange(depth)[numpy.newaxis, :] / depth # (1, depth)
 
-            <h4>7.4.5.2 添加并规范化</h4>
+    angle_rates = 1 / (10000**depths)   # (1, depth)
+    angle_rads = positions * angle_rates # (pos, depth)
+
+    pos_encoding = numpy.concatenate(
+        [numpy.sin(angle_rads), numpy.cos(angle_rads)],
+        axis=-1)
+    return tf.cast(pos_encoding, dtype=tf.float32)</code></pre>
+            <p>位置编码函数是一堆正弦和余弦，它们根据沿嵌入向量，根据不同的位置深度，以不同的频率振动。</p>
+            <pre><code>pos_encoding = positional_encoding(length=2048, depth=512)
+# Check the shape.
+print(pos_encoding.shape)
+
+# Plot the dimensions.
+pyplot.pcolormesh(pos_encoding.numpy().T, cmap='RdBu')
+pyplot.ylabel('Depth')
+pyplot.xlabel('Position')
+pyplot.colorbar()
+pyplot.show()</code></pre>
+
+            <p>使用它来创建一个 <code>PositionEmbedding</code> 层，查找嵌入向量的标记，将它和位置向量进行相加：</p>
+            <pre><code>class PositionalEmbedding(keras.layers.Layer):
+    def __init__(self, vocab_size, d_model):
+        super().__init__()
+        self.d_model = d_model
+        self.embedding = keras.layers.Embedding(vocab_size, d_model, mask_zero=True)
+        self.pos_encoding = positional_encoding(length=2048, depth=d_model)
+    
+    def compute_mask(self, *args, **kwargs):
+        return self.embedding.compute_mask(*args, **kwargs)
+    
+    def call(self, x):
+        length = tf.shape(x)[1]
+        x = self.embedding(x)
+        # This factor sets the relative savel of the embedding and position_encoding.
+        x *= tf.math.sqrt(tf.cast(self.d_model, tf.float32))
+        x = x + self.pos_encoding[tf.newaxis, :length, :]
+        return x</code></pre>
+            <p class="comment">注：原始论文中对源语言和目标语言都使用单个标记器和权重矩阵。本教程使用两个单独的标记器和权重矩阵。</p>
+            <pre><code>embed_pt = PositionalEmbedding(vocab_size=tokenizers.pt.get_vocab_size().numpy(), d_model=512)
+embed_en = PositionalEmbedding(vocab_size=tokenizers.en.get_vocab_size().numpy(), d_model=512)
+
+pt_emb = embed_pt(pt)
+en_emb = embed_en(en)</code></pre>
+            <img src="res/add_norm.png" alt="相加并归一化" width="600">
+
+            <h4>7.4.5.2 相加并规范化</h4>
+            <p>这些 "Add & Norm" 块分散在整个模型中，每个块都加入一个残差连接，通过 <code>LayerNormalization</code> 进行归一化：</p>
+            <p>包含残差块可以提升训练效率，残差连接为梯度提供了直接路径（并确保向量由注意层更新而不是替换），而规范化则为输出保持合理的比例。</p>
+            <p class="comment">下面的实现，使用 <code>Add</code> 层确保 Keras 掩码可以被传播（ + 符号不会）。</p>
+
             <h4>7.4.5.3 基础注意力层</h4>
 
-            <p>整个模型都使用了注意力层，除了注意力的配置方式外，这些层都是相同的。每个层都包含一个 <code>layers.MultiHeadAttention</code> 、一个 <code>layers.LayerNormalization</code> 和一个 <code>layers.Add</code> 。</p>
+            <p>整个模型都使用了注意力层，除了注意力的配置方式外，它们都是相同的。每个层都包含一个 <code>layers.MultiHeadAttention</code> 、一个 <code>layers.LayerNormalization</code> 和一个 <code>layers.Add</code> 。</p>
+            <img src="res/base_attention.png" alt="注意力层" width="400">
 
-            <p>要实现这些注意层，请从仅包含组件层的简单基类开始。每个用例都将作为子类实现。这样编写的代码会多一点，但意图却很明确。</p>
+            <p>要实现这些注意层，请从仅包含组件层的简单基类开始。每个用例都将作为子类实现。这样编写的代码会多一点，但意图却很明确：</p>
+            <pre><code>class BaseAttention(keras.layers.Layer):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.mha = keras.layers.MultiHeadAttention(**kwargs)
+        self.layernorm = keras.layers.LayerNormalization()
+        self.add = keras.layers.Add()</code></pre>
+            <p>在了解每种用法的具体细节之前，先快速回顾一下注意力的工作原理：</p>
+
             <h4>7.4.5.4 交叉注意力层</h4>
             <h4>7.4.5.5 全局自注意力层</h4>
             <h4>7.4.5.6 因果自注意力层</h4>
