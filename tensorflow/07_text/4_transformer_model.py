@@ -304,6 +304,11 @@ if __name__ == '__main__':
     for row in encoded.to_list():
         print(row)
 
+    round_trip = tokenizers.en.detokenize(encoded)
+    print('> This is human-readable text:')
+    for line in round_trip.numpy():
+        print(line.decode('utf-8'))
+
     print('> This is the text split into tokens:')
     tokens = tokenizers.en.lookup(encoded)
     print(tokens)

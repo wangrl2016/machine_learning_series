@@ -79,7 +79,7 @@
                 </li>
             </ul>
             <p>下图展示在英语到法语上训练的Transformer 的第 5 层和第 6 层，单词 "it" 的编码器自注意力分布（八个注意力头之一）：</p>
-            <img src="res/self_attention_distrib.png" alt="自注意力分布" width="800">
+            <img src="res/self_attention_distrib.png" alt="自注意力分布" width="600">
 
             <h3>7.4.2 设置</h3>
             <p>需要安装 <a>TensorFlow Datasets</a> 下载数据集，和 <a>TensroFlow Text</a> 进行文本预处理，导入必要的模块：</p>
@@ -107,16 +107,64 @@ train_examples, val_examples = examples['train'], examples['validation']</code><
     print('> Examples in English:')
     for en in en_examples.numpy():
         print(en.decode('utf-8'))</code></pre>
-            <pre><samp>> Examples in Portuguese:
+            <pre><samp>&gt; Examples in Portuguese:
 e quando melhoramos a procura , tiramos a única vantagem da impressão , que é a serendipidade .
 mas e se estes fatores fossem ativos ?
 mas eles não tinham a curiosidade de me testar .
-> Examples in English:
+&gt; Examples in English:
 and when you improve searchability , you actually take away the one advantage of print , which is serendipity .
 but what if it were active ?
 but they did n't test for curiosity .</samp></pre>
-            <h4>7.4.3.2 设置标记器</h4>
 
+            <h4>7.4.3.2 设置标记器</h4>
+            <p>我们已经加载了数据集，接下来需要将文本 <strong>标记 (Tokenize)</strong> ，这样每个元素可以使用 <em>标记 (Token)</em> 或者标记 ID（数字）表示。</p>
+            <p>标记化是一个将文本分解成标记的过程。取决于标记器，这些标记可以表示句子片段、单词、子单词或者字符。要了解更多标记器的知识，可以访问 <a href="https://www.tensorflow.org/text/guide/tokenizers">Tokenizing with TF Text</a> 文档。</p>
+            <p>本教程使用的是 <a href="https://www.tensorflow.org/text/guide/subwords_tokenizer">Subword tokenizers</a> 中的内置标记器。它优化了两个 <code>text.BertTokenizer</code> 对象（一个是英语，一个是葡萄牙语），使用 TensorFlow 的 <code>save_model</code> 格式导出。</p>
+            <p class="comment">与 <a href="https://arxiv.org/abs/1706.03762">原始论文</a> 5.1 小节 不同，它们对源句子和目标句子使用单 <em>字节对 (Byte-pair)</em> 标记器，总词汇量为 37000 。</p>
+            <p>下载、解压、导入 <code>save_model</code> 格式：</p>
+            <pre><code>model_name = 'ted_hrlr_translate_pt_en_converter'
+keras.utils.get_file(
+    f'{model_name}.zip',
+    f'https://storage.googleapis.com/download.tensorflow.org/models/{model_name}.zip',
+    cache_dir='.', cache_subdir='', extract=True)
+tokenizers = tf.saved_model.load('ted_hrlr_translate_pt_en_converter_extracted/' + model_name)</code></pre>
+            <p><code>tf.saved_model</code> 包含两个文本标记器，一个是英语，一个是葡萄牙语，它们都有相同的方法。</p>
+            <p><code>tokenize</code> 方法将一批字符串转换为填充的标记 ID ，此方法在标记之前拆分标点符号、小写字母并对输入进行 Unicode 规范化。该标准化在此处不可见，因为输入数据已经标准化：</p>
+            <pre><code>print('> This is a batch of strings:')
+for en in en_examples.numpy():
+    print(en.decode('utf-8'))</code></pre>
+            <pre><code>encoded = tokenizers.en.tokenize(en_examples)
+print('> This is a padded-batch of token IDs:')
+for row in encoded.to_list():
+    print(row)</code></pre>
+            <pre><samp>&gt; This is a padded-batch of token IDs:
+[2, 72, 117, 79, 1259, 1491, 2362, 13, 79, 150, 184, 311, 71, 103, 2308, 74, 2679, 13, 148, 80, 55, 4840, 1434, 2423, 540, 15, 3]
+[2, 87, 90, 107, 76, 129, 1852, 30, 3]
+[2, 87, 83, 149, 50, 9, 56, 664, 85, 2512, 15, 3]</samp></pre>
+            
+            <p><code>detokenize</code> 方法尝试将这些标记 ID 转换回人类可读的文本：</p>
+            <pre><code>round_trip = tokenizers.en.detokenize(encoded)
+print('> This is human-readable text:')
+for line in round_trip.numpy():
+    print(line.decode('utf-8'))</code></pre>
+
+            <p>底层 <code>lookup</code> 方法将标记 ID 转换为标记文本：</p>
+            <pre><code>print('> This is the text split into tokens:')
+tokens = tokenizers.en.lookup(encoded)
+print(tokens)</code></pre>
+            <p>输出展示了 <em>子词 (Subword)</em> 标记器可以对单子进行分割：</p>
+            <pre><samp>&gt; This is the text split into tokens:
+&lt;tf.RaggedTensor [[b'[START]', b'and', b'when', b'you', b'improve', b'search', b'##ability',
+     b',', b'you', b'actually', b'take', b'away', b'the', b'one', b'advantage',
+     b'of', b'print', b',', b'which', b'is', b's', b'##ere', b'##nd', b'##ip',
+     b'##ity', b'.', b'[END]']                                                 ,
+    [b'[START]', b'but', b'what', b'if', b'it', b'were', b'active', b'?',
+     b'[END]']                                                           ,
+    [b'[START]', b'but', b'they', b'did', b'n', b"'", b't', b'test', b'for',
+     b'curiosity', b'.', b'[END]'] ]&gt;</samp></pre>
+            <p>比如单词 <em>searchability</em> 分解成为 <em>search</em> 和 <em>##ability</em> ，单词 <em>serendipity</em> 分解成 <em>s</em> , <em>##ere</em> , <em>##nd</em> , <em>##ip</em> 和 <em>##ity</em> 。</p>
+            <p>需要注意的是标记的文本包含 <em>[START]</em> 和 <em>[END]</em> 两个标记。</p>
+            
             <h4>7.4.3.3 使用 tf.data</h4>
 
             <h3>7.4.4 测试数据集</h3>
